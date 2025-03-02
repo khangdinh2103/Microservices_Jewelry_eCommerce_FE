@@ -26,13 +26,13 @@ const PaymentMethodSelector = () => {
   };
 
   return (
-    <div className="payment-method">
-      <h2 className="text-black mb-4">Chọn phương thức thanh toán</h2>
-      <div className="flex flex-col gap-4">
+    <div className="payment-method bg-[#312F30] p-6 rounded-lg shadow-md">
+      <h2 className="text-white mb-4">Chọn phương thức thanh toán</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {paymentOptions.map(({ value, label, icon }) => (
           <div
             key={value}
-            className={`flex items-center gap-3 p-4 rounded-lg shadow-md cursor-pointer hover:bg-[#F5F5F5] transition ${selectedOption?.value === value ? "bg-[#E0E0E0]" : "bg-[#FAFAFA]"}`}
+            className="flex items-center gap-3 bg-[#1D1917] p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-700 transition"
             onClick={() => handlePaymentSelect({ value, label, icon })}
           >
             <img
@@ -41,14 +41,14 @@ const PaymentMethodSelector = () => {
               width="24"
               height="24"
               loading="lazy"
-              style={{ color: "transparent" }}
+              style={{ color: "transparent" }} // Removed border-radius class
             />
-            <span className="text-black">{label}</span>
+            <span className="text-white">{label}</span>
           </div>
         ))}
       </div>
       {selectedOption && (
-        <p className="text-black mt-4">
+        <p className="text-white mt-4">
           Bạn đã chọn phương thức: <strong>{selectedOption.label}</strong>
         </p>
       )}
