@@ -111,7 +111,7 @@ const Checkout: React.FC = () => {
             </div>
           </div>
 
-         {/* Thông tin người dùng */}
+   
             <div className="mb-6 bg-[#2E2A27] p-6 rounded-lg shadow-md">
             {isEditing ? (
                 <>
