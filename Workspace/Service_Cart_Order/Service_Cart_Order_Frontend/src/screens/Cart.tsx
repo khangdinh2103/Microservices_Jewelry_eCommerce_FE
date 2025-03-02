@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { FiShoppingCart, FiTrash2, FiPlus, FiMinus } from "react-icons/fi";
 
 interface CartItem {
@@ -10,6 +11,15 @@ interface CartItem {
 }
 
 const Cart: React.FC = () => {
+  const navigate = useNavigate();
+  const handleCheckout = () => {
+    if (selectedItems.length === 0) {
+      alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán!");
+      return;
+    }
+    navigate("/order", { state: { selectedItems: [...selectedItems], cartItems } });
+  };
+  
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
@@ -138,7 +148,9 @@ const Cart: React.FC = () => {
                   <span className="font-bold">{(subtotal + subtotal * taxRate + shippingCost).toLocaleString()} VND</span>
                 </div>
               </div>
-              <button className="mt-6 w-full bg-red-500 text-white py-3 px-4 rounded-md hover:bg-red-600">Thanh toán</button>
+              <button onClick={handleCheckout} className="mt-6 w-full bg-red-500 text-white py-3 px-4 rounded-md hover:bg-red-600">
+                Thanh toán
+              </button>
             </div>
           </div>
         )}
