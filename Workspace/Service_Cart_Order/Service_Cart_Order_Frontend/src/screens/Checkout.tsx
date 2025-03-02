@@ -56,10 +56,8 @@ const Checkout: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-8 font-mulish">Thanh toán</h1>
 
-        {/* Tất cả trong một ô với background chung */}
         <div className="bg-[#1D1917] shadow rounded-lg p-6 mb-8">
 
-          {/* Sản phẩm đã chọn */}
           <div className="mb-6">
             {selectedCartItems.map((item: CartItem) => (
               <div key={item.id} className="flex items-center justify-between py-6 border-b border-gray-700 last:border-0">
