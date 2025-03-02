@@ -87,75 +87,76 @@ const Cart: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8">Giỏ hàng</h1>
+    <div className="min-h-screen bg-gray-900 py-8 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#312F30' }}>
+  <div className="max-w-7xl mx-auto">
+    <h1 className="text-3xl font-bold text-white mb-8 font-mulish">Giỏ hàng</h1>
 
-        {cartItems.length === 0 ? (
-          <div className="text-center py-12 bg-gray-800 rounded-lg shadow">
-            <FiShoppingCart className="mx-auto h-12 w-12 text-gray-400" />
-            <h2 className="mt-4 text-lg font-medium text-white">Giỏ hàng của bạn đang trống</h2>
-            <button className="mt-6 px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded-md">Tiếp tục mua sắm</button>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            <div className="bg-gray-800 shadow rounded-lg overflow-hidden p-4">
-              <label className="flex items-center text-white">
-                <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} className="mr-6 w-5 h-5" /> Chọn tất cả
-              </label>
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex items-center p-6 border-b border-gray-700 last:border-0">
-                  <input
-                    type="checkbox"
-                    checked={selectedItems.includes(item.id)}
-                    onChange={() => toggleSelectItem(item.id)}
-                    className="mr-6 w-5 h-5"
-                  />
-                  <div className="flex-shrink-0 w-24 h-24">
-                    <img src={item.image} alt={item.name} className="w-full h-full object-cover rounded" loading="lazy" />
-                  </div>
-                  <div className="ml-6 flex-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-medium text-white">{item.name}</h3>
-                      <p className="text-lg font-medium text-white">{item.price.toLocaleString()} VND</p>
-                    </div>
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="flex items-center border border-gray-600 rounded-md">
-                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2 hover:bg-gray-700">
-                          <FiMinus className="h-4 w-4 text-white" />
-                        </button>
-                        <input type="number" min="1" value={item.quantity} className="w-16 text-center border-x border-gray-600 bg-gray-800 text-white p-2" />
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:bg-gray-700">
-                          <FiPlus className="h-4 w-4 text-white" />
-                        </button>
-                      </div>
-                      <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-600 flex items-center">
-                        <FiTrash2 className="h-5 w-5 mr-1" /> Xóa
-                      </button>
-                    </div>
-                  </div>
+    {cartItems.length === 0 ? (
+      <div className="text-center py-12 bg-gray-800 rounded-lg shadow">
+        <FiShoppingCart className="mx-auto h-12 w-12 text-gray-400" />
+        <h2 className="mt-4 text-lg font-medium text-white font-mulish">Giỏ hàng của bạn đang trống</h2>
+        <button className="mt-6 px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded-md">Tiếp tục mua sắm</button>
+      </div>
+    ) : (
+      <div className="space-y-8">
+        <div className="bg-[#1D1917] shadow rounded-lg overflow-hidden p-4">
+          <label className="flex items-center text-white font-mulish">
+            <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} className="mr-6 w-5 h-5" /> Chọn tất cả
+          </label>
+          {cartItems.map((item) => (
+            <div key={item.id} className="flex items-center p-6 border-b border-gray-700 last:border-0 bg-[#1D1917]">
+              <input
+                type="checkbox"
+                checked={selectedItems.includes(item.id)}
+                onChange={() => toggleSelectItem(item.id)}
+                className="mr-6 w-5 h-5"
+              />
+              <div className="flex-shrink-0 w-24 h-24">
+                <img src={item.image} alt={item.name} className="w-full h-full object-cover rounded" loading="lazy" />
+              </div>
+              <div className="ml-6 flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium text-white font-mulish">{item.name}</h3>
+                  <p className="text-lg font-medium text-white font-mulish">{item.price.toLocaleString()} VND</p>
                 </div>
-              ))}
-            </div>
-
-            <div className="bg-gray-800 shadow rounded-lg p-6">
-              <div className="space-y-4 text-white">
-                <div className="flex justify-between"><span>Tổng phụ</span><span>{subtotal.toLocaleString()} VND</span></div>
-                <div className="flex justify-between"><span>Thuế</span><span>{(subtotal * taxRate).toLocaleString()} VND</span></div>
-                <div className="flex justify-between"><span>Phí vận chuyển</span><span>{shippingCost.toLocaleString()} VND</span></div>
-                <div className="border-t border-gray-600 pt-4 text-lg font-medium flex justify-between">
-                  <span>Tổng cộng</span>
-                  <span className="font-bold">{(subtotal + subtotal * taxRate + shippingCost).toLocaleString()} VND</span>
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center border border-gray-600 rounded-md">
+                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2 hover:bg-gray-700">
+                      <FiMinus className="h-4 w-4 text-white font-mulish" />
+                    </button>
+                    <input type="number" min="1" value={item.quantity} className="w-16 text-center border-x border-gray-600 bg-gray-800 text-white p-2" />
+                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:bg-gray-700">
+                      <FiPlus className="h-4 w-4 text-white font-mulish" />
+                    </button>
+                  </div>
+                  <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-600 flex items-center">
+                    <FiTrash2 className="h-5 w-5 mr-1" /> Xóa
+                  </button>
                 </div>
               </div>
-              <button onClick={handleCheckout} className="mt-6 w-full bg-red-500 text-white py-3 px-4 rounded-md hover:bg-red-600">
-                Thanh toán
-              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-[#1D1917] shadow rounded-lg p-6">
+          <div className="space-y-4 text-white font-mulish">
+            <div className="flex justify-between"><span>Tổng phụ</span><span>{subtotal.toLocaleString()} VND</span></div>
+            <div className="flex justify-between"><span>Thuế</span><span>{(subtotal * taxRate).toLocaleString()} VND</span></div>
+            <div className="flex justify-between"><span>Phí vận chuyển</span><span>{shippingCost.toLocaleString()} VND</span></div>
+            <div className="border-t border-gray-600 pt-4 text-lg font-medium flex justify-between">
+              <span>Tổng cộng</span>
+              <span className="font-bold font-mulish">{(subtotal + subtotal * taxRate + shippingCost).toLocaleString()} VND</span>
             </div>
           </div>
-        )}
+          <button onClick={handleCheckout} className="mt-6 w-full bg-red-500 text-white py-3 px-4 rounded-md hover:bg-red-600 font-mulish">
+            Thanh toán
+          </button>
+        </div>
       </div>
-    </div>
+    )}
+  </div>
+</div>
+
   );
 };
 
