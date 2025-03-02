@@ -13,13 +13,13 @@ interface CartItem {
 const Cart: React.FC = () => {
   const navigate = useNavigate();
   const handleCheckout = () => {
-    if (selectedItems.length === 0) {
-      alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán!");
-      return;
-    }
-    navigate("/order", { state: { selectedItems: [...selectedItems], cartItems } });
-  };
-  
+  if (selectedItems.length === 0) {
+    alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán!");
+    return;
+  }
+  navigate("/checkout", { state: { selectedItems: [...selectedItems], cartItems } });
+};
+
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: 1,
