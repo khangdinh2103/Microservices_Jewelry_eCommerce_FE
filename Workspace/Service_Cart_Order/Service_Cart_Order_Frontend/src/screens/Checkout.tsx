@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import PaymentMethodSelector from "../components/PaymentMethodSelector";
 
 interface CartItem {
   id: number;
@@ -167,6 +168,7 @@ const Checkout: React.FC = () => {
                 </>
             )}
             </div>
+            <PaymentMethodSelector />
 
 
           
