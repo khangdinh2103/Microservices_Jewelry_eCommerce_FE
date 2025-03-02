@@ -82,7 +82,6 @@ const Checkout: React.FC = () => {
           </div>
 
 
-            {/* Mã giảm giá */}
                 <div className="flex mt-15 mb-20">
                 <input
                     type="text"
@@ -100,7 +99,7 @@ const Checkout: React.FC = () => {
                 </div>
 
 
-          {/* Tính toán chi phí */}
+   
           <div className="mb-20 ml-5 mr-5 space-y-4 text-white font-bold font-mulish">
             <div className="flex justify-between"><span>Tổng phụ</span><span>{totalAmount.toLocaleString()} VND</span></div>
             <div className="flex justify-between"><span>Thuế (10%)</span><span>{(totalAmount * taxRate).toLocaleString()} VND</span></div>
