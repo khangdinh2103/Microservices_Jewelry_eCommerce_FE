@@ -83,10 +83,22 @@ const Cart: React.FC = () => {
   };
   
 
-  const removeItem = (id: number): void => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-    setSelectedItems(selectedItems.filter(itemId => itemId !== id));
+  const removeItem = async (id: number): Promise<void> => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/cart-items/${id}`, {
+        method: "DELETE",
+      });
+  
+      if (!response.ok) throw new Error("Failed to delete item");
+  
+      
+      setCartItems(cartItems.filter((item) => item.id !== id));
+      setSelectedItems(selectedItems.filter((itemId) => itemId !== id));
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
   };
+  
 
   const toggleSelectItem = (id: number): void => {
     setSelectedItems(selectedItems.includes(id)
