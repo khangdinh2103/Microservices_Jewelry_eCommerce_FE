@@ -55,10 +55,33 @@ const Cart: React.FC = () => {
     setSubtotal(total);
   };
 
-  const updateQuantity = (id: number, newQuantity: number): void => {
-    if (newQuantity < 1) return;
-    setCartItems(cartItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)));
+  const updateQuantity = async (id: number, newQuantity: number): Promise<void> => {
+    if (newQuantity < 0) return;
+  
+    try {
+      const response = await fetch(`http://localhost:3000/api/cart-items/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ quantity: newQuantity }),
+      });
+  
+      if (!response.ok) throw new Error("Failed to update quantity");
+  
+      if (newQuantity === 0) {
+        // Nếu số lượng = 0, xóa luôn sản phẩm khỏi giỏ hàng
+        setCartItems(cartItems.filter((item) => item.id !== id));
+        setSelectedItems(selectedItems.filter(itemId => itemId !== id));
+      } else {
+        // Cập nhật lại UI với số lượng mới
+        setCartItems(cartItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)));
+      }
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
   };
+  
 
   const removeItem = (id: number): void => {
     setCartItems(cartItems.filter((item) => item.id !== id));
@@ -123,13 +146,14 @@ const Cart: React.FC = () => {
                     </div>
                     <div className="mt-4 flex items-center justify-between">
                       <div className="flex items-center border border-gray-600 rounded-md">
-                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2 hover:bg-gray-700">
-                          <FiMinus className="h-4 w-4 text-white font-mulish" />
-                        </button>
-                        <input type="number" min="1" value={item.quantity} className="w-16 text-center border-x border-gray-600 bg-gray-800 text-white p-2" readOnly />
-                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:bg-gray-700">
-                          <FiPlus className="h-4 w-4 text-white font-mulish" />
-                        </button>
+                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2 hover:bg-gray-700">
+                        <FiMinus className="h-4 w-4 text-white font-mulish" />
+                      </button>
+                      <input type="number" min="1" value={item.quantity} className="w-16 text-center border-x border-gray-600 bg-gray-800 text-white p-2" readOnly />
+                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:bg-gray-700">
+                        <FiPlus className="h-4 w-4 text-white font-mulish" />
+                      </button>
+
                       </div>
                       <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-600 flex items-center">
                         <FiTrash2 className="h-5 w-5 mr-1" /> Xóa
