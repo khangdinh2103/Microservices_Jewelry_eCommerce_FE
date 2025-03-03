@@ -70,7 +70,6 @@ const Cart: React.FC = () => {
       if (!response.ok) throw new Error("Failed to update quantity");
   
       if (newQuantity === 0) {
-        // Nếu số lượng = 0, xóa luôn sản phẩm khỏi giỏ hàng
         setCartItems(cartItems.filter((item) => item.id !== id));
         setSelectedItems(selectedItems.filter(itemId => itemId !== id));
       } else {
