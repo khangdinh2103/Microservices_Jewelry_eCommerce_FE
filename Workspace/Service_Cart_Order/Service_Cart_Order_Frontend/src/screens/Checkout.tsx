@@ -79,7 +79,7 @@ const Checkout: React.FC = () => {
   //   }
   // };
   const handleOrder = async () => {
-    if (paymentMethod !== "Momo") {
+    if (paymentMethod !== "momo") {
       alert("Hiện tại chỉ hỗ trợ thanh toán bằng Momo.");
       return;
     }
@@ -242,7 +242,7 @@ const Checkout: React.FC = () => {
                 </>
             )}
             </div>
-            <PaymentMethodSelector />
+             <PaymentMethodSelector selectedMethod={paymentMethod} onSelect={setPaymentMethod} />
 
 
           
