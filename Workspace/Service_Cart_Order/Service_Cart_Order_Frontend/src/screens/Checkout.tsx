@@ -36,7 +36,7 @@ const Checkout: React.FC = () => {
 
   const taxRate = 0.1;
   const shippingCost = 150000;
-  const finalAmount = totalAmount - discount + totalAmount * taxRate + shippingCost;
+  const finalAmount = totalAmount - discount + shippingCost;
 
   const handleVoucherApply = () => {
     if (voucher === "DISCOUNT10") {
@@ -47,9 +47,37 @@ const Checkout: React.FC = () => {
     }
   };
 
-  const handleOrder = () => {
-    alert("Đặt hàng thành công!");
+  const handleOrder = async () => {
+    const orderData = {
+      userID: 1, // Cần lấy từ user đăng nhập
+      address: userInfo.address,
+      status: "PENDING",
+      orderDetails: selectedCartItems.map((item: CartItem) => ({
+        productID: item.id,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+    };
+  
+    try {
+      const response = await fetch("http://localhost:3000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Đặt hàng thất bại!");
+      }
+  
+      alert("Đặt hàng thành công!");
+    } catch (error) {
+      alert("Dat hang khong thanh cong!");
+    }
   };
+  
 
   return (
     <div className="min-h-screen bg-[#312F30] py-8 px-4 sm:px-6 lg:px-8">
@@ -102,7 +130,6 @@ const Checkout: React.FC = () => {
    
           <div className="mb-20 ml-5 mr-5 space-y-4 text-white font-bold font-mulish">
             <div className="flex justify-between"><span>Tổng phụ</span><span>{totalAmount.toLocaleString()} VND</span></div>
-            <div className="flex justify-between"><span>Thuế (10%)</span><span>{(totalAmount * taxRate).toLocaleString()} VND</span></div>
             <div className="flex justify-between"><span>Phí vận chuyển</span><span>{shippingCost.toLocaleString()} VND</span></div>
             {discount > 0 && <div className="flex justify-between text-green-400"><span>Giảm giá</span><span>-{discount.toLocaleString()} VND</span></div>}
             <div className="border-t border-gray-600 pt-4 text-xl font-bold flex justify-between">

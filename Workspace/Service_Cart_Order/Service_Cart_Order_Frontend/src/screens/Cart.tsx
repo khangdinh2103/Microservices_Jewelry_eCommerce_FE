@@ -178,11 +178,10 @@ const Cart: React.FC = () => {
             <div className="bg-[#1D1917] shadow rounded-lg p-6">
               <div className="space-y-4 text-white font-mulish">
                 <div className="flex justify-between"><span>Tổng phụ</span><span>{subtotal.toLocaleString()} VND</span></div>
-                <div className="flex justify-between"><span>Thuế</span><span>{(subtotal * taxRate).toLocaleString()} VND</span></div>
                 <div className="flex justify-between"><span>Phí vận chuyển</span><span>{shippingCost.toLocaleString()} VND</span></div>
                 <div className="border-t border-gray-600 pt-4 text-lg font-medium flex justify-between">
                   <span>Tổng cộng</span>
-                  <span className="font-bold font-mulish">{(subtotal + subtotal * taxRate + shippingCost).toLocaleString()} VND</span>
+                  <span className="font-bold font-mulish">{(subtotal  + shippingCost).toLocaleString()} VND</span>
                 </div>
               </div>
               <button onClick={handleCheckout} className="mt-6 w-full bg-red-500 text-white py-3 px-4 rounded-md hover:bg-red-600 font-mulish">
