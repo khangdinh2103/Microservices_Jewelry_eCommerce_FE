@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 const HomePage = () => {
   return (
     <div className="bg-gray-900 text-white min-h-screen p-10">
-      {/* Menu giữ nguyên */}
       <nav className="flex justify-between items-center p-4 bg-gray-800">
         <h1 className="text-2xl font-bold">Trang Sức</h1>
         <div className="space-x-4">
@@ -14,13 +13,11 @@ const HomePage = () => {
         </div>
       </nav>
       
-      {/* Phần tìm kiếm */}
       <div className="text-center mt-10">
         <h2 className="text-3xl font-bold">Tìm Kiếm</h2>
         <p className="text-gray-400">Tìm Kiếm Trang Sức Theo Mong Muốn Của Bạn</p>
       </div>
       
-      {/* Danh mục sản phẩm */}
       <div className="grid grid-cols-4 gap-6 mt-6">
         {[
           { name: "Nhẫn", img: "https://picsum.photos/200" },
@@ -35,7 +32,6 @@ const HomePage = () => {
         ))}
       </div>
       
-      {/* Trang sức bán chạy */}
       <div className="mt-12">
         <h2 className="text-3xl font-bold text-center">Trang Sức Bán Chạy</h2>
         <div className="grid grid-cols-4 gap-6 mt-6">

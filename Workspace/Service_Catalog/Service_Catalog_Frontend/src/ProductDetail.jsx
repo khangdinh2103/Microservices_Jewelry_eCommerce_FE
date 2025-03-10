@@ -35,7 +35,6 @@ const ProductDetail = () => {
           <img src={selectedImage} alt={currentProduct?.name} className="w-full rounded-lg" />
         </div>
 
-        {/* Thông tin sản phẩm */}
         <div>
           <h1 className="text-3xl font-bold mb-2 text-gray-200">{currentProduct?.name}</h1>
           <p className="italic text-gray-400 mb-2">Mã: GNDDDDW013481</p>
@@ -50,7 +49,6 @@ const ProductDetail = () => {
             </div>
           </div>
           
-          {/* Nút mua và giỏ hàng */}
           <div className="flex gap-4">
             <button className="bg-red-500 w-full py-3 rounded text-white font-bold text-lg">Mua ngay</button>
           </div>
@@ -61,7 +59,6 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* Thông tin chi tiết */}
       <div className="mt-10 max-w-6xl mx-auto">
         <h2 className="text-2xl font-bold mb-4">Thông Tin Sản Phẩm</h2>
         <div className="text-gray-300">
@@ -76,7 +73,6 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* Sản phẩm tương tự */}
       <div className="mt-16">
         <h2 className="text-2xl font-bold text-center mb-6">Sản phẩm tương tự</h2>
         <div className="grid grid-cols-5 gap-6 justify-center">
