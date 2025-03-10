@@ -49,7 +49,7 @@ const OrderList: React.FC = () => {
               : "https://via.placeholder.com/100",
           })),
           total: order.orderDetails.reduce(
-            (sum: number, item: any) => sum + item.price * item.quantity,
+            (sum: number, item: any) => sum + item.price * item.quantity ,
             0
           ),
         }));

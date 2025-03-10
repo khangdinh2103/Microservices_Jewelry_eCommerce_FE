@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import PaymentMethodSelector from "../components/PaymentMethodSelector";
+import { useNavigate } from "react-router-dom";
 
 interface CartItem {
   id: number;
@@ -11,6 +12,8 @@ interface CartItem {
 }
 
 const Checkout: React.FC = () => {
+
+  const navigate = useNavigate();
   const location = useLocation();
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const { selectedItems, cartItems } = location.state || { selectedItems: [], cartItems: [] };
@@ -79,8 +82,14 @@ const Checkout: React.FC = () => {
   //   }
   // };
   const handleOrder = async () => {
+    if (paymentMethod === "cod") {
+      // Nếu chọn thanh toán COD, chuyển hướng sang trang danh sách đơn hàng
+      navigate("/order-list");
+      return;
+    }
+  
     if (paymentMethod !== "momo") {
-      alert("Hiện tại chỉ hỗ trợ thanh toán bằng Momo.");
+      alert("Hiện tại chỉ hỗ trợ thanh toán bằng Momo hoặc COD.");
       return;
     }
   
@@ -115,7 +124,7 @@ const Checkout: React.FC = () => {
       const result = await response.json();
   
       if (result.success && result.data?.payUrl) {
-        // Mở tab mới thay vì chuyển hướng toàn bộ trang
+        // Mở trang thanh toán Momo trong tab mới
         window.open(result.data.payUrl, "_blank");
       } else {
         throw new Error("Không nhận được URL thanh toán!");
@@ -125,8 +134,6 @@ const Checkout: React.FC = () => {
       console.error(error);
     }
   };
-  
-  
   
 
   return (
