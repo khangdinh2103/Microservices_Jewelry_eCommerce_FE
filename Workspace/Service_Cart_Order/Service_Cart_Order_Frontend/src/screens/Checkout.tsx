@@ -12,6 +12,7 @@ interface CartItem {
 
 const Checkout: React.FC = () => {
   const location = useLocation();
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
   const { selectedItems, cartItems } = location.state || { selectedItems: [], cartItems: [] };
 
   if (!selectedItems.length || !cartItems.length) {
@@ -47,36 +48,85 @@ const Checkout: React.FC = () => {
     }
   };
 
+  // const handleOrder = async () => {
+  //   const orderData = {
+  //     userID: 1, // Cần lấy từ user đăng nhập
+  //     address: userInfo.address,
+  //     status: "PENDING",
+  //     orderDetails: selectedCartItems.map((item: CartItem) => ({
+  //       productID: item.id,
+  //       quantity: item.quantity,
+  //       price: item.price,
+  //     })),
+  //   };
+  
+  //   try {
+  //     const response = await fetch("http://localhost:3000/api/orders", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(orderData),
+  //     });
+  
+  //     if (!response.ok) {
+  //       throw new Error("Đặt hàng thất bại!");
+  //     }
+  
+  //     alert("Đặt hàng thành công!");
+  //   } catch (error) {
+  //     alert("Dat hang khong thanh cong!");
+  //   }
+  // };
   const handleOrder = async () => {
-    const orderData = {
-      userID: 1, // Cần lấy từ user đăng nhập
-      address: userInfo.address,
-      status: "PENDING",
-      orderDetails: selectedCartItems.map((item: CartItem) => ({
-        productID: item.id,
+    if (paymentMethod !== "Momo") {
+      alert("Hiện tại chỉ hỗ trợ thanh toán bằng Momo.");
+      return;
+    }
+  
+    const paymentData = {
+      items: selectedCartItems.map((item: CartItem) => ({
+        image: item.image,
+        name: item.name,
         quantity: item.quantity,
-        price: item.price,
+        amount: item.price * item.quantity,
       })),
+      userInfo: {
+        phoneNumber: userInfo.phone,
+        email: userInfo.email,
+        name: userInfo.name,
+      },
+      amount: finalAmount,
     };
   
     try {
-      const response = await fetch("http://localhost:3000/api/orders", {
+      const response = await fetch("http://localhost:3000/api/payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(paymentData),
       });
   
       if (!response.ok) {
-        throw new Error("Đặt hàng thất bại!");
+        throw new Error("Thanh toán thất bại!");
       }
   
-      alert("Đặt hàng thành công!");
+      const result = await response.json();
+  
+      if (result.success && result.data?.payUrl) {
+        // Mở tab mới thay vì chuyển hướng toàn bộ trang
+        window.open(result.data.payUrl, "_blank");
+      } else {
+        throw new Error("Không nhận được URL thanh toán!");
+      }
     } catch (error) {
-      alert("Dat hang khong thanh cong!");
+      alert("Thanh toán không thành công!");
+      console.error(error);
     }
   };
+  
+  
   
 
   return (
