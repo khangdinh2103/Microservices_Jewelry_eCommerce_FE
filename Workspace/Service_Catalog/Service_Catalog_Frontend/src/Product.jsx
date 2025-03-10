@@ -1,11 +1,11 @@
 import React from 'react';
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
+import {useParams, Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const fillerCategory = [
+const categories = [
     { id: "1", name: "Trang sức Đính Kim Cương1" },
     { id: "2", name: "Trang sức Đính ECZ2" },
     { id: "3", name: "Trang sức Đính Ngọc Trai3" },
@@ -19,7 +19,7 @@ const fillerCategory = [
     { id: "11", name: "Nhẫn cặp11" }
 ];
 
-const fillerProduct = [
+const products = [
     { id: "1", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
     { id: "2", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
     { id: "3", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
@@ -36,9 +36,9 @@ const fillerProduct = [
 
 
 const Product = () => {
-
+    const { categoryId } = useParams();
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState(products);
     const [gender, setGender] = useState("");
     const [price, setPrice] = useState("");
     const [material, setMaterial] = useState("");
@@ -57,7 +57,7 @@ const Product = () => {
         speed: 500,
         slidesToShow: 5,
         slidesToScroll: 5,
-        draggable: false,
+        draggable:false,
         swipe: false,
         responsive: [
             { breakpoint: 1024, settings: { slidesToShow: 3, slidesToScroll: 2 } },
@@ -65,70 +65,11 @@ const Product = () => {
             { breakpoint: 480, settings: { slidesToShow: 1, slidesToScroll: 1 } }
         ]
     };
-    const { categoryId } = useParams();
-    const [categoryDetail, setCategoryDetail] = useState({});
-
-    useEffect(() => {
-        const fetchCategoryDetail = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/api/category/detailCategory/${categoryId}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setCategoryDetail(data);
-            } catch (error) {
-                console.error('Failed to fetch category details:', error);
-            }
-        };
-
-        fetchCategoryDetail();
-    }, [categoryId]);
-
-    const [products, setProducts] = useState([]);
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await fetch(`http://localhost:8080/api/product/listProductByCategory/${categoryId}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setProducts(data);
-                setFilteredProducts(data);
-                
-            } catch (error) {
-                console.error('Failed to fetch products:', error);
-            }
-        };
-
-        if (categoryId) {
-            fetchProducts();
-            console.log(filteredProducts)
-        }
-    }, [categoryId]);
-
-    const [categories, setCategories] = useState([]);
-
-    const fetchCategories = async () => {
-        try {
-            const response = await fetch('http://localhost:8080/api/category/listCategory');
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            setCategories(data);
-        } catch (error) {
-            console.error('Failed to fetch categories:', error);
-        }
-    }
-
-    fetchCategories();
 
     return (
         <div className="min-h-screen bg-bgOuter px-10 py-6">
             <div className="text-white mb-4 flex justify-center">
-                <Link to="/" className="text-gray-400">Trang chủ </Link> / {categoryDetail.name}
+                <Link to="/" className="text-gray-400">Trang chủ </Link> / Category {categoryId}
             </div>
             {/*Banner*/}
             <div className="mb-4 flex items-center justify-center px-4">
@@ -138,7 +79,7 @@ const Product = () => {
             <div className="relative py-4 px-10" >
                 <Slider {...settings} className="flex px-10 justify-between align-center">
                     {categories.map((category) => (
-                        <Link to={`/product/${category.id}`} key={category.id} className="flex justify-between align-center">
+                        <Link to={`/product/${category.id}`} key={category.id}  className="flex justify-between align-center">
                             <button className="px-2 py-2 border border-white text-white rounded-lg w-[155px] h-[70px]">
                                 {category.name}
                             </button>
@@ -230,31 +171,11 @@ const Product = () => {
                     Đang khuyến mãi
                 </label>
             </div>
-            {/* List product
+            {/*List product*/}
             <div className="grid grid-cols-4 gap-8 px-10">
-                {filteredProducts.map((item) => {
-                    const thumbnail = item.productImages.find(image => image.isThumbnail);
-                    const imageUrl = thumbnail ? thumbnail.imageUrl : '';
-                    return (
-                        <a key={item.id} href={`/product/productDetail/${item.id}`} className="block">
-                            <div className="bg-bgProduct rounded-lg shadow-md">
-                                <img src={imageUrl} alt={item.name} className="w-full h-40 object-cover" />
-                                <div className="bg-black/80 p-2">
-                                    <h3 className="text-white font-bold text-lg">{item.name}</h3>
-                                    <div className="flex items-center mt-1">
-                                        <span className="text-price text-base font-bold">{item.price}</span>
-                                        <span className="text-gray-400 text-sm line-through ml-2">{item.oldPrice}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    );
-                })}
-            </div> */}
-             {/*FillerProduct*/}
-             <div className="grid grid-cols-4 gap-8 px-10">
-                {fillerProduct.map((item) => (
-                    <a key={item.id} href={`/product/productDetail/${item.id}`} className="block">
+                {filteredProducts.map((item) => (
+                    <Link key={item.id} to={`/product/productDetail/${item.id}`} className="block">
+
                         <div className="bg-bgProduct rounded-lg shadow-md">
                             <img src={item.image} alt={item.name} className="w-full h-40 object-cover" />
                             <div className="bg-black/80 p-2">
@@ -265,11 +186,12 @@ const Product = () => {
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </Link>
                 ))}
             </div>
         </div>
     );
 };
+
 
 export default Product;
