@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { useLocation } from "react-router-dom";
+
 
 interface OrderItem {
   name: string;
@@ -20,6 +22,9 @@ interface Order {
 }
 
 const OrderList: React.FC = () => {
+  const location = useLocation();
+  const shippingCost = location.state?.shippingCost || 0; // Nếu không có, mặc định là 0
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,7 +56,7 @@ const OrderList: React.FC = () => {
           total: order.orderDetails.reduce(
             (sum: number, item: any) => sum + item.price * item.quantity ,
             0
-          ),
+          )+ shippingCost,
         }));
 
         setOrders(formattedOrders);
