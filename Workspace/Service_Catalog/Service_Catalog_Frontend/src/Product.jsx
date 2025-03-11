@@ -30,6 +30,9 @@ const Product = () => {
     const [material, setMaterial] = useState("");
     const [brand, setBrand] = useState("");
     const [onSale, setOnSale] = useState(false);
+    const [size, setSize] = useState("");
+    const [goldKarat, setGoldKarat] = useState("");
+    const [color, setColor] = useState("");
 
     const handleSearchTextBox = () => {
         const filtered = products.filter(product =>
@@ -114,6 +117,9 @@ const Product = () => {
 
     const [brands, setBrands] = useState([]);
     const [materials, setMaterials] = useState([]);
+    const [sizes, setSizes] = useState([]);
+    const [goldKarats, setGoldKarats] = useState([]);
+    const [colors, setColors] = useState([]);
     useEffect(() => {
         const fetchBrands = async () => {
             try {
@@ -137,13 +143,55 @@ const Product = () => {
                 const data = await response.json();
                 setMaterials(data);
             } catch (error) {
-                console.error('Failed to fetch brands:', error);
+                console.error('Failed to fetch materials:', error);
             }
         }
+
+        const fetchSizes = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/product/listSizeByCategory/${categoryId}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setSizes(data);
+            } catch (error) {
+                console.error('Failed to fetch sizes:', error);
+            }
+        }
+
+        const fetchGoldKarats = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/product/listGoldKaratByCategory/${categoryId}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setGoldKarats(data);
+            } catch (error) {
+                console.error('Failed to fetch gold karat:', error);
+            }
+        };
+
+        const fetchColors = async () =>{
+            try {
+                const response = await fetch(`http://localhost:8080/api/product/listColorByCategory/${categoryId}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setColors(data);
+            } catch (error) {
+                console.error('Failed to fetch colors:', error);
+            }
+        };
 
         if (categoryId) {
             fetchBrands();
             fetchMaterials();
+            fetchSizes();
+            fetchGoldKarats();
+            fetchColors();
         }
     }, [categoryId]);
 
@@ -168,6 +216,12 @@ const Product = () => {
                 return value.toUpperCase();
             case 'brand':
                 return value.toUpperCase();
+            case 'size':
+                return `Size ${value}`;
+            case 'goldKarat':
+                return `${value}K`;
+            case 'color':
+                return `Color ${value}`;
             default:
                 return value;
         }
@@ -189,6 +243,15 @@ const Product = () => {
                 break;
             case 'onSale':
                 setOnSale(false);
+                break;
+            case 'size':
+                setSize('');
+                break;
+            case 'goldKarat':
+                setGoldKarat('');
+                break;
+            case 'color':
+                setColor('');
                 break;
         }
     };
@@ -237,6 +300,25 @@ const Product = () => {
             filtered = filtered.filter(product => product.oldPrice);
         }
 
+        if (size) {
+            filtered = filtered.filter(product =>
+                product.size && product.size.toString() === size
+            );
+        }
+
+        if (goldKarat) {
+            filtered = filtered.filter(product =>
+                product.goldKarat && product.goldKarat.toString() === goldKarat
+            );
+        }
+
+        if (color) {
+            filtered = filtered.filter(product =>
+                product.color && product.color.toLowerCase() === color.toLowerCase()
+            );
+        }
+
+
         setFilteredProducts(filtered);
     };
 
@@ -257,12 +339,21 @@ const Product = () => {
             case 'onSale':
                 setOnSale(value);
                 break;
+            case 'size':
+                setSize(value);
+                break;
+            case 'goldKarat':
+                setGoldKarat(value);
+                break;
+            case 'color':
+                setColor(value);
+                break;
         }
     };
 
     useEffect(() => {
         applyFilters();
-    }, [gender, price, material, brand, onSale, searchTerm, products]);
+    }, [gender, price, material, brand, onSale, searchTerm, products, size, goldKarat, color]);
 
     const handleSearch = () => {
         applyFilters();
@@ -364,6 +455,49 @@ const Product = () => {
                         </option>
                     ))}
                 </select>
+                
+                {/* Lọc theo size */}
+                <select
+                    className="px-4 py-2 border border-white bg-gray-400 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    value={size}
+                    onChange={(e) => handleFilterChange('size', e.target.value)}
+                >
+                    <option value="">Size</option>
+                    {sizes.map((sizeName) => (
+                        <option key={sizeName} value={sizeName}>
+                            {sizeName}
+                        </option>
+                    ))}
+                </select>
+
+                {/* Lọc theo độ tuổi vàng */}
+                <select
+                    className="px-4 py-2 border border-white bg-gray-400 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    value={goldKarat}
+                    onChange={(e) => handleFilterChange('goldKarat', e.target.value)}
+                >
+                    <option value="">Độ tuổi vàng</option>
+                    {goldKarats.map((goldKaratName) => (
+                        <option key={goldKaratName} value={goldKaratName}>
+                            {goldKaratName}K
+                        </option>
+                    ))}
+                </select>
+
+                {/* Lọc theo màu sắc */}
+                <select
+                    className="px-4 py-2 border border-white bg-gray-400 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    value={color}
+                    onChange={(e) => handleFilterChange('color', e.target.value)}
+                >
+                    <option value="">Màu sắc</option>
+                    {colors.map((colorName) => (
+                        <option key={colorName} value={colorName}>
+                            {colorName}
+                        </option>
+                    ))}
+                </select>
+
                 {/* Lọc theo khuyến mãi */}
                 <label className="flex items-center text-white">
                     <input
@@ -417,6 +551,36 @@ const Product = () => {
                         </button>
                     </div>
                 )}
+                {size && (
+                    <div className="flex items-center bg-gray-600 text-white px-3 py-1 rounded-full">
+                        <span>{getFilterDisplayName('size', size)}</span>
+                        <button onClick={() => removeFilter('size')} className="ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                )}
+                {goldKarat && (
+                    <div className="flex items-center bg-gray-600 text-white px-3 py-1 rounded-full">
+                        <span>{getFilterDisplayName('goldKarat', goldKarat)}</span>
+                        <button onClick={() => removeFilter('goldKarat')} className="ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                )}
+                {color && (
+                    <div className="flex items-center bg-gray-600 text-white px-3 py-1 rounded-full">
+                        <span>{getFilterDisplayName('color', color)}</span>
+                        <button onClick={() => removeFilter('color')} className="ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                )}
                 {onSale && (
                     <div className="flex items-center bg-gray-600 text-white px-3 py-1 rounded-full">
                         <span>Đang khuyến mãi</span>
@@ -430,44 +594,27 @@ const Product = () => {
             </div>
             {/* List product */}
             <div className="grid grid-cols-4 gap-8 px-10">
-                {filteredProducts.map((item) => {
-                    const thumbnail = item.productImages.find(image => image.isThumbnail);
+                {filteredProducts.map((product) => {
+                    const thumbnail = product.productImages.find(image => image.isThumbnail);
                     const imageUrl = thumbnail ? thumbnail.imageUrl : ' ';
                     return (
-                        <a key={item.id} href={`/product/productDetail/${item.id}`} className="block">
+                        <a key={product.id} href={`/product/productDetail/${product.id}`} className="block">
                             <div className="bg-bgProduct rounded-lg shadow-md">
-                                <img src={imageUrl} alt={item.name} className="w-full h-40 object-cover" />
+                                <img src={imageUrl} alt={product.name} className="w-full h-40 object-cover" />
                                 {/* {imageUrl && (
-                                    <img src={imageUrl} alt={item.name} className="w-full h-40 object-cover" />
+                                    <img src={imageUrl} alt={product.name} className="w-full h-40 object-cover" />
                                 )} */}
                                 <div className="bg-black/80 p-2">
-                                    <h3 className="text-white font-bold text-lg">{item.name}</h3>
+                                    <h3 className="text-white font-bold text-lg">{product.name}</h3>
                                     <div className="flex items-center mt-1">
-                                        <span className="text-price text-base font-bold">{item.price}</span>
-                                        <span className="text-gray-400 text-sm line-through ml-2">{item.oldPrice}</span>
+                                        <span className="text-price text-base font-bold">{product.price}</span>
+                                        <span className="text-gray-400 text-sm line-through ml-2">{product.oldPrice}</span>
                                     </div>
                                 </div>
                             </div>
                         </a>
                     );
                 })}
-            </div>
-            {/*FillerProduct*/}
-            <div className="grid grid-cols-4 gap-8 px-10">
-                {fillerProduct.map((item) => (
-                    <a key={item.id} href={`/product/productDetail/${item.id}`} className="block">
-                        <div className="bg-bgProduct rounded-lg shadow-md">
-                            <img src={item.image} alt={item.name} className="w-full h-40 object-cover" />
-                            <div className="bg-black/80 p-2">
-                                <h3 className="text-white font-bold text-lg">{item.name}</h3>
-                                <div className="flex items-center mt-1">
-                                    <span className="text-price text-base font-bold">{item.price}</span>
-                                    <span className="text-gray-400 text-sm line-through ml-2">{item.oldPrice}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                ))}
             </div>
         </div>
     );

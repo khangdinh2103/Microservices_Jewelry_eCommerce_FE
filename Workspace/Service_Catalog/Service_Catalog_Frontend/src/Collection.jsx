@@ -15,39 +15,39 @@ const collections = [
         id: 2,
         title: "Sói Bạc",
         description: "Bộ sưu tập trang sức quyến rũ phản ánh tinh thần hoang dã bất khuất.",
-        image: "https://picsum.photos/id/1/200",
+        image: "https://picsum.photos/id/20/200",
     },
     {
         id: 3,
         title: "Thiên đường đôi lứa",
         description: "Bộ sưu tập trang sức quyến rũ tôn vinh mối quan hệ tình yêu vĩnh cửu.",
-        image: "https://picsum.photos/id/1/200",
+        image: "https://picsum.photos/id/30/200",
     },
     {
         id: 4,
         title: "Dung Nham Hoàng Kim",
         description: "Bộ sưu tập trang sức rạng rỡ nắm bắt được bản chất của vàng nóng cháy.",
-        image: "https://picsum.photos/id/1/200",
+        image: "https://picsum.photos/id/40/200",
     }
     ,
     {
         id: 5,
         title: "Dung Nham Hoàng Kim",
         description: "Bộ sưu tập trang sức rạng rỡ nắm bắt được bản chất của vàng nóng cháy.",
-        image: "https://picsum.photos/id/1/200",
+        image: "https://picsum.photos/id/50/200",
     },
     {
         id: 6,
         title: "Dung Nham Hoàng Kim",
         description: "Bộ sưu tập trang sức rạng rỡ nắm bắt được bản chất của vàng nóng cháy.",
-        image: "https://picsum.photos/id/1/200",
+        image: "https://picsum.photos/id/60/200",
     }
 ];
 
 const Collection = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredCollections, setFilteredCollections] = useState(collections);
-    
+    const [layoutCounter, setLayoutCounter] = useState(0);
 
     const handleSearch = () => {
         const filtered = collections.filter(collection =>
@@ -59,7 +59,7 @@ const Collection = () => {
 
 
     return (
-        <div className="min-h-screen bg-bgOuter mx-auto px-6 lg:px-20">
+        <div className="min-h-screen bg-bgOuter mx-auto px-6 lg:px-20 py-6">
             <div className="text-white mb-4 flex justify-center">
                 <Link to="/" className="text-gray-400">Trang chủ </Link> / Bộ sưu tập
             </div>
@@ -84,24 +84,41 @@ const Collection = () => {
                     </button>
                 </div>
             </div>
-            {/* Collection List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                {filteredCollections.map((item, index) => (
-                    <div key={item.id} className={`flex "md:flex-row" items-center`}>
-                        <div className="relative w-1/2">
-                            <div className="border border-yellow-500 p-2 rounded-lg">
-                                <img src={item.image} alt={item.title} className="rounded-lg shadow-lg w-4/5" />
+            {/* Collection Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+                {filteredCollections.map((collection, index) => {
+                    const pattern = index % 4;
+                    const isReversed = pattern >= 2;
+
+                    return (
+                        <div key={collection.id}
+                            className={`flex ${isReversed ? 'flex-row-reverse' : 'flex-row'} gap-8`}
+                        >
+                            <div className="w-1/2 relative group">
+                                <Link to={`/collection/${collection.id}`}>
+                                    <div className="absolute inset-0 border-2 border-yellow-500 rounded-lg transform rotate-3 transition-transform group-hover:rotate-6"></div>
+                                    <img
+                                        src={collection.image}
+                                        alt={collection.title}
+                                        className="w-full h-[300px] object-contain bg-gray-800 rounded-lg shadow-xl relative z-10 cursor-pointer"
+                                    />
+                                </Link>
+                            </div>
+                            <div className="w-1/2 flex flex-col justify-center">
+                                <h2 className="text-white text-3xl font-serif italic mb-4">{collection.title}</h2>
+                                <p className="text-gray-300 mb-6">{collection.description}</p>
+                                <Link
+                                    to={`/collection/${collection.id}`}
+                                    className="self-start px-6 py-2 bg-transparent border border-white text-white rounded-md 
+                                     hover:bg-white hover:text-black transition-colors duration-300
+                                     inline-flex items-center justify-center min-w-[120px] text-center"
+                                >
+                                    Xem Chi Tiết
+                                </Link>
                             </div>
                         </div>
-                        <div className="w-1/2 px-6">
-                            <h2 className="text-white text-2xl italic">{item.title}</h2>
-                            <p className="text-gray-300 mt-2">{item.description}</p>
-                            <button className="mt-4 px-4 py-2 bg-white text-gray-800 rounded-full shadow-md hover:bg-gray-200 transition">
-                                Xem Chi Tiết
-                            </button>
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );
