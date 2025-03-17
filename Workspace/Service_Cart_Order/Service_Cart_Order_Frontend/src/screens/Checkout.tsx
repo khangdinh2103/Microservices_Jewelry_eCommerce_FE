@@ -2,7 +2,14 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import PaymentMethodSelector from "../components/PaymentMethodSelector";
 import { useNavigate } from "react-router-dom";
-
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+const customIcon = new L.Icon({
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
 interface CartItem {
   id: number;
   name: string;
@@ -33,6 +40,30 @@ const Checkout: React.FC = () => {
     address: "123 Đường ABC, TP. HCM",
   });
 
+  const LocationPicker = ({ onLocationSelect }: { onLocationSelect: (lat: number, lng: number) => void }) => {
+    useMapEvents({
+      click: async (e) => {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+        onLocationSelect(lat, lng);
+  
+        try {
+          const response = await fetch(`http://localhost:3000/api/location?lat=${lat}&lng=${lng}`);
+          const data = await response.json();
+          if (data.address) {
+            setUserInfo((prev) => ({ ...prev, address: data.address }));
+          } else {
+            alert("Không thể lấy địa chỉ!");
+          }
+        } catch (error) {
+          console.error("Lỗi lấy địa chỉ từ tọa độ:", error);
+        }
+      },
+    });
+  
+    return null;
+  };
+  
   const [isEditing, setIsEditing] = useState(false);
 
   const [voucher, setVoucher] = useState("");
@@ -277,15 +308,23 @@ const Checkout: React.FC = () => {
                     </button>
                   </div>
 
-                  {showMap && mapLocation && (
-                  <iframe
-                    src={`https://www.google.com/maps?q=${mapLocation.lat},${mapLocation.lng}&output=embed`}
-                    width="100%"
-                    height="300"
-                    className="mt-4 rounded-lg"
-                  ></iframe>
-                )}
-
+                  {showMap && (
+          <MapContainer
+            center={mapLocation || { lat: 10.7769, lng: 106.7009 }}
+            zoom={13}
+            style={{ height: "400px", width: "100%", borderRadius: "10px" }}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {mapLocation && (
+              <Marker position={[mapLocation.lat, mapLocation.lng]} icon={customIcon}>
+                <Popup>Vị trí giao hàng</Popup>
+              </Marker>
+            )}
+            <LocationPicker onLocationSelect={(lat, lng) => setMapLocation({ lat, lng })} />
+          </MapContainer>
+        )}
 
                 <button
                     onClick={() => setIsEditing(false)}
