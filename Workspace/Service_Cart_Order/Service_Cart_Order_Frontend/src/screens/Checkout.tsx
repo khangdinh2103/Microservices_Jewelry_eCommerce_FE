@@ -11,7 +11,11 @@ interface CartItem {
   image: string;
 }
 
+
 const Checkout: React.FC = () => {
+
+  const [mapLocation, setMapLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [showMap, setShowMap] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,7 +42,6 @@ const Checkout: React.FC = () => {
 
   const totalAmount = selectedCartItems.reduce((sum: number, item: CartItem) => sum + item.price * item.quantity, 0);
 
-  const taxRate = 0.1;
   const shippingCost = 150000;
   const finalAmount = totalAmount - discount + shippingCost;
 
@@ -51,41 +54,11 @@ const Checkout: React.FC = () => {
     }
   };
 
-  // const handleOrder = async () => {
-  //   const orderData = {
-  //     userID: 1, // Cần lấy từ user đăng nhập
-  //     address: userInfo.address,
-  //     status: "PENDING",
-  //     orderDetails: selectedCartItems.map((item: CartItem) => ({
-  //       productID: item.id,
-  //       quantity: item.quantity,
-  //       price: item.price,
-  //     })),
-  //   };
-  
-  //   try {
-  //     const response = await fetch("http://localhost:3000/api/orders", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(orderData),
-  //     });
-  
-  //     if (!response.ok) {
-  //       throw new Error("Đặt hàng thất bại!");
-  //     }
-  
-  //     alert("Đặt hàng thành công!");
-  //   } catch (error) {
-  //     alert("Dat hang khong thanh cong!");
-  //   }
-  // };
   const handleOrder = async () => {
     const paymentStatus = paymentMethod === "cod" ? "PENDING" : "PAID";
   
     const orderData = {
-      userID: 1, // Cần thay bằng user đăng nhập
+      userID: 1, 
       address: userInfo.address,
       status: "PENDING",
       paymentStatus,
@@ -94,8 +67,8 @@ const Checkout: React.FC = () => {
         quantity: item.quantity,
         price: item.price,
       })),
-      shippingCost, // Thêm phí vận chuyển vào đơn hàng
-      totalAmount: finalAmount, // Tổng tiền sau giảm giá và cộng phí ship
+      shippingCost, 
+      totalAmount: finalAmount, 
     };
   
     try {
@@ -114,7 +87,6 @@ const Checkout: React.FC = () => {
       const orderResult = await orderResponse.json();
   
       if (paymentMethod === "cod") {
-        // Nếu chọn COD, chuyển hướng ngay đến danh sách đơn hàng
         alert("Đặt hàng thành công! Đơn hàng của bạn đang chờ xử lý.");
         navigate("/order-list", { state: { shippingCost } });
         return;
@@ -125,7 +97,6 @@ const Checkout: React.FC = () => {
         return;
       }
   
-      // Xử lý thanh toán với Momo
       const paymentData = {
         items: selectedCartItems.map((item: CartItem) => ({
           image: item.image,
@@ -139,7 +110,7 @@ const Checkout: React.FC = () => {
           name: userInfo.name,
         },
         amount: finalAmount,
-        orderID: orderResult.orderID, // Truyền orderID để liên kết với đơn hàng
+        orderID: orderResult.orderID, 
       };
   
       const paymentResponse = await fetch("http://localhost:3000/api/payment", {
@@ -166,6 +137,31 @@ const Checkout: React.FC = () => {
     } catch (error) {
       alert("Có lỗi xảy ra khi đặt hàng hoặc thanh toán!");
       console.error(error);
+    }
+  };
+  const handleGetCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setMapLocation({ lat, lng });
+
+        try {
+          const response = await fetch(`http://localhost:3000/api/location?lat=${lat}&lng=${lng}`);
+          const data = await response.json();
+          if (data.address) {
+            setUserInfo((prev) => ({ ...prev, address: data.address }));
+          } else {
+            alert("Không thể lấy địa chỉ!");
+          }
+        } catch (error) {
+          console.error("Lỗi lấy vị trí:", error);
+        }
+      }, (error) => {
+        alert("Không thể truy cập vị trí! Vui lòng kiểm tra cài đặt trình duyệt.");
+      });
+    } else {
+      alert("Trình duyệt không hỗ trợ lấy vị trí!");
     }
   };
   
@@ -253,13 +249,44 @@ const Checkout: React.FC = () => {
                     placeholder="Nhập số điện thoại"
                     onChange={(e) => setUserInfo({ ...userInfo, phone: e.target.value })}
                 />
-                <input
+                {/* <input
                     name="address"
                     value={userInfo.address}
                     className="w-full p-3 border border-gray-600 rounded mb-4 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
                     placeholder="Nhập địa chỉ"
                     onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
-                />
+                /> */}
+                <input
+                    name="address"
+                    value={userInfo.address}
+                    className="w-full p-3 border border-gray-600 rounded mb-4 bg-gray-700 text-white"
+                    onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
+                  />
+                  <div className="flex items-center space-x-4">
+                    <button
+                      onClick={handleGetCurrentLocation}
+                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                    >
+                      Chọn vị trí hiện tại
+                    </button>
+                    <button
+                      onClick={() => setShowMap(!showMap)}
+                      className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+                    >
+                      {showMap ? "Ẩn bản đồ" : "Hiện bản đồ"}
+                    </button>
+                  </div>
+
+                  {showMap && mapLocation && (
+                  <iframe
+                    src={`https://www.google.com/maps?q=${mapLocation.lat},${mapLocation.lng}&output=embed`}
+                    width="100%"
+                    height="300"
+                    className="mt-4 rounded-lg"
+                  ></iframe>
+                )}
+
+
                 <button
                     onClick={() => setIsEditing(false)}
                     className="w-full bg-green-500 text-white py-3 rounded mt-4 hover:bg-green-600 transition"
