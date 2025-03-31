@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { use, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -46,8 +46,24 @@ const collections = [
 
 const Collection = () => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredCollections, setFilteredCollections] = useState(collections);
-    const [layoutCounter, setLayoutCounter] = useState(0);
+    const [filteredCollections, setFilteredCollections] = useState([]);
+
+     useEffect(() => {
+            const fetchColletions = async () => {
+                try {
+                    const response = await fetch('http://localhost:8080/api/collection/listCollection');
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const data = await response.json();
+                    setFilteredCollections(data);
+                } catch (error) {
+                    console.error('Failed to fetch collections:', error);
+                }
+            };
+    
+            fetchColletions();
+        }, []);
 
     const handleSearch = () => {
         const filtered = collections.filter(collection =>
@@ -90,6 +106,8 @@ const Collection = () => {
                     const pattern = index % 4;
                     const isReversed = pattern >= 2;
 
+                    const thumbnail = collection.collectionImages.find(image => image.isThumbnail);
+                    const imageUrl = thumbnail ? thumbnail.imageUrl : ' ';
                     return (
                         <div key={collection.id}
                             className={`flex ${isReversed ? 'flex-row-reverse' : 'flex-row'} gap-8`}
@@ -98,15 +116,14 @@ const Collection = () => {
                                 <Link to={`/collection/${collection.id}`}>
                                     <div className="absolute inset-0 border-2 border-yellow-500 rounded-lg transform rotate-3 transition-transform group-hover:rotate-6"></div>
                                     <img
-                                        src={collection.image}
+                                        src={imageUrl}
                                         alt={collection.title}
-                                        className="w-full h-[300px] object-contain bg-gray-800 rounded-lg shadow-xl relative z-10 cursor-pointer"
-                                    />
+                                        className="w-full h-[300px] object-cover bg-gray-800 rounded-lg shadow-xl relative z-10 cursor-pointer"
+        />
                                 </Link>
                             </div>
                             <div className="w-1/2 flex flex-col justify-center">
-                                <h2 className="text-white text-3xl font-serif italic mb-4">{collection.title}</h2>
-                                <p className="text-gray-300 mb-6">{collection.description}</p>
+                                <h2 className="text-white text-3xl font-serif italic mb-4">{collection.name}</h2>
                                 <Link
                                     to={`/collection/${collection.id}`}
                                     className="self-start px-6 py-2 bg-transparent border border-white text-white rounded-md 

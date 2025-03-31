@@ -6,19 +6,17 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 
-const fillerProduct = [
-    { id: "1", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "2", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "3", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "4", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "5", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "6", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "7", name: "Dây Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "8", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "9", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "10", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "11", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "12", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
+const fillerCateImage = [
+    { categoryId: 1, imageUrl: "https://cdn.pnj.io/images/promo/235/1200x450-nhan-t01-25.jpg" },
+    { categoryId: 2, imageUrl: "https://cdn.pnj.io/images/promo/231/daychuyen-t12-24-1200x450.jpg" },
+    { categoryId: 3, imageUrl: "https://cdn.pnj.io/images/promo/144/CAT-VongTay-1200x450.jpg" },
+    { categoryId: 4, imageUrl: "https://cdn.pnj.io/images/promo/235/1200x450-bong-tai-t1-25.jpg" },
+    { categoryId: 5, imageUrl: "https://cdn.pnj.io/images/promo/235/1200x450-nhan-t01-25.jpg" },
+    { categoryId: 6, imageUrl: "https://cdn.pnj.io/images/promo/153/CHARM_1200_X_450.jpg" },
+    { categoryId: 7, imageUrl: "https://cdn.pnj.io/images/promo/144/CAT-VongTay-1200x450.jpg" },
+    { categoryId: 8, imageUrl: "https://cdn.pnj.io/images/promo/197/t1-24-matday-1200x450.jpg" },
+    { categoryId: 9, imageUrl: "https://cdn.pnj.io/images/promo/146/Banner_Dayco_1200x450.jpg" },
+    { categoryId: 10, imageUrl: "https://cdn.pnj.io/images/promo/132/banner-kieng-1200x450.jpg" },
 ];
 
 
@@ -33,13 +31,6 @@ const Product = () => {
     const [size, setSize] = useState("");
     const [goldKarat, setGoldKarat] = useState("");
     const [color, setColor] = useState("");
-
-    const handleSearchTextBox = () => {
-        const filtered = products.filter(product =>
-            product.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
-        );
-        setFilteredProducts(filtered);
-    };
 
     const settings = {
         infinite: true,
@@ -173,7 +164,7 @@ const Product = () => {
             }
         };
 
-        const fetchColors = async () =>{
+        const fetchColors = async () => {
             try {
                 const response = await fetch(`http://localhost:8080/api/product/listColorByCategory/${categoryId}`);
                 if (!response.ok) {
@@ -260,8 +251,15 @@ const Product = () => {
         let filtered = [...products];
 
         if (searchTerm.trim()) {
+            const normalizeText = (text) => {
+                return text
+                    .toLowerCase()
+                    .normalize("NFD") // Chuẩn hóa chuỗi thành dạng Unicode tổ hợp
+                    .replace(/[\u0300-\u036f]/g, ""); // Loại bỏ dấu
+            };
+        
             filtered = filtered.filter(product =>
-                product.name.toLowerCase().includes(searchTerm.trim().toLowerCase())
+                normalizeText(product.name).includes(normalizeText(searchTerm.trim()))
             );
         }
 
@@ -351,22 +349,42 @@ const Product = () => {
         }
     };
 
+    const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
-        applyFilters();
+        setIsLoading(true);
+        
+        const handler = setTimeout(() => {
+            applyFilters(); 
+            setIsLoading(false);
+        }, 500); 
+    
+        return () => {
+            clearTimeout(handler); // Xóa timeout nếu dependencies thay đổi trước khi hết 1 giây
+            setIsLoading(false);
+        };
     }, [gender, price, material, brand, onSale, searchTerm, products, size, goldKarat, color]);
-
-    const handleSearch = () => {
-        applyFilters();
-    };
 
     return (
         <div className="min-h-screen bg-bgOuter px-10 py-6">
             <div className="text-white mb-4 flex justify-center">
                 <Link to="/" className="text-gray-400">Trang chủ </Link> / {categoryDetail.name}
             </div>
-            {/*Banner*/}
-            <div className="mb-4 flex items-center justify-center px-4">
+            {/*Banner thieu field sua sau*/}
+            {/* <div className="mb-4 flex items-center justify-center px-4">
                 <img src="https://cdn.pnj.io/images/promo/235/1200x450-nhan-t01-25.jpg" alt="Banner" className="w-full max-w-4xl rounded-md" />
+            </div> */}
+            <div className="mb-4 flex items-center justify-center px-4">
+                {fillerCateImage.find((item) => item.categoryId === parseInt(categoryId)) ? (
+                    <img
+                        src={fillerCateImage.find((item) => item.categoryId === parseInt(categoryId)).imageUrl}
+                        alt="Banner"
+                        className="w-full max-w-4xl rounded-md"
+                    />
+                ) : (
+                    <div className="w-full max-w-4xl h-40 bg-gray-300 rounded-md flex items-center justify-center">
+                        <span className="text-gray-500">No Banner Available</span>
+                    </div>
+                )}
             </div>
             {/*Category*/}
             <div className="relative py-4 px-10" >
@@ -389,16 +407,50 @@ const Product = () => {
                         className="pl-4 pr-12 py-2 w-full border border-white rounded-md bg-gray-400 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && handleSearchTextBox()}
                     />
-                    <button
-                        onClick={handleSearchTextBox}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 rounded-md bg"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                        </svg>
-                    </button>
+                    {isLoading ? (
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+            >
+                <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                ></circle>
+                <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                ></path>
+            </svg>
+        </div>
+    ) : (
+        <div
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 rounded-md bg"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="white"
+                className="size-6"
+            >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                />
+            </svg>
+        </div>
+    )}
                 </div>
             </div>
             {/* Dropdown bộ lọc */}
@@ -455,7 +507,7 @@ const Product = () => {
                         </option>
                     ))}
                 </select>
-                
+
                 {/* Lọc theo size */}
                 <select
                     className="px-4 py-2 border border-white bg-gray-400 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -607,7 +659,7 @@ const Product = () => {
                                 <div className="bg-black/80 p-2">
                                     <h3 className="text-white font-bold text-lg">{product.name}</h3>
                                     <div className="flex items-center mt-1">
-                                        <span className="text-price text-base font-bold">{product.price}</span>
+                                        <span className="text-price text-base font-bold">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</span>
                                         <span className="text-gray-400 text-sm line-through ml-2">{product.oldPrice}</span>
                                     </div>
                                 </div>
