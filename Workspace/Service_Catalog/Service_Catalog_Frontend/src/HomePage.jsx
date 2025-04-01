@@ -35,7 +35,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen p-4 md:p-10">
+    <div className="min-h-screen bg-bgOuter text-white px-10 py-6">
       <header className="header">
         <div className="flex justify-between items-center p-4">
           <div className="flex gap-4">
