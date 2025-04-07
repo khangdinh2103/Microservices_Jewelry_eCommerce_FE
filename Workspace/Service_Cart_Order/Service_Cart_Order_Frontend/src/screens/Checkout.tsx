@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import PaymentMethodSelector from "../components/PaymentMethodSelector";
 import { useNavigate } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Polyline, Popup, useMapEvents } from "react-leaflet";
+import LocationPicker from "../components/PickerLocation";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 const customIcon = new L.Icon({
@@ -23,6 +24,8 @@ const Checkout: React.FC = () => {
 
   const [mapLocation, setMapLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [showMap, setShowMap] = useState(false);
+  const [route, setRoute] = useState<L.LatLng[]>([]);
+  const [routeInfo, setRouteInfo] = useState<{ distance: number; duration: number } | null>(null);  // Thông tin tuyến đường
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,29 +43,74 @@ const Checkout: React.FC = () => {
     address: "123 Đường ABC, TP. HCM",
   });
 
-  const LocationPicker = ({ onLocationSelect }: { onLocationSelect: (lat: number, lng: number) => void }) => {
-    useMapEvents({
-      click: async (e) => {
-        const lat = e.latlng.lat;
-        const lng = e.latlng.lng;
-        onLocationSelect(lat, lng);
+  // const LocationPicker = ({ onLocationSelect }: { onLocationSelect: (lat: number, lng: number) => void }) => {
+  //   useMapEvents({
+  //     click: async (e) => {
+  //       const lat = e.latlng.lat;
+  //       const lng = e.latlng.lng;
+  //       onLocationSelect(lat, lng);
   
-        try {
-          const response = await fetch(`http://localhost:3000/api/location?lat=${lat}&lng=${lng}`);
-          const data = await response.json();
-          if (data.address) {
-            setUserInfo((prev) => ({ ...prev, address: data.address }));
-          } else {
-            alert("Không thể lấy địa chỉ!");
-          }
-        } catch (error) {
-          console.error("Lỗi lấy địa chỉ từ tọa độ:", error);
-        }
-      },
-    });
+  //       try {
+  //         const response = await fetch(`http://localhost:3000/api/location?lat=${lat}&lng=${lng}`);
+  //         const data = await response.json();
+  //         if (data.address) {
+  //           setUserInfo((prev) => ({ ...prev, address: data.address }));
+  //         } else {
+  //           alert("Không thể lấy địa chỉ!");
+  //         }
+  //       } catch (error) {
+  //         console.error("Lỗi lấy địa chỉ từ tọa độ:", error);
+  //       }
+  //     },
+  //   });
   
-    return null;
-  };
+  //   return null;
+  // };
+  // const LocationPicker = ({ onLocationSelect }: { onLocationSelect: (lat: number, lng: number) => void }) => {
+  //   useMapEvents({
+  //     click: async (e) => {
+  //       const lat = e.latlng.lat;
+  //       const lng = e.latlng.lng;
+  //       onLocationSelect(lat, lng);
+  
+  //       try {
+  //         const response = await fetch(`http://localhost:3000/api/location?lat=${lat}&lng=${lng}`);
+  //         const data = await response.json();
+  //         if (data.address) {
+  //           setUserInfo((prev) => ({ ...prev, address: data.address }));
+  //         } else {
+  //           alert("Không thể lấy địa chỉ!");
+  //         }
+          
+  //         // Lấy tuyến đường từ điểm cố định tới điểm người dùng chọn
+  //         const startLat = 10.808131355448648; // Ví dụ: điểm xuất phát cố định
+  //         const startLng = 106.70645211764977; // Ví dụ: điểm xuất phát cố định
+  //         const responseRoute = await fetch(`http://localhost:3000/api/location/distance?startLat=${startLat}&startLng=${startLng}&endLat=${lat}&endLng=${lng}`);
+  //         const routeData = await responseRoute.json();
+  
+  //         if (routeData.message === "Tính khoảng cách thành công!") {
+  //           const routeCoordinates = [
+  //             new L.LatLng(parseFloat(routeData.from.lat), parseFloat(routeData.from.lng)),
+  //             new L.LatLng(lat, lng),
+  //           ];
+  //           setRoute(routeCoordinates);  // Lưu tuyến đường vào state
+  
+  //           // Cập nhật thông tin về khoảng cách và thời gian
+  //           setRouteInfo({
+  //             distance: parseFloat(routeData.distance_km), // Chuyển đổi chuỗi thành số
+  //             duration: parseFloat(routeData.duration_minutes), // Chuyển đổi chuỗi thành số
+  //           });
+  //         } else {
+  //           alert("Không thể lấy tuyến đường!");
+  //         }
+  //       } catch (error) {
+  //         console.error("Lỗi lấy địa chỉ hoặc tuyến đường:", error);
+  //       }
+  //     },
+  //   });
+  
+  //   return null;
+  // };
   
   const [isEditing, setIsEditing] = useState(false);
 
@@ -287,43 +335,53 @@ const Checkout: React.FC = () => {
                     onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
                 /> */}
                 <input
-                    name="address"
-                    value={userInfo.address}
-                    className="w-full p-3 border border-gray-600 rounded mb-4 bg-gray-700 text-white"
-                    onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
-                  />
-                  <div className="flex items-center space-x-4">
-                    <button
-                      onClick={handleGetCurrentLocation}
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-                    >
-                      Chọn vị trí hiện tại
-                    </button>
-                    <button
-                      onClick={() => setShowMap(!showMap)}
-                      className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
-                    >
-                      {showMap ? "Ẩn bản đồ" : "Hiện bản đồ"}
-                    </button>
-                  </div>
-
-                  {showMap && (
-          <MapContainer
-            center={mapLocation || { lat: 10.7769, lng: 106.7009 }}
-            zoom={13}
-            style={{ height: "400px", width: "100%", borderRadius: "10px", margin: "20px" }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              name="address"
+              value={userInfo.address}
+              className="w-full p-3 border border-gray-600 rounded mb-4 bg-gray-700 text-white"
+              onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
             />
-            {mapLocation && (
-              <Marker position={[mapLocation.lat, mapLocation.lng]} icon={customIcon}>
-                <Popup>Vị trí giao hàng</Popup>
-              </Marker>
+             
+            <div className="flex items-center space-x-4">
+            <button
+                onClick={handleGetCurrentLocation}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+              >
+                Vị trí hiện tại
+              </button>
+              <button
+                onClick={() => setShowMap(!showMap)}
+
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+              >
+                {showMap ? "Ẩn bản đồ" : "Hiện bản đồ"}
+              </button>
+            </div>
+
+
+            {showMap && (
+              <MapContainer
+                center={mapLocation || { lat: 10.7769, lng: 106.7009 }}
+                zoom={13}
+                style={{ height: "400px", width: "100%", borderRadius: "10px", margin: "20px" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                {mapLocation && (
+                  <Marker position={[mapLocation.lat, mapLocation.lng]} icon={customIcon}>
+                    <Popup>Vị trí giao hàng</Popup>
+                  </Marker>
+                )}
+                {/* <LocationPicker onLocationSelect={(lat, lng) => setMapLocation({ lat, lng })} /> */}
+               
+                <LocationPicker
+                    onLocationSelect={(lat, lng) => setMapLocation({ lat, lng })}
+                    setUserInfo={setUserInfo}
+                    setRoute={setRoute}
+                    setRouteInfo={setRouteInfo}
+                  />
+              </MapContainer>
             )}
-            <LocationPicker onLocationSelect={(lat, lng) => setMapLocation({ lat, lng })} />
-          </MapContainer>
-        )}
 
                 <button
                     onClick={() => setIsEditing(false)}
@@ -338,6 +396,10 @@ const Checkout: React.FC = () => {
                 <p className="text-white mb-2 text-xl"><strong>Email:</strong> {userInfo.email}</p>
                 <p className="text-white mb-2 text-xl"><strong>Số điện thoại:</strong> {userInfo.phone}</p>
                 <p className="text-white mb-2 text-xl"><strong>Địa chỉ:</strong> {userInfo.address}</p>
+                <div className="text-white mb-2">
+                  <p> <strong>Độ dài tuyến đường:</strong> {routeInfo?.distance?.toFixed(2)} km</p>
+                  <p><strong>Thời gian ước tính:</strong> {routeInfo?.duration?.toFixed(2)} phút</p>
+                </div>
                 <button
                     onClick={() => setIsEditing(true)}
                     className="mt-2 bg-[#E8B08A] text-white px-4 py-2 rounded hover:bg-[#D68B66] transition"
