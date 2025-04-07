@@ -159,7 +159,6 @@ const Checkout: React.FC = () => {
       const paymentResult = await paymentResponse.json();
   
       if (paymentResult.success && paymentResult.data?.payUrl) {
-        // Mở trang thanh toán Momo trong tab mới
         window.open(paymentResult.data.payUrl, "_blank");
         navigate("/order-list", { state: { shippingCost } });
       } else {
