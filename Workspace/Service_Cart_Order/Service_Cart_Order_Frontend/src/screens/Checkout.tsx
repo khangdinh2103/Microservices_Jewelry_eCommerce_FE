@@ -312,7 +312,7 @@ const Checkout: React.FC = () => {
           <MapContainer
             center={mapLocation || { lat: 10.7769, lng: 106.7009 }}
             zoom={13}
-            style={{ height: "400px", width: "100%", borderRadius: "10px" }}
+            style={{ height: "400px", width: "100%", borderRadius: "10px", margin: "20px" }}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

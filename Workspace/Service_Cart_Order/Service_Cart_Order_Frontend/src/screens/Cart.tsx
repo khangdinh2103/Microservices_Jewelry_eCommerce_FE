@@ -17,6 +17,9 @@ const Cart: React.FC = () => {
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const [subtotal, setSubtotal] = useState<number>(0);
   const taxRate: number = 0.1;
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortOption, setSortOption] = useState<string>("");
+
   const shippingCost: number = 150000;
 
   useEffect(() => {
@@ -74,7 +77,7 @@ const Cart: React.FC = () => {
         setSelectedItems(selectedItems.filter(itemId => itemId !== id));
       } else {
         // Cập nhật lại UI với số lượng mới
-        setCartItems(cartItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)));
+        setCartItems(filteredItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)));
       }
     } catch (error) {
       console.error("Error updating quantity:", error);
@@ -109,7 +112,7 @@ const Cart: React.FC = () => {
     if (selectAll) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(cartItems.map(item => item.id));
+      setSelectedItems(filteredItems.map(item => item.id));
     }
     setSelectAll(!selectAll);
   };
@@ -122,10 +125,52 @@ const Cart: React.FC = () => {
     navigate("/checkout", { state: { selectedItems: [...selectedItems], cartItems } });
   };
 
+  const filteredItems = cartItems
+  .filter(item =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+  .sort((a, b) => {
+    switch (sortOption) {
+      case "name_asc":
+        return a.name.localeCompare(b.name);
+      case "name_desc":
+        return b.name.localeCompare(a.name);
+      case "price_asc":
+        return a.price - b.price;
+      case "price_desc":
+        return b.price - a.price;
+      default:
+        return 0;
+    }
+  });
+
+
   return (
     <div className="min-h-screen bg-gray-900 py-8 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#312F30' }}>
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-8 font-mulish">Giỏ hàng</h1>
+
+        <div className="mb-6 flex flex-col sm:flex-row justify-between gap-4">
+          <input
+            type="text"
+            placeholder="Tìm kiếm sản phẩm..."
+            className="px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600 w-full sm:w-1/2"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          <select
+            className="px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+          >
+            <option value="">Sắp xếp theo</option>
+            <option value="name_asc">Tên A-Z</option>
+            <option value="name_desc">Tên Z-A</option>
+            <option value="price_asc">Giá tăng dần</option>
+            <option value="price_desc">Giá giảm dần</option>
+          </select>
+        </div>
 
         {cartItems.length === 0 ? (
           <div className="text-center py-12 bg-gray-800 rounded-lg shadow">
@@ -139,7 +184,7 @@ const Cart: React.FC = () => {
               <label className="flex items-center text-white font-mulish">
                 <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} className="mr-6 w-5 h-5" /> Chọn tất cả
               </label>
-              {cartItems.map((item) => (
+              {filteredItems.map((item) => (
                 <div key={item.id} className="flex items-center p-6 border-b border-gray-700 last:border-0 bg-[#1D1917]">
                   <input
                     type="checkbox"
