@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Polyline, Popup, useMapEvents } from "react-leaflet";
 import LocationPicker from "../components/PickerLocation";
 import { getCurrentLocation } from "../components/PickerLocation";
+import { calculateShipping } from "../components/calculateShipping";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 const customIcon = new L.Icon({
@@ -303,7 +304,7 @@ const Checkout: React.FC = () => {
    
           <div className="mb-20 ml-5 mr-5 space-y-4 text-white font-bold font-mulish">
             <div className="flex justify-between"><span>Tổng phụ</span><span>{totalAmount.toLocaleString()} VND</span></div>
-            <div className="flex justify-between"><span>Phí vận chuyển</span><span>{shippingCost.toLocaleString()} VND</span></div>
+            <div className="flex justify-between"><span>Phí vận chuyển</span><span> {calculateShipping(Number(routeInfo?.distance || 0)).toLocaleString()} VND</span></div>
             {discount > 0 && <div className="flex justify-between text-green-400"><span>Giảm giá</span><span>-{discount.toLocaleString()} VND</span></div>}
             <div className="border-t border-gray-600 pt-4 text-xl font-bold flex justify-between">
               <span>Tổng cộng</span>
