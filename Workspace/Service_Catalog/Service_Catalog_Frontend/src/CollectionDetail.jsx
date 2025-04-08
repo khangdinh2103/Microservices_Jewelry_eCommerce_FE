@@ -69,8 +69,7 @@ const CollectionDetail = () => {
             {/* Breadcrumb */}
             <div className="text-white mb-4 flex justify-center">
                 <Link to="/" className="text-gray-400">Trang chủ</Link> /
-                <Link to="/collection" className="text-gray-400 mx-1">Bộ sưu tập</Link> /
-                {collection.name}
+                <Link to="/collection" className="text-gray-400 mx-1">Bộ sưu tập</Link>/ {collection.name}
             </div>
 
             {/* Banner Slider */}
@@ -78,12 +77,12 @@ const CollectionDetail = () => {
                 <Slider {...bannerSettings}>
                     {bannerImages.map((image, index) => (
                         <div key={index} className="relative">
-                            <div className="h-[300px] flex items-center justify-center bg-gray-800">
+                            <div className="h-[350px] flex items-center justify-center bg-gray-800">
                                 <img
                                     src={image}
                                     alt={`${collection.name} banner ${index + 1}`}
-                                    className="h-[300px] w-auto max-w-full object-contain rounded-lg"
-                                />
+                                    className="h-full w-[80%] object-cover rounded-lg"
+                    />
                             </div>
                         </div>
                     ))}
@@ -117,7 +116,7 @@ const CollectionDetail = () => {
                             </div>
                             <h3 className="text-white font-medium mb-2">{product.name}</h3>
                             <div className="flex justify-between items-center">
-                                <span className="text-white font-bold">{product.price}</span>
+                                <span className="text-white font-bold">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</span>
                                 {product.oldPrice && (
                                     <span className="text-gray-400 line-through text-sm">{product.oldPrice}</span>
                                 )}
