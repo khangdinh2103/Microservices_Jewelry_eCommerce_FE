@@ -6,21 +6,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 
-const fillerProduct = [
-    { id: "1", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "2", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "3", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "4", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "5", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "6", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "7", name: "Dây Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "8", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "9", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "10", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "11", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-    { id: "12", name: "Nhẫn Vàng Trắng", price: "3.800.000đ", oldPrice: "6.000.000đ", image: "https://picsum.photos/id/1/200" },
-];
-
 
 const Product = () => {
     const [searchTerm, setSearchTerm] = useState("");
