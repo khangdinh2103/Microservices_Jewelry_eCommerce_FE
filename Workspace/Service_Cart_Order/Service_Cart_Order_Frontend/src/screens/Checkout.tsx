@@ -157,6 +157,18 @@ const Checkout: React.FC = () => {
     try {
       // Using apiService instead of direct fetch
       const orderResult = await apiService.createOrder(orderData);
+      
+      // Remove purchased items from cart
+      try {
+        // Remove each purchased item from the cart
+        for (const item of selectedCartItems) {
+          await apiService.removeCartItem(item.id);
+        }
+        console.log("Cart updated successfully after purchase");
+      } catch (error) {
+        console.error("Error updating cart after purchase:", error);
+        // Continue with checkout even if cart update fails
+      }
   
       if (paymentMethod === "cod") {
         alert("Đặt hàng thành công! Đơn hàng của bạn đang chờ xử lý.");
