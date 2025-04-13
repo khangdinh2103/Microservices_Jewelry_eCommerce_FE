@@ -317,13 +317,7 @@ const Checkout: React.FC = () => {
                     placeholder="Nhập số điện thoại"
                     onChange={(e) => setUserInfo({ ...userInfo, phone: e.target.value })}
                 />
-                {/* <input
-                    name="address"
-                    value={userInfo.address}
-                    className="w-full p-3 border border-gray-600 rounded mb-4 bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-                    placeholder="Nhập địa chỉ"
-                    onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
-                /> */}
+                
                 <input
               name="address"
               value={userInfo.address}
