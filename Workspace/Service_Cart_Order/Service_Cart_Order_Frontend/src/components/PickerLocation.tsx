@@ -1,6 +1,7 @@
 // components/LocationPicker.tsx
 import { useMapEvents } from "react-leaflet";
 import L from "leaflet";
+import { apiService } from "../services/api";
 
 interface Props {
   onLocationSelect: (lat: number, lng: number) => void;
@@ -17,8 +18,12 @@ const LocationPicker = ({ onLocationSelect, setUserInfo, setRoute, setRouteInfo 
       onLocationSelect(lat, lng);
 
       try {
-        const response = await fetch(`http://localhost:3000/api/location?lat=${lat}&lng=${lng}`);
-        const data = await response.json();
+        // Using apiService with precise coordinates (fixed to 6 decimal places)
+        const data = await apiService.getAddressFromCoordinates(
+          parseFloat(lat.toFixed(6)), 
+          parseFloat(lng.toFixed(6))
+        );
+        
         if (data.address) {
           setUserInfo((prev: any) => ({ ...prev, address: data.address }));
         }
@@ -26,16 +31,24 @@ const LocationPicker = ({ onLocationSelect, setUserInfo, setRoute, setRouteInfo 
         const startLat = 10.808131355448648;
         const startLng = 106.70645211764977;
 
-        const responseRoute = await fetch(
-          `http://localhost:3000/api/location/distance?startLat=${startLat}&startLng=${startLng}&endLat=${lat}&endLng=${lng}`
+        // Using apiService with precise coordinates
+        const routeData = await apiService.getRouteDistance(
+          startLat, 
+          startLng, 
+          parseFloat(lat.toFixed(6)), 
+          parseFloat(lng.toFixed(6))
         );
-        const routeData = await responseRoute.json();
 
         if (routeData.message === "Tính khoảng cách thành công!") {
+          // Ensure coordinates are properly parsed as numbers
+          const fromLat = typeof routeData.from.lat === 'string' ? parseFloat(routeData.from.lat) : routeData.from.lat;
+          const fromLng = typeof routeData.from.lng === 'string' ? parseFloat(routeData.from.lng) : routeData.from.lng;
+          
           setRoute([
-            new L.LatLng(parseFloat(routeData.from.lat), parseFloat(routeData.from.lng)),
+            new L.LatLng(fromLat, fromLng),
             new L.LatLng(lat, lng),
           ]);
+          
           setRouteInfo({
             distance: parseFloat(routeData.distance_km),
             duration: parseFloat(routeData.duration_minutes),
@@ -70,9 +83,8 @@ export const getCurrentLocation = ({
         setMapLocation({ lat, lng });
 
         try {
-          // Lấy địa chỉ từ API
-          const response = await fetch(`http://localhost:3000/api/location?lat=${lat}&lng=${lng}`);
-          const data = await response.json();
+          // Using apiService instead of direct fetch
+          const data = await apiService.getAddressFromCoordinates(lat, lng);
           if (data.address) {
             setUserInfo((prev) => ({ ...prev, address: data.address }));
           } else {
@@ -84,10 +96,8 @@ export const getCurrentLocation = ({
           const startLat = 10.808131355448648;
           const startLng = 106.70645211764977;
 
-          const responseRoute = await fetch(
-            `http://localhost:3000/api/location/distance?startLat=${startLat}&startLng=${startLng}&endLat=${lat}&endLng=${lng}`
-          );
-          const routeData = await responseRoute.json();
+          // Using apiService instead of direct fetch
+          const routeData = await apiService.getRouteDistance(startLat, startLng, lat, lng);
 
           if (routeData.message === "Tính khoảng cách thành công!") {
             setRoute([

@@ -1,6 +1,7 @@
 // components/LocationPicker.tsx
 import { useMapEvents } from "react-leaflet";
 import L from "leaflet";
+import { apiService } from "../services/api";
 
 interface Props {
   onLocationSelect: (lat: number, lng: number) => void;
@@ -17,8 +18,8 @@ const LocationPicker = ({ onLocationSelect, setUserInfo, setRoute, setRouteInfo 
       onLocationSelect(lat, lng);
 
       try {
-        const response = await fetch(`http://localhost:3000/api/location?lat=${lat}&lng=${lng}`);
-        const data = await response.json();
+        // Using apiService instead of direct fetch
+        const data = await apiService.getAddressFromCoordinates(lat, lng);
         if (data.address) {
           setUserInfo((prev: any) => ({ ...prev, address: data.address }));
         }
@@ -26,10 +27,8 @@ const LocationPicker = ({ onLocationSelect, setUserInfo, setRoute, setRouteInfo 
         const startLat = 10.808131355448648;
         const startLng = 106.70645211764977;
 
-        const responseRoute = await fetch(
-          `http://localhost:3000/api/location/distance?startLat=${startLat}&startLng=${startLng}&endLat=${lat}&endLng=${lng}`
-        );
-        const routeData = await responseRoute.json();
+        // Using apiService instead of direct fetch
+        const routeData = await apiService.getRouteDistance(startLat, startLng, lat, lng);
 
         if (routeData.message === "Tính khoảng cách thành công!") {
           setRoute([
@@ -63,16 +62,30 @@ interface GetCurrentLocationParams {
     setRouteInfo,
   }: GetCurrentLocationParams) => {
     if (navigator.geolocation) {
+      // Request high accuracy in geolocation options
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      };
+      
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
+          // Get precise coordinates and fix to 6 decimal places for consistency
+          const lat = parseFloat(position.coords.latitude.toFixed(6));
+          const lng = parseFloat(position.coords.longitude.toFixed(6));
+          
+          console.log("Raw geolocation coordinates:", position.coords.latitude, position.coords.longitude);
+          console.log("Processed coordinates:", lat, lng);
+          console.log("Accuracy:", position.coords.accuracy, "meters");
+          
           setMapLocation({ lat, lng });
   
           try {
-            // Lấy địa chỉ từ API
-            const response = await fetch(`http://localhost:3000/api/location?lat=${lat}&lng=${lng}`);
-            const data = await response.json();
+            // Using apiService with precise coordinates
+            const data = await apiService.getAddressFromCoordinates(lat, lng);
+            console.log("Address data received:", data);
+            
             if (data.address) {
               setUserInfo((prev) => ({ ...prev, address: data.address }));
             } else {
@@ -84,16 +97,20 @@ interface GetCurrentLocationParams {
             const startLat = 10.808131355448648;
             const startLng = 106.70645211764977;
   
-            const responseRoute = await fetch(
-              `http://localhost:3000/api/location/distance?startLat=${startLat}&startLng=${startLng}&endLat=${lat}&endLng=${lng}`
-            );
-            const routeData = await responseRoute.json();
+            // Using apiService with precise coordinates
+            const routeData = await apiService.getRouteDistance(startLat, startLng, lat, lng);
+            console.log("Route data received:", routeData);
   
             if (routeData.message === "Tính khoảng cách thành công!") {
+              // Ensure coordinates are properly parsed as numbers
+              const fromLat = typeof routeData.from.lat === 'string' ? parseFloat(routeData.from.lat) : routeData.from.lat;
+              const fromLng = typeof routeData.from.lng === 'string' ? parseFloat(routeData.from.lng) : routeData.from.lng;
+              
               setRoute([
-                new L.LatLng(parseFloat(routeData.from.lat), parseFloat(routeData.from.lng)),
+                new L.LatLng(fromLat, fromLng),
                 new L.LatLng(lat, lng),
               ]);
+              
               setRouteInfo({
                 distance: parseFloat(routeData.distance_km),
                 duration: parseFloat(routeData.duration_minutes),
@@ -106,8 +123,10 @@ interface GetCurrentLocationParams {
           }
         },
         (error) => {
-          alert("Không thể truy cập vị trí! Vui lòng kiểm tra cài đặt trình duyệt.");
-        }
+          console.error("Geolocation error:", error);
+          alert(`Không thể truy cập vị trí! Lỗi: ${error.message}`);
+        },
+        options // Use the high accuracy options
       );
     } else {
       alert("Trình duyệt không hỗ trợ lấy vị trí!");
