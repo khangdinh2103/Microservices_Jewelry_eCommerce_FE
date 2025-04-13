@@ -21,6 +21,7 @@ interface CartItem {
   price: number;
   quantity: number;
   image: string;
+  cartItemID?: number; // Add this property
 }
 
 
@@ -160,9 +161,11 @@ const Checkout: React.FC = () => {
       
       // Remove purchased items from cart
       try {
-        // Remove each purchased item from the cart
+        // Remove each purchased item from the cart using cartItemID instead of id
         for (const item of selectedCartItems) {
-          await apiService.removeCartItem(item.id);
+          // Check if cartItemID exists, otherwise fall back to id
+          const itemIdToRemove = item.cartItemID || item.id;
+          await apiService.removeCartItem(itemIdToRemove);
         }
         console.log("Cart updated successfully after purchase");
       } catch (error) {

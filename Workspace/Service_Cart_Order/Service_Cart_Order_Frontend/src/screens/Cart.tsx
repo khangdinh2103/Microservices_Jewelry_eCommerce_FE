@@ -89,9 +89,14 @@ const Cart: React.FC = () => {
   
   const removeItem = async (id: number): Promise<void> => {
     try {
-      // Using apiService instead of direct fetch
-      await apiService.removeCartItem(id);
+      // Find the cart item to get its cartItemID
+      const cartItem = cartItems.find(item => item.id === id);
+      if (!cartItem) return;
       
+      // Use cartItemID for the API call
+      await apiService.removeCartItem(cartItem.cartItemID);
+      
+      // Update the UI
       setCartItems(cartItems.filter((item) => item.id !== id));
       setSelectedItems(selectedItems.filter((itemId) => itemId !== id));
     } catch (error) {
