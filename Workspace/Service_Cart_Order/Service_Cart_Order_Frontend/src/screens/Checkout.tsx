@@ -199,31 +199,7 @@ const Checkout: React.FC = () => {
       console.error(error);
     }
   };
-  // const handleGetCurrentLocation = () => {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(async (position) => {
-  //       const lat = position.coords.latitude;
-  //       const lng = position.coords.longitude;
-  //       setMapLocation({ lat, lng });
-
-  //       try {
-  //         const response = await fetch(`http://localhost:3000/api/location?lat=${lat}&lng=${lng}`);
-  //         const data = await response.json();
-  //         if (data.address) {
-  //           setUserInfo((prev) => ({ ...prev, address: data.address }));
-  //         } else {
-  //           alert("Không thể lấy địa chỉ!");
-  //         }
-  //       } catch (error) {
-  //         console.error("Lỗi lấy vị trí:", error);
-  //       }
-  //     }, (error) => {
-  //       alert("Không thể truy cập vị trí! Vui lòng kiểm tra cài đặt trình duyệt.");
-  //     });
-  //   } else {
-  //     alert("Trình duyệt không hỗ trợ lấy vị trí!");
-  //   }
-  // };
+ 
   const handleGetCurrentLocation = () => {
     getCurrentLocation({
       setMapLocation,
