@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useLocation } from "react-router-dom";
+import { apiService } from "../services/api";
 
 
 interface OrderItem {
@@ -33,11 +34,8 @@ const OrderList: React.FC = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/orders/user/1");
-        if (!response.ok) {
-          throw new Error("Lỗi khi lấy danh sách đơn hàng");
-        }
-        const data = await response.json();
+        // Using apiService instead of direct fetch
+        const data = await apiService.getUserOrders(1);
 
         const formattedOrders = data.map((order: any) => ({
           orderID: order.orderID,
@@ -54,9 +52,9 @@ const OrderList: React.FC = () => {
               : "https://via.placeholder.com/100",
           })),
           total: order.orderDetails.reduce(
-            (sum: number, item: any) => sum + item.price * item.quantity ,
+            (sum: number, item: any) => sum + item.price * item.quantity,
             0
-          )+ shippingCost,
+          ) + shippingCost,
         }));
 
         setOrders(formattedOrders);

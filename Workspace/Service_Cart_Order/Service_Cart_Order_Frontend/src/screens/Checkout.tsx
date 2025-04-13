@@ -8,6 +8,8 @@ import { getCurrentLocation } from "../components/PickerLocation";
 import { calculateShipping } from "../components/calculateShipping";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { apiService } from "../services/api";
+
 const customIcon = new L.Icon({
   iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
   iconSize: [25, 41],
@@ -153,19 +155,8 @@ const Checkout: React.FC = () => {
     };
   
     try {
-      const orderResponse = await fetch("http://localhost:3000/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
-  
-      if (!orderResponse.ok) {
-        throw new Error("Đặt hàng thất bại!");
-      }
-  
-      const orderResult = await orderResponse.json();
+      // Using apiService instead of direct fetch
+      const orderResult = await apiService.createOrder(orderData);
   
       if (paymentMethod === "cod") {
         alert("Đặt hàng thành công! Đơn hàng của bạn đang chờ xử lý.");
@@ -194,19 +185,8 @@ const Checkout: React.FC = () => {
         orderID: orderResult.orderID, 
       };
   
-      const paymentResponse = await fetch("http://localhost:3000/api/payment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(paymentData),
-      });
-  
-      if (!paymentResponse.ok) {
-        throw new Error("Thanh toán thất bại!");
-      }
-  
-      const paymentResult = await paymentResponse.json();
+      // Using apiService instead of direct fetch
+      const paymentResult = await apiService.processPayment(paymentData);
   
       if (paymentResult.success && paymentResult.data?.payUrl) {
         window.open(paymentResult.data.payUrl, "_blank");

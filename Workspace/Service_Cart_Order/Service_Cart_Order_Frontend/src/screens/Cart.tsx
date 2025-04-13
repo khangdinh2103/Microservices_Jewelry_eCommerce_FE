@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiShoppingCart, FiTrash2, FiPlus, FiMinus } from "react-icons/fi";
-
+import { apiService } from "../services/api";
 interface CartItem {
   id: number;
   name: string;
   price: number;
   quantity: number;
   image: string;
+  cartItemID: number;
 }
 
 const Cart: React.FC = () => {
@@ -32,9 +33,8 @@ const Cart: React.FC = () => {
 
   const fetchCart = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/cart/1");
-      if (!response.ok) throw new Error("Failed to fetch cart data");
-      const data = await response.json();
+      // Using apiService instead of direct fetch
+      const data = await apiService.getUserCart(1);
       console.log(data);
 
       const formattedItems: CartItem[] = data.items.map((item: any) => ({
@@ -43,6 +43,7 @@ const Cart: React.FC = () => {
         price: item.price,
         quantity: item.quantity,
         image: item.imageURL,
+        cartItemID: item.cartItemID,
       }));
 
       setCartItems(formattedItems);
@@ -62,37 +63,29 @@ const Cart: React.FC = () => {
     if (newQuantity < 0) return;
   
     try {
-      const response = await fetch(`http://localhost:3000/api/cart-items/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ quantity: newQuantity }),
-      });
-  
-      if (!response.ok) throw new Error("Failed to update quantity");
+      // Using apiService instead of direct fetch
+      await apiService.updateCartItemQuantity(id, newQuantity);
   
       if (newQuantity === 0) {
         setCartItems(cartItems.filter((item) => item.id !== id));
         setSelectedItems(selectedItems.filter(itemId => itemId !== id));
       } else {
         // Cập nhật lại UI với số lượng mới
-        setCartItems(filteredItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)));
+        setCartItems(prevItems =>
+          prevItems.map(item =>
+            item.id === id ? { ...item, quantity: newQuantity } : item
+          )
+        );
       }
     } catch (error) {
       console.error("Error updating quantity:", error);
     }
   };
   
-
   const removeItem = async (id: number): Promise<void> => {
     try {
-      const response = await fetch(`http://localhost:3000/api/cart-items/${id}`, {
-        method: "DELETE",
-      });
-  
-      if (!response.ok) throw new Error("Failed to delete item");
-  
+      // Using apiService instead of direct fetch
+      await apiService.removeCartItem(id);
       
       setCartItems(cartItems.filter((item) => item.id !== id));
       setSelectedItems(selectedItems.filter((itemId) => itemId !== id));
@@ -202,11 +195,11 @@ const Cart: React.FC = () => {
                     </div>
                     <div className="mt-4 flex items-center justify-between">
                       <div className="flex items-center border border-gray-600 rounded-md">
-                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2 hover:bg-gray-700">
+                      <button onClick={() => updateQuantity(item.cartItemID, item.quantity - 1)} className="p-2 hover:bg-gray-700">
                         <FiMinus className="h-4 w-4 text-white font-mulish" />
                       </button>
                       <input type="number" min="1" value={item.quantity} className="w-16 text-center border-x border-gray-600 bg-gray-800 text-white p-2" readOnly />
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:bg-gray-700">
+                      <button onClick={() => updateQuantity(item.cartItemID, item.quantity + 1)} className="p-2 hover:bg-gray-700">
                         <FiPlus className="h-4 w-4 text-white font-mulish" />
                       </button>
 
