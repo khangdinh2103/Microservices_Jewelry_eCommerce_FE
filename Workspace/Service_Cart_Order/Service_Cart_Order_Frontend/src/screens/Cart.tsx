@@ -62,23 +62,28 @@ const Cart: React.FC = () => {
   const updateQuantity = async (id: number, newQuantity: number): Promise<void> => {
     if (newQuantity < 0) return;
   
+    // Update UI immediately for better user experience
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.cartItemID === id ? { ...item, quantity: newQuantity } : item
+      )
+    );
+    
     try {
-      // Using apiService instead of direct fetch
+      // Using apiService to update the backend
       await apiService.updateCartItemQuantity(id, newQuantity);
   
       if (newQuantity === 0) {
-        setCartItems(cartItems.filter((item) => item.id !== id));
-        setSelectedItems(selectedItems.filter(itemId => itemId !== id));
-      } else {
-        // Cập nhật lại UI với số lượng mới
-        setCartItems(prevItems =>
-          prevItems.map(item =>
-            item.id === id ? { ...item, quantity: newQuantity } : item
-          )
-        );
+        // If quantity is 0, remove the item from cart
+        setCartItems(prevItems => prevItems.filter((item) => item.cartItemID !== id));
+        setSelectedItems(prevSelectedItems => prevSelectedItems.filter(itemId => 
+          !cartItems.find(item => item.cartItemID === id && item.id === itemId)
+        ));
       }
     } catch (error) {
       console.error("Error updating quantity:", error);
+      // Revert to original state if API call fails
+      fetchCart(); // Refresh the cart to get the correct state
     }
   };
   
