@@ -30,6 +30,11 @@ const OrderList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedOrderID, setExpandedOrderID] = useState<number | null>(null);
+  
+  // Add new state for filtering and pagination
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const ordersPerPage = 10;
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -94,6 +99,20 @@ const OrderList: React.FC = () => {
     CANCELED: "Đã Hủy",
   };
   
+  // Filter orders based on status filter
+  const filteredOrders = statusFilter 
+    ? orders.filter(order => order.status === statusFilter)
+    : orders;
+    
+  // Calculate pagination
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  
+  // Handle page change
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  
   if (loading) return <p className="text-gray-300 text-center text-lg">Đang tải...</p>;
   if (error) return <p className="text-red-500 text-center text-lg">Lỗi: {error}</p>;
 
@@ -101,6 +120,24 @@ const OrderList: React.FC = () => {
     <div className="min-h-screen bg-[#1D1917] text-gray-100 p-6 md:p-10 font-['Mulish']">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-6 text-white">Danh Sách Đơn Hàng</h1>
+
+        {/* Add filter dropdown */}
+        <div className="mb-6 flex justify-end">
+          <select
+            className="px-4 py-2 rounded-md bg-gray-800 text-white border border-gray-600"
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setCurrentPage(1); // Reset to first page when filter changes
+            }}
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option value="PENDING">Chờ Xử Lý</option>
+            <option value="PROCESSING">Đang Xử Lý</option>
+            <option value="DELIVERED">Đã Giao</option>
+            <option value="CANCELLED">Đã Hủy</option>
+          </select>
+        </div>
 
         <div className="bg-[#312F30] p-6 rounded-lg shadow-lg">
           <table className="w-full text-lg">
@@ -115,7 +152,7 @@ const OrderList: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {currentOrders.map((order) => (
                 <React.Fragment key={order.orderID}>
                   <tr className="border-b border-gray-600 hover:bg-gray-700 transition">
                     <td className="px-6 py-4">{order.orderID}</td>
@@ -147,7 +184,7 @@ const OrderList: React.FC = () => {
 
                   {expandedOrderID === order.orderID && (
                     <tr className="bg-gray-700">
-                      <td colSpan={5} className="px-6 py-4">
+                      <td colSpan={6} className="px-6 py-4">
                         <p className="font-semibold text-xl mb-3">Chi Tiết Đơn Hàng</p>
 
                         <table className="w-full border border-gray-600">
@@ -183,6 +220,42 @@ const OrderList: React.FC = () => {
               ))}
             </tbody>
           </table>
+          
+          {/* Add pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-6 space-x-2">
+              <button 
+                onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1)}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded ${currentPage === 1 ? 'bg-gray-600 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'} text-white`}
+              >
+                Trước
+              </button>
+              
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                <button
+                  key={number}
+                  onClick={() => paginate(number)}
+                  className={`px-4 py-2 rounded ${currentPage === number ? 'bg-red-700' : 'bg-red-600 hover:bg-red-700'} text-white`}
+                >
+                  {number}
+                </button>
+              ))}
+              
+              <button 
+                onClick={() => paginate(currentPage < totalPages ? currentPage + 1 : totalPages)}
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded ${currentPage === totalPages ? 'bg-gray-600 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'} text-white`}
+              >
+                Tiếp
+              </button>
+            </div>
+          )}
+          
+          {/* Show order count */}
+          <div className="mt-4 text-center text-gray-400">
+            Hiển thị {currentOrders.length} / {filteredOrders.length} đơn hàng
+          </div>
         </div>
       </div>
     </div>
