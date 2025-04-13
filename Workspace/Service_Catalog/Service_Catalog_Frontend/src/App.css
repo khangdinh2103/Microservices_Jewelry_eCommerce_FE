@@ -45,6 +45,17 @@
   color: #ffffff;
 }
 
+.header a,
+.header span,
+.header input::placeholder {
+  color: #ffffff !important;
+}
+
+.header input {
+  background-color: #5a5a5a;
+  color: #ffffff;
+}
+
 .top-bar {
   display: flex;
   justify-content: space-between;

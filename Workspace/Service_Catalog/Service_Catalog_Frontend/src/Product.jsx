@@ -2,6 +2,9 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Slider from "react-slick";
+import { ShoppingCart, Bell, MessageCircle, User, Search } from "lucide-react";
+import vectorIcon from "./assets/Diamond.png";
+import logo from "./assets/logo.png";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -21,6 +24,12 @@ const fillerCateImage = [
 
 
 const Product = () => {
+    const [searchKeyword, setSearchKeyword] = useState("");
+
+    const fetchSearchingProducts = () => {
+        console.log("Tìm kiếm với từ khóa:", searchKeyword);
+      };
+
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [gender, setGender] = useState("");
@@ -257,7 +266,7 @@ const Product = () => {
                     .normalize("NFD") // Chuẩn hóa chuỗi thành dạng Unicode tổ hợp
                     .replace(/[\u0300-\u036f]/g, ""); // Loại bỏ dấu
             };
-        
+
             filtered = filtered.filter(product =>
                 normalizeText(product.name).includes(normalizeText(searchTerm.trim()))
             );
@@ -352,12 +361,12 @@ const Product = () => {
     const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
         setIsLoading(true);
-        
+
         const handler = setTimeout(() => {
-            applyFilters(); 
+            applyFilters();
             setIsLoading(false);
-        }, 500); 
-    
+        }, 500);
+
         return () => {
             clearTimeout(handler); // Xóa timeout nếu dependencies thay đổi trước khi hết 1 giây
             setIsLoading(false);
@@ -366,7 +375,66 @@ const Product = () => {
 
     return (
         <div className="min-h-screen bg-bgOuter px-10 py-6">
-            <div className="text-white mb-4 flex justify-center">
+            <header className="header">
+                <div className="flex justify-between items-center p-4">
+                    <div className="flex gap-4">
+                        <a href="#" className="flex items-center gap-1 text-white">
+                            <ShoppingCart size={18} />
+                            <span>Giỏ Hàng</span>
+                        </a>
+                        <a href="#" className="flex items-center gap-1 text-white">
+                            <Bell size={18} />
+                            <span>Liên Hệ</span>
+                        </a>
+                    </div>
+
+                    <div className="w-24 md:w-32">
+                        <img src={logo} alt="TINH TÚ" className="w-full" />
+                    </div>
+
+                    <div className="flex gap-4">
+                        <a href="#" className="flex items-center gap-1 text-white">
+                            <MessageCircle size={18} />
+                            <span>Chat Bot</span>
+                        </a>
+                        <a href="#" className="flex items-center gap-1 text-white">
+                            <User size={18} />
+                            <span>Tài Khoản</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-center my-4">
+                    <div className="w-1/4 h-px bg-gray-500"></div>
+                    <img src={vectorIcon} alt="Diamond Icon" className="w-8 mx-2" />
+                    <div className="w-1/4 h-px bg-gray-500"></div>
+                </div>
+
+                <nav className="flex flex-col md:flex-row md:justify-between items-center gap-4 p-4">
+                    <div className="flex flex-wrap gap-3">
+                        <Link to="/" className="text-sm md:text-base hover:underline text-white">Trang Chủ</Link>
+                        <Link to="/product/1" className="text-sm md:text-base hover:underline text-white">Trang Sức</Link>
+                        <Link to="/product/2" className="text-sm md:text-base hover:underline text-white">Trang Sức Cưới</Link>
+                        <Link to="/product/3" className="text-sm md:text-base hover:underline text-white">Đồng Hồ</Link>
+                        <Link to="/product/4" className="text-sm md:text-base hover:underline text-white">Quà Tặng</Link>
+                        <Link to="/collection" className="text-sm md:text-base hover:underline text-white">Bộ Sưu Tập</Link>
+                    </div>
+
+                    <div className="flex border rounded-lg overflow-hidden">
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm"
+                            className="px-3 py-2 w-40 md:w-60 text-black"
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                        />
+                        <button className="bg-blue-500 px-3 flex items-center text-white">
+                            <Search size={18} />
+                        </button>
+                    </div>
+                </nav>
+            </header>
+            <div className="text-white mb-4 flex justify-center py-4">
                 <Link to="/" className="text-gray-400">Trang chủ </Link> / {categoryDetail.name}
             </div>
             {/*Banner thieu field sua sau*/}
@@ -409,48 +477,48 @@ const Product = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     {isLoading ? (
-        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-            >
-                <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                ></circle>
-                <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8H4z"
-                ></path>
-            </svg>
-        </div>
-    ) : (
-        <div
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 rounded-md bg"
-        >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="white"
-                className="size-6"
-            >
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                />
-            </svg>
-        </div>
-    )}
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                            <svg
+                                className="animate-spin h-5 w-5 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                ></circle>
+                                <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8v8H4z"
+                                ></path>
+                            </svg>
+                        </div>
+                    ) : (
+                        <div
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 rounded-md bg"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="white"
+                                className="size-6"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                                />
+                            </svg>
+                        </div>
+                    )}
                 </div>
             </div>
             {/* Dropdown bộ lọc */}
