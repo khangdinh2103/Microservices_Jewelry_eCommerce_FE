@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+// Các biến màu hiện có
 $color-white: #ffffff;
 $color-light: #f1f5f9;
 $color-black: #121212;
@@ -12,232 +15,290 @@ $shadow-normal: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 $shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
+// Kiểu dáng cập nhật cho trang đăng nhập
 .login-page,
-.register-page {
-    color: $color-black;
-    background: $color-light;
+.register-page ,
+.forgot-password-page { // Thêm forgot-password-page
+    background: rgb(49, 47, 48); // Nền tối giống LoginPage
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: $color-white;
+    font-family: 'Roboto', sans-serif;
 
+  // Phần đầu trang (cho logo)
+  .header {
+    text-align: center;
+    padding: 20px 0;
 
-    // Components
-    .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-width: 80rem;
-        min-height: 100vh;
-        // width: 100%;
-        padding: 0 2rem;
+    .logo {
+        width: 80px; // Kích thước logo
         margin: 0 auto;
+        display: block;
     }
+  }
 
+  // Phần chính
+  .main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 
-    .text {
-        font-family: inherit;
-        line-height: inherit;
-        text-transform: unset;
-        text-rendering: optimizeLegibility;
+    .container {
+      width: 100%;
+      max-width: 80rem;
+      margin: 0 auto;
 
-        &-large {
-            font-size: 2rem;
-            font-weight: 600;
-            color: $color-black;
+      .split-container {
+        display: flex;
+        background: #2a2a2a; // Nền sáng hơn một chút để dễ nhìn
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: $shadow-large;
+
+        // Phần bên trái: Bộ sưu tập hình ảnh
+        .image-section {
+          flex: 1;
+          padding: 0;
+          background: transparent; // Nền tối hơn cho phần hình ảnh
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          .image-collage {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 550px;
+            max-height: 100%;
+            position: relative;
+
+            .main-image {
+              width: 100%;
+              height: 300px;
+              object-fit: cover;
+              border-radius: 0;
+            }
+
+            .sub-images {
+              display: flex;
+                gap: 15px;
+                flex-direction: row  ;
+              width: 100%;
+
+              .sub-image {
+                width: 100%;
+                height: 150px;
+                object-fit: cover;
+                border-radius: 0;
+              }
+            }
+          }
         }
 
-        &-normal {
-            font-size: 1rem;
-            font-weight: 400;
-            color: $color-black;
+        // Phần bên phải: Biểu mẫu
+        .form-section {
+          flex: 1;
+          padding: 40px;
+          background: #2a2a2a;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+
+          .heading {
+            text-align: center;
+            margin-bottom: 30px;
+
+            .text-large {
+              font-size: 36px;
+              font-weight: 700;
+              color: $color-white;
+              letter-spacing: 1px;
+            }
+          }
+
+          .login-form {
+            .ant-form-item {
+              margin-bottom: 20px;
+            }
+
+            .ant-form-item-label {
+              label {
+                color: $color-light; // Màu sáng hơn để dễ nhìn
+                font-size: 16px;
+                font-weight: 500;
+              }
+            }
+
+            .ant-input,
+            .ant-input-password {
+              background: #3a3a3a; // Nền sáng hơn để dễ nhìn
+              border: none;
+              color: $color-white;
+              padding: 12px 15px;
+              border-radius: 25px;
+              font-size: 16px;
+              transition: background 0.3s ease, box-shadow 0.3s ease;
+
+              &::placeholder {
+                color: $color-gray;
+                font-size: 14px;
+              }
+
+              &:focus {
+                background: #454545;
+                box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+              }
+            }
+
+            .forgot-password {
+              text-align: right;
+              margin-bottom: 20px;
+
+              a {
+                color: $color-blue; // Màu xanh cho liên kết
+                text-decoration: none;
+                font-size: 14px;
+                transition: color 0.3s ease;
+
+                &:hover {
+                  color: lighten($color-blue, 10%); // Sáng hơn khi hover
+                  text-decoration: underline;
+                }
+              }
+            }
+
+            .login-button {
+              width: 100%;
+              background: $color-blue; // Màu xanh nổi bật
+              color: $color-white;
+              border: none;
+              padding: 12px;
+              font-size: 16px;
+              font-weight: 600;
+              border-radius: 25px;
+              box-shadow: $shadow-medium;
+              padding: 0px 20px;
+              transition: background 0.3s ease, transform 0.2s ease;
+
+              &:hover {
+                background: darken($color-blue, 10%);
+                transform: translateY(-2px);
+              }
+
+              &:active {
+                transform: translateY(0);
+              }
+            }
+
+            .register-link {
+              text-align: center;
+              color: $color-white;
+              margin-top: 20px;
+              font-size: 14px;
+
+              a {
+                color: $color-blue; // Màu xanh cho liên kết
+                text-decoration: none;
+                transition: color 0.3s ease;
+
+                &:hover {
+                  color: lighten($color-blue, 10%); // Sáng hơn khi hover
+                  text-decoration: underline;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Phần chân trang
+  .footer {
+    padding: 30px 20px;
+    background: #1e1e1e; // Nền chân trang sáng hơn một chút
+    color: $color-white;
+    font-size: 14px;
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding-bottom: 20px;
+
+      .footer-section {
+        h4 {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 15px;
+          color: $color-white;
         }
 
-        &-links {
-            font-size: 1rem;
-            font-weight: 400;
-            color: $color-blue;
+        p {
+          margin: 8px 0;
+          color: $color-grayish;
+          font-size: 13px;
+        }
+
+        .social-icons {
+          display: flex;
+          gap: 12px;
+
+          a {
+            color: $color-white;
+            font-size: 18px;
+            transition: color 0.3s ease;
 
             &:hover {
-                text-decoration: underline;
+              color: $color-light;
             }
+          }
         }
+      }
     }
-    .authContainer {
-        max-width: 400px;
-        margin: 80px auto;
-        padding: 30px;
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 15px;
+      border-top: 1px solid $color-grayish;
+      color: $color-grayish;
+      font-size: 12px;
     }
-    
-    .authContainer h2 {
-        margin-bottom: 20px;
-        font-size: 24px;
-        color: #333;
+  }
+
+  // Kiểu chữ
+  .text {
+    font-family: inherit;
+    line-height: inherit;
+    text-transform: unset;
+    text-rendering: optimizeLegibility;
+
+    &-large {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $color-white;
     }
-    
-    .authContainer form {
-        display: flex;
-        flex-direction: column;
+
+    &-normal {
+      font-size: 1rem;
+      font-weight: 400;
+      color: $color-white;
     }
-    
-    .authContainer input {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-        transition: 0.3s;
+
+    &-links {
+      font-size: 1rem;
+      font-weight: 400;
+      color: $color-blue; // Màu xanh cho liên kết
+
+      &:hover {
+        text-decoration: underline;
+        color: lighten($color-blue, 10%);
+      }
     }
-    
-    .authContainer input:focus {
-        border-color: #1677ff;
-        outline: none;
-        box-shadow: 0px 0px 5px rgba(22, 119, 255, 0.5);
-    }
-    
-    .authContainer button {
-        width: 100%;
-        padding: 12px;
-        font-size: 18px;
-        color: white;
-        background-color: #1677ff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background 0.3s ease-in-out;
-    }
-    
-    .authContainer button:hover {
-        background-color: #125ecb;
-    }
-    
-    .authContainer p {
-        margin-top: 15px;
-        font-size: 14px;
-        color: #333;
-    }
-    
-
-    // Main
-    .main {
-        .wrapper {
-            max-width: 28rem;
-            width: 100%;
-            margin: 2rem auto;
-            padding: 2rem 2.5rem;
-            border: none;
-            outline: none;
-            border-radius: 0.5rem;
-            color: $color-black;
-            background: $color-white;
-            box-shadow: $shadow-large;
-
-            .form {
-                width: 100%;
-                height: auto;
-                margin-top: 2rem;
-
-                .input-control {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    margin-bottom: 1.25rem;
-                }
-
-                .input-field {
-                    font-family: inherit;
-                    font-size: 1rem;
-                    font-weight: 400;
-                    line-height: inherit;
-                    width: 100%;
-                    height: auto;
-                    padding: 0.75rem 1.25rem;
-                    border: none;
-                    outline: none;
-                    border-radius: 2rem;
-                    color: $color-black;
-                    background: $color-light;
-                    text-transform: unset;
-                    text-rendering: optimizeLegibility;
-                }
-
-                .input-submit {
-                    font-family: inherit;
-                    font-size: 1rem;
-                    font-weight: 500;
-                    line-height: inherit;
-                    cursor: pointer;
-                    min-width: 40%;
-                    height: auto;
-                    padding: 0.65rem 1.25rem;
-                    border: none;
-                    outline: none;
-                    border-radius: 2rem;
-                    color: $color-white;
-                    background: $color-blue;
-                    box-shadow: $shadow-medium;
-                    text-transform: capitalize;
-                    text-rendering: optimizeLegibility;
-                }
-            }
-
-            .striped {
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-                align-items: center;
-                margin: 1rem 0;
-
-                &-line {
-                    flex: auto;
-                    flex-basis: auto;
-                    border: none;
-                    outline: none;
-                    height: 2px;
-                    background: $color-grayish;
-                }
-
-                &-text {
-                    font-family: inherit;
-                    font-size: 1rem;
-                    font-weight: 500;
-                    line-height: inherit;
-                    color: $color-black;
-                    margin: 0 1rem;
-                }
-            }
-
-            .method {
-                &-control {
-                    margin-bottom: 1rem;
-                }
-
-                &-action {
-                    font-family: inherit;
-                    font-size: 0.95rem;
-                    font-weight: 500;
-                    line-height: inherit;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    width: 100%;
-                    height: auto;
-                    padding: 0.35rem 1.25rem;
-                    outline: none;
-                    border: 2px solid $color-grayish;
-                    border-radius: 2rem;
-                    color: $color-black;
-                    background: $color-white;
-                    text-transform: capitalize;
-                    text-rendering: optimizeLegibility;
-                    transition: all 0.35s ease;
-
-                    &:hover {
-                        background: $color-light;
-                    }
-                }
-            }
-        }
-    }
+  }
 }

@@ -1,86 +1,133 @@
 import { useState } from "react";
 import { forgotPassword } from "../../config/api";
 import { useNavigate } from "react-router-dom";
-import { CSSProperties } from "react";
+import styles from 'styles/auth.module.scss';
+import { Button, Form, Input, message, notification } from 'antd';
+
+
+// Đường dẫn hình ảnh (giống LoginPage)
+const image1 = '/public/Rectangle 2.png'; // Hình ảnh lớn
+const image2 = '/public/Rectangle 3.png'; // Hình ảnh nhỏ 1
+const image3 = '/public/Rectangle 4.png'; // Hình ảnh nhỏ 2
+
 
 const ForgotPassword = () => {
-    const [email, setEmail] = useState("");
-    const [message, setMessage] = useState("");
     const navigate = useNavigate();
+    const [isSubmit, setIsSubmit] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const onFinish = async (values: { email: string }) => {
+        const { email } = values;
+        setIsSubmit(true);
         try {
             const response = await forgotPassword(email);
-            setMessage(response.data.message);
+            message.success(response.data.message);
+            // Chuyển hướng sau khi gửi thành công (tùy thuộc vào logic của bạn)
+            // navigate('/reset-password');
         } catch (error: any) {
-            setMessage(error.response?.data?.message || "Có lỗi xảy ra!");
+            notification.error({
+                message: "Có lỗi xảy ra",
+                description: error.response?.data?.message || "Có lỗi xảy ra!",
+                duration: 5,
+            });
+        } finally {
+            setIsSubmit(false);
         }
     };
 
     return (
-        <div style={styles.authContainer}>
-            <h2 style={styles.title}>Quên Mật Khẩu</h2>
-            <form style={styles.form} onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    placeholder="Nhập email của bạn"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    style={styles.input}
-                />
-                <button type="submit" style={styles.button}>Gửi mã xác nhận</button>
-            </form>
-            {message && <p style={styles.message}>{message}</p>}
+        <div className={styles["forgot-password-page"]}>
+            {/* Thêm logo vào header giống LoginPage */}
+            <header className={styles.header}>
+                <img src="/public/logo.png" alt="Tinh Tử Logo" className={styles.logo} />
+            </header>
+            <main className={styles.main}>
+                <div className={styles.container}>
+                    <div className={styles["split-container"]}>
+                        {/* Phần bên trái: Bộ sưu tập hình ảnh (giống LoginPage) */}
+                        <div className={styles["image-section"]}>
+                            <div className={styles["image-collage"]}>
+                                <img src={image1} alt="Jewelry 1" className={styles["main-image"]} />
+                                <div className={styles["sub-images"]}>
+                                    <img src={image2} alt="Jewelry 2" className={styles["sub-image"]} />
+                                    <img src={image3} alt="Jewelry 3" className={styles["sub-image"]} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Phần bên phải: Biểu mẫu quên mật khẩu */}
+                        <section className={styles["form-section"]}>
+                            <div className={styles.heading}>
+                                <h2 className={`${styles.text} ${styles["text-large"]}`}>
+                                    Quên Mật Khẩu
+                                </h2>
+                            </div>
+                            <Form
+                                name="forgot-password"
+                                onFinish={onFinish}
+                                autoComplete="off"
+                                className={styles["login-form"]}
+                            >
+                                <Form.Item
+                                    labelCol={{ span: 24 }}
+                                    label="Email"
+                                    name="email"
+                                    rules={[{ required: true, message: 'Email không được để trống!' }, { type: 'email', message: 'Email không hợp lệ!' }]}
+                                >
+                                    <Input placeholder="Nhập email của bạn" />
+                                </Form.Item>
+
+                                <Form.Item>
+                                    <Button
+                                        type="default"
+                                        htmlType="submit"
+                                        loading={isSubmit}
+                                        className={styles["login-button"]}
+                                    >
+                                        Gửi mã xác nhận
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </section>
+                    </div>
+                </div>
+            </main>
+            {/* Chân trang giống LoginPage */}
+            <footer className={styles.footer}>
+                <div className={styles["footer-content"]}>
+                    <div className={styles["footer-section"]}>
+                        <h4>BỘ SƯU TẬP MỚI</h4>
+                        <p>Nhẫn Cũ Kỹ Tương</p>
+                        <p>Vòng Cổ Vương</p>
+                        <p>Lắc Tay Bọc</p>
+                    </div>
+                    <div className={styles["footer-section"]}>
+                        <h4>HỖ TRỢ</h4>
+                        <p>Giới Thiệu</p>
+                        <p>Chính Sách Bảo Hành</p>
+                        <p>Chính Sách Đổi Kiện</p>
+                    </div>
+                    <div className={styles["footer-section"]}>
+                        <h4>CHĂM SÓC KHÁCH HÀNG</h4>
+                        <p>Thời Gian: 6:30AM - 21:30PM (Hằng Ngày)</p>
+                        <p>LH KH: +84 999222111</p>
+                        <p>Email: tinh.tu@edu.vn</p>
+                    </div>
+                    <div className={styles["footer-section"]}>
+                        <h4>LIÊN HỆ VỚI CHÚNG TÔI</h4>
+                        <div className={styles["social-icons"]}>
+                            <a href="#"><i className="fab fa-twitter"></i></a>
+                            <a href="#"><i className="fab fa-facebook-f"></i></a>
+                            <a href="#"><i className="fab fa-instagram"></i></a>
+                            <a href="#"><i className="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles["footer-bottom"]}>
+                    <p>Copyright © 2020 - Phát Triển Bởi Sinh Viên Đại Học Công Nghiệp TP. HCM</p>
+                </div>
+            </footer>
         </div>
     );
 };
 
 export default ForgotPassword;
-
-const styles: { [key: string]: CSSProperties } = {
-    authContainer: {
-        maxWidth: "400px",
-        margin: "80px auto",
-        padding: "30px",
-        background: "#fff",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-        textAlign: "center",  // ✅ Được TypeScript nhận diện đúng
-    },
-    title: {
-        marginBottom: "20px",
-        fontSize: "24px",
-        color: "#333",
-    },
-    form: {
-        display: "flex",
-        flexDirection: "column",
-    },
-    input: {
-        width: "100%",
-        padding: "12px",
-        marginBottom: "15px",
-        border: "1px solid #ddd",
-        borderRadius: "5px",
-        fontSize: "16px",
-        outline: "none",
-    },
-    button: {
-        width: "100%",
-        padding: "12px",
-        fontSize: "18px",
-        color: "white",
-        backgroundColor: "#1677ff",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-        transition: "background 0.3s ease-in-out",
-    },
-    message: {
-        marginTop: "15px",
-        fontSize: "14px",
-        color: "#333",
-    },
-};
