@@ -54,10 +54,10 @@ export const authService = {
         }
     },
 
-    getCurrentUser: async (): Promise<AuthResponse['data']['user'] | null> => {
+    getCurrentUser: async () => {
         try {
-            const response = await axios.get('/api/v1/auth/account');
-            return response.data?.data?.user || null;
+            const response = await axios.get('/api/v1/profile');
+            return response.data; // hoặc response.data.data tùy vào API response
         } catch (error) {
             console.error('Lỗi khi lấy thông tin người dùng:', error);
             return null;

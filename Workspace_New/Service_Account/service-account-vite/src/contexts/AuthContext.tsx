@@ -6,6 +6,8 @@ interface User {
     id: string;
     name: string;
     email: string;
+    avatar?: string;
+    avatarUrl?: string;
     role?: {
         id: string;
         name: string;
@@ -62,26 +64,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
             await authService.logout();
             setUser(null);
             setIsAuthenticated(false);
-            window.location.href = '/login'; // Đảm bảo chuyển hướng sau khi đăng xuất
+            window.location.href = '/login';
         } catch (error) {
             console.error('Lỗi khi đăng xuất:', error);
         }
     };
 
-    // Kiểm tra trạng thái xác thực khi component mount
     useEffect(() => {
         const checkAuth = async () => {
             try {
                 setLoading(true);
                 if (authService.isAuthenticated()) {
-                    const userData = await authService.getCurrentUser();
-                    if (userData) {
-                        setUser(userData);
-                        setIsAuthenticated(true);
-                    } else {
-                        // Nếu có token nhưng không lấy được user data, token có thể không hợp lệ
-                        await logout();
+                    const response = await fetch('http://localhost:8101/api/v1/profile', {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Không thể lấy thông tin người dùng');
                     }
+                    
+                    const data = await response.json();
+                    setUser(data.data || data);
+                    setIsAuthenticated(true);
                 }
             } catch (err) {
                 console.error('Kiểm tra xác thực thất bại:', err);
@@ -90,7 +96,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
                 setLoading(false);
             }
         };
-
+    
         checkAuth();
     }, []);
 
