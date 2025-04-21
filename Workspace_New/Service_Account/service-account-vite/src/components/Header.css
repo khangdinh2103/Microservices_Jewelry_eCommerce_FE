@@ -1,0 +1,29 @@
+/* Style cho dropdown menu */
+.nav-item {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 150px;
+  background-color: #454545;
+  border-radius: 4px;
+  padding: 8px 0;
+  margin-top: 8px;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 8px 16px;
+  color: #f8f3ea;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-menu a:hover {
+  background-color: #333333;
+}
