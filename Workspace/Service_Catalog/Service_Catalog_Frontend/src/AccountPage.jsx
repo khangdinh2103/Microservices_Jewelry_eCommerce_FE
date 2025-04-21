@@ -13,10 +13,8 @@ const AccountPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [modalValue, setModalValue] = useState("");
-  
-  const fetchProducts = () => {
-    console.log("Tìm kiếm sản phẩm với từ khóa:", searchKeyword);
-  };
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [editingAddress, setEditingAddress] = useState(null);
 
   const openModal = (type, defaultValue) => {
     setModalType(type);
@@ -33,6 +31,25 @@ const AccountPage = () => {
   const saveModalValue = () => {
     console.log(`Đã lưu ${modalType}: ${modalValue}`);
     closeModal();
+  };
+
+  const openAddressModal = (address = null) => {
+    setEditingAddress(address);
+    setShowAddressModal(true);
+  };
+
+  const closeAddressModal = () => {
+    setShowAddressModal(false);
+    setEditingAddress(null);
+  };
+
+  const saveAddress = () => {
+    console.log("Saving address:", editingAddress);
+    closeAddressModal();
+  };
+
+  const setDefaultAddress = (addressId) => {
+    console.log("Setting address as default:", addressId);
   };
 
   const EditModal = () => {
@@ -89,6 +106,71 @@ const AccountPage = () => {
     );
   };
 
+  const AddressModal = () => {
+    if (!showAddressModal) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+        <div className="bg-bgInner p-6 rounded-lg w-full max-w-md">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">{editingAddress ? "Chỉnh Sửa Địa Chỉ" : "Thêm Địa Chỉ Mới"}</h2>
+            <button onClick={closeAddressModal} className="text-gray-400 hover:text-white">
+              <X size={24} />
+            </button>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Địa Chỉ</label>
+              <input 
+                type="text" 
+                defaultValue={editingAddress?.street || ""}
+                className="w-full p-3 bg-gray-800 rounded border border-gray-700" 
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Phường/Xã</label>
+              <input 
+                type="text" 
+                defaultValue={editingAddress?.ward || ""}
+                className="w-full p-3 bg-gray-800 rounded border border-gray-700" 
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Quận/Huyện</label>
+              <input 
+                type="text" 
+                defaultValue={editingAddress?.district || ""}
+                className="w-full p-3 bg-gray-800 rounded border border-gray-700" 
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Tỉnh/Thành Phố</label>
+              <input 
+                type="text" 
+                defaultValue={editingAddress?.city || ""}
+                className="w-full p-3 bg-gray-800 rounded border border-gray-700" 
+              />
+            </div>
+          </div>
+          <div className="flex justify-end space-x-3 mt-6">
+            <button 
+              onClick={closeAddressModal}
+              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded"
+            >
+              Hủy
+            </button>
+            <button 
+              onClick={saveAddress}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
+            >
+              Lưu
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderContent = () => {
     switch (activeMenu) {
       case "profile":
@@ -130,37 +212,84 @@ const AccountPage = () => {
             </div>
           </div>
         );
-      case "address":
-        return (
-          <div>
-            <h1 className="text-3xl font-bold mb-4">Địa Chỉ</h1>
-            <div className="bg-bgInner p-6 rounded-lg">
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-4">Địa Chỉ Hiện Tại</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Địa Chỉ</label>
-                    <input type="text" defaultValue="123 Đường ABC" className="w-full p-3 bg-gray-800 rounded border border-gray-700" />
+        case "address":
+          return (
+            <div>
+              <h1 className="text-3xl font-bold mb-4">Địa Chỉ</h1>
+              <div className="bg-bgInner p-6 rounded-lg">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold">Danh Sách Địa Chỉ</h2>
+                  <button 
+                    onClick={() => openAddressModal()} 
+                    className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded flex items-center gap-2"
+                  >
+                    <span>Thêm Địa Chỉ Mới</span>
+                  </button>
+                </div>
+                
+                <div className="space-y-6">
+                  <div className="border border-gray-700 p-4 rounded-lg">
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="mb-1 flex items-center gap-2">
+                          <span className="font-bold">123 Đường ABC, Phường DEF, Quận GHI, TP HCM</span>
+                          <span className="bg-blue-900 text-blue-300 text-xs px-2 py-1 rounded">Mặc định</span>
+                        </div>
+                        <div className="text-gray-400">Nguyễn Văn A | 0123456789</div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => openAddressModal({
+                            id: 1,
+                            street: "123 Đường ABC",
+                            ward: "Phường DEF",
+                            district: "Quận GHI",
+                            city: "TP HCM",
+                            isDefault: true
+                          })} 
+                          className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded"
+                        >
+                          Chỉnh sửa
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Phường/Xã</label>
-                    <input type="text" defaultValue="Phường DEF" className="w-full p-3 bg-gray-800 rounded border border-gray-700" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Quận/Huyện</label>
-                    <input type="text" defaultValue="Quận GHI" className="w-full p-3 bg-gray-800 rounded border border-gray-700" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Tỉnh/Thành Phố</label>
-                    <input type="text" defaultValue="TP HCM" className="w-full p-3 bg-gray-800 rounded border border-gray-700" />
+                  
+                  <div className="border border-gray-700 p-4 rounded-lg">
+                    <div className="flex justify-between">
+                      <div>
+                        <div className="mb-1">
+                          <span className="font-bold">456 Đường XYZ, Phường KLM, Quận NOP, Hà Nội</span>
+                        </div>
+                        <div className="text-gray-400">Nguyễn Văn A | 0123456789</div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => setDefaultAddress(2)} 
+                          className="px-3 py-1 bg-gray-600 hover:bg-gray-700 rounded"
+                        >
+                          Đặt làm mặc định
+                        </button>
+                        <button 
+                          onClick={() => openAddressModal({
+                            id: 2,
+                            street: "456 Đường XYZ",
+                            ward: "Phường KLM",
+                            district: "Quận NOP",
+                            city: "Hà Nội",
+                            isDefault: false
+                          })} 
+                          className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded"
+                        >
+                          Chỉnh sửa
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <button className="mt-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded">Cập Nhật</button>
-              <button className="mt-2 ml-4 px-6 py-2 bg-green-600 hover:bg-green-700 rounded">Thêm Địa Chỉ Mới</button>
             </div>
-          </div>
-        );
+          );
       case "password":
         return (
           <div>
@@ -282,6 +411,7 @@ const AccountPage = () => {
   return (
     <div className="min-h-screen bg-bgOuter text-white">
       <EditModal />
+      <AddressModal />
       
       <header className="header bg-bgOuter shadow-md">
         <div className="flex justify-between items-center p-4">
