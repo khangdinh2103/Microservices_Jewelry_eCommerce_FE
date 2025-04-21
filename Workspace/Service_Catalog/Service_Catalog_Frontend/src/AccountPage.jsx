@@ -314,16 +314,53 @@ const AccountPage = () => {
           </div>
         );
       
-      case "favorites":
+        case "favorites":
         return (
           <div>
             <h1 className="text-3xl font-bold mb-4">Sản Phẩm Yêu Thích</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5].map((item) => (
-                <div key={item} className="bg-bgInner p-4 rounded-lg">
-                  <div className="aspect-square bg-gray-700 mb-3 rounded"></div>
-                  <h3 className="text-lg font-medium">Sản phẩm yêu thích #{item}</h3>
-                  <p className="text-gray-400">2.500.000 ₫</p>
+              {[
+                {
+                  id: 1,
+                  name: "Nhẫn Kim Cương Emerald Cut",
+                  price: 32500000,
+                  image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8ZGlhbW9uZCUyMHJpbmd8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60"
+                },
+                {
+                  id: 2,
+                  name: "Vòng Tay Kim Cương Infinity",
+                  price: 18900000,
+                  image: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZGlhbW9uZCUyMGJyYWNlbGV0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60"
+                },
+                {
+                  id: 3,
+                  name: "Bông Tai Ngọc Trai Akoya",
+                  price: 12450000,
+                  image: "https://images.unsplash.com/photo-1589128777073-263566ae5e4d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cGVhcmwlMjBlYXJyaW5nc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60"
+                },
+                {
+                  id: 4,
+                  name: "Dây Chuyền Bạch Kim Pendant",
+                  price: 15800000,
+                  image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8ZGlhbW9uZCUyMG5lY2tsYWNlfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60"
+                },
+                {
+                  id: 5,
+                  name: "Nhẫn Sapphire Xanh Royal",
+                  price: 27600000,
+                  image: "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2FwcGhpcmUlMjByaW5nfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60"
+                }
+              ].map((item) => (
+                <div key={item.id} className="bg-bgInner p-4 rounded-lg">
+                  <div className="aspect-square mb-3 rounded overflow-hidden">
+                    <img 
+                      src={item.image} 
+                      alt={item.name}
+                      className="w-full h-full object-cover transform transition-transform duration-300 hover:scale-105"
+                    />
+                  </div>
+                  <h3 className="text-lg font-medium">{item.name}</h3>
+                  <p className="text-gray-400">{item.price.toLocaleString()} ₫</p>
                   <div className="flex gap-2 mt-3">
                     <button className="flex-1 px-3 py-2 text-sm bg-blue-600 hover:bg-blue-700 rounded">Thêm vào giỏ</button>
                     <button className="px-3 py-2 text-sm bg-red-600 hover:bg-red-700 rounded">Xóa</button>
