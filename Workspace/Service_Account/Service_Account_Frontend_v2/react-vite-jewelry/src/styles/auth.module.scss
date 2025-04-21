@@ -1,13 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-// Các biến màu hiện có
+
+// Các biến màu cập nhật
 $color-white: #ffffff;
 $color-light: #f1f5f9;
 $color-black: #121212;
 $color-night: #001632;
 
 $color-red: #f44336;
-$color-blue: #1a73e8;
+$color-blue: #4a90e2;
+$color-gold: #d4af37;
 $color-gray: #80868b;
 $color-grayish: #dadce0;
 
@@ -17,9 +19,9 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
 
 // Kiểu dáng cập nhật cho trang đăng nhập
 .login-page,
-.register-page ,
-.forgot-password-page { // Thêm forgot-password-page
-    background: rgb(49, 47, 48); // Nền tối giống LoginPage
+.register-page,
+.forgot-password-page {
+    background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -32,9 +34,15 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
     padding: 20px 0;
 
     .logo {
-        width: 80px; // Kích thước logo
+        width: 100px;
         margin: 0 auto;
         display: block;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: scale(1.05);
+        }
     }
   }
 
@@ -48,52 +56,82 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
 
     .container {
       width: 100%;
-      max-width: 80rem;
+      max-width: 1200px;
       margin: 0 auto;
 
       .split-container {
         display: flex;
-        background: #2a2a2a; // Nền sáng hơn một chút để dễ nhìn
-        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
         overflow: hidden;
-        box-shadow: $shadow-large;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+        }
 
         // Phần bên trái: Bộ sưu tập hình ảnh
         .image-section {
           flex: 1;
-          padding: 0;
-          background: transparent; // Nền tối hơn cho phần hình ảnh
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          position: relative;
+          overflow: hidden;
 
           .image-collage {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 550px;
-            max-height: 100%;
-            position: relative;
-
+            height: 100%;
+            
             .main-image {
               width: 100%;
-              height: 300px;
+              height: 350px;
               object-fit: cover;
-              border-radius: 0;
+              transition: transform 0.5s ease;
+              
+              &:hover {
+                transform: scale(1.05);
+              }
             }
 
             .sub-images {
               display: flex;
-                gap: 15px;
-                flex-direction: row  ;
-              width: 100%;
+              gap: 4px;
+              margin-top: 4px;
 
               .sub-image {
-                width: 100%;
+                width: 50%;
                 height: 150px;
                 object-fit: cover;
-                border-radius: 0;
+                transition: transform 0.5s ease;
+                
+                &:hover {
+                  transform: scale(1.05);
+                }
+              }
+            }
+            
+            .image-overlay {
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+              padding: 30px 20px;
+              text-align: center;
+              
+              h2 {
+                font-size: 28px;
+                font-weight: 700;
+                margin-bottom: 10px;
+                color: $color-gold;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+              }
+              
+              p {
+                font-size: 16px;
+                color: $color-white;
+                opacity: 0.9;
+                max-width: 80%;
+                margin: 0 auto;
               }
             }
           }
@@ -103,7 +141,7 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
         .form-section {
           flex: 1;
           padding: 40px;
-          background: #2a2a2a;
+          background: rgba(42, 42, 42, 0.7);
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -113,10 +151,17 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
             margin-bottom: 30px;
 
             .text-large {
-              font-size: 36px;
+              font-size: 32px;
               font-weight: 700;
-              color: $color-white;
+              color: $color-gold;
+              margin-bottom: 5px;
               letter-spacing: 1px;
+            }
+            
+            .welcome-text {
+              color: $color-grayish;
+              font-size: 16px;
+              margin-top: 5px;
             }
           }
 
@@ -127,31 +172,37 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
 
             .ant-form-item-label {
               label {
-                color: $color-light; // Màu sáng hơn để dễ nhìn
-                font-size: 16px;
+                color: $color-light;
+                font-size: 14px;
                 font-weight: 500;
               }
             }
 
             .ant-input,
             .ant-input-password {
-              background: #3a3a3a; // Nền sáng hơn để dễ nhìn
-              border: none;
+              background: rgba(255, 255, 255, 0.1);
+              border: 1px solid rgba(255, 255, 255, 0.2);
               color: $color-white;
               padding: 12px 15px;
-              border-radius: 25px;
-              font-size: 16px;
-              transition: background 0.3s ease, box-shadow 0.3s ease;
+              border-radius: 8px;
+              font-size: 14px;
+              height: auto;
+              transition: all 0.3s ease;
 
               &::placeholder {
-                color: $color-gray;
-                font-size: 14px;
+                color: rgba(255, 255, 255, 0.5);
               }
 
-              &:focus {
-                background: #454545;
-                box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+              &:hover, &:focus {
+                background: rgba(255, 255, 255, 0.15);
+                border-color: $color-gold;
+                box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
               }
+            }
+            
+            .input-icon {
+              color: rgba(255, 255, 255, 0.6);
+              margin-right: 8px;
             }
 
             .forgot-password {
@@ -159,13 +210,13 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
               margin-bottom: 20px;
 
               a {
-                color: $color-blue; // Màu xanh cho liên kết
+                color: $color-gold;
                 text-decoration: none;
                 font-size: 14px;
                 transition: color 0.3s ease;
 
                 &:hover {
-                  color: lighten($color-blue, 10%); // Sáng hơn khi hover
+                  color: lighten($color-gold, 10%);
                   text-decoration: underline;
                 }
               }
@@ -173,40 +224,94 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
 
             .login-button {
               width: 100%;
-              background: $color-blue; // Màu xanh nổi bật
+              background: linear-gradient(135deg, $color-gold, darken($color-gold, 15%));
               color: $color-white;
               border: none;
               padding: 12px;
               font-size: 16px;
               font-weight: 600;
-              border-radius: 25px;
-              box-shadow: $shadow-medium;
-              padding: 0px 20px;
-              transition: background 0.3s ease, transform 0.2s ease;
+              border-radius: 8px;
+              height: auto;
+              margin-top: 10px;
+              transition: all 0.3s ease;
 
               &:hover {
-                background: darken($color-blue, 10%);
+                background: linear-gradient(135deg, lighten($color-gold, 5%), darken($color-gold, 10%));
                 transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
               }
 
               &:active {
                 transform: translateY(0);
               }
             }
+            .divider {
+              display: flex;
+              align-items: center;
+              margin: 20px 0;
+              
+              &:before, &:after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: rgba(0, 0, 0, 0.1);
+              }
+              
+              span {
+                padding: 0 15px;
+                color: #666;
+                font-size: 14px;
+              }
+            }
+            
+            .social-login {
+              display: flex;
+              gap: 10px;
+              margin-bottom: 20px;
+              
+              button {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                height: 40px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+              }
+              
+              .facebook-btn {
+                background: #3b5998;
+                color: white;
+                border: none;
+                
+                &:hover {
+                  background: #344e86;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                }
+                
+                .social-icon {
+                  font-size: 18px;
+                }
+              }
+            }
 
             .register-link {
               text-align: center;
               color: $color-white;
-              margin-top: 20px;
+              margin-top: 10px;
               font-size: 14px;
 
               a {
-                color: $color-blue; // Màu xanh cho liên kết
+                color: $color-gold;
                 text-decoration: none;
+                font-weight: 500;
                 transition: color 0.3s ease;
 
                 &:hover {
-                  color: lighten($color-blue, 10%); // Sáng hơn khi hover
+                  color: lighten($color-gold, 10%);
                   text-decoration: underline;
                 }
               }
@@ -220,42 +325,80 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
   // Phần chân trang
   .footer {
     padding: 30px 20px;
-    background: #1e1e1e; // Nền chân trang sáng hơn một chút
+    background: rgba(0, 0, 0, 0.3);
     color: $color-white;
     font-size: 14px;
+    margin-top: 40px;
 
     .footer-content {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
-      max-width: 80rem;
+      max-width: 1200px;
       margin: 0 auto;
       padding-bottom: 20px;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 20px;
+      }
 
       .footer-section {
+        flex: 1;
+        min-width: 200px;
+        padding: 0 15px;
+        
         h4 {
           font-size: 16px;
           font-weight: 600;
           margin-bottom: 15px;
-          color: $color-white;
+          color: $color-gold;
+          position: relative;
+          padding-bottom: 10px;
+          
+          &:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background: $color-gold;
+          }
         }
 
         p {
           margin: 8px 0;
           color: $color-grayish;
           font-size: 13px;
+          transition: color 0.3s ease;
+          
+          &:hover {
+            color: $color-white;
+          }
         }
 
         .social-icons {
           display: flex;
-          gap: 12px;
+          gap: 15px;
+          margin-top: 15px;
 
           a {
             color: $color-white;
             font-size: 18px;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
             &:hover {
-              color: $color-light;
+              color: $color-gold;
+              background: rgba(255, 255, 255, 0.2);
+              transform: translateY(-3px);
             }
           }
         }
@@ -264,8 +407,8 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
 
     .footer-bottom {
       text-align: center;
-      padding-top: 15px;
-      border-top: 1px solid $color-grayish;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       color: $color-grayish;
       font-size: 12px;
     }
@@ -293,11 +436,11 @@ $shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0,
     &-links {
       font-size: 1rem;
       font-weight: 400;
-      color: $color-blue; // Màu xanh cho liên kết
+      color: $color-gold;
 
       &:hover {
         text-decoration: underline;
-        color: lighten($color-blue, 10%);
+        color: lighten($color-gold, 10%);
       }
     }
   }

@@ -134,3 +134,13 @@ export const getUserProfile = async () => {
   export const changeUserPassword = async (data: { oldPassword: string; newPassword: string }) => {
     return axios.put("/api/v1/profile/change-password", data);
   };
+
+
+//Module auth login with google
+export const getGoogleLoginUrl = () => {
+    return axios.get<IBackendRes<{login_url: string}>>('/api/v1/auth/google-login-link');
+}
+
+export const handleGoogleLoginCallback = () => {
+    return axios.get<IBackendRes<IAccount>>('/api/v1/auth/google');
+}
