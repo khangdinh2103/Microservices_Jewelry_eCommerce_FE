@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import loginImage from '../assets/images/login.png'
+import { useAuth } from '../contexts/AuthContext'
 
 const Login = () => {
   const [headerHtml, setHeaderHtml] = useState('')
@@ -7,88 +8,56 @@ const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  
+  const { login, loading, isAuthenticated } = useAuth()
 
   useEffect(() => {
-    // Kiểm tra nếu đã đăng nhập
-    fetch('http://localhost:8101/api/v1/auth/refresh', {
-      method: 'GET',
-      credentials: 'include',
-    })
-    .then(response => {
-      if (response.ok) {
-        // Đã đăng nhập, chuyển hướng về trang chủ
-        window.location.href = '/'
-        return
-      }
-    })
-    .catch(err => {
-      console.error('Error checking auth status:', err)
-    })
+    // Kiểm tra nếu đã đăng nhập thì chuyển hướng về trang chủ
+    if (isAuthenticated) {
+      window.location.href = '/'
+      return
+    }
     
-    // Tải fragment header-lite
-    fetch('/fragments/header-lite.html')
-      .then(response => response.text())
-      .then(html => {
-        const parser = new DOMParser()
-        const doc = parser.parseFromString(html, 'text/html')
-        const headerContent = doc.querySelector('header')?.outerHTML || ''
+    // Tải fragment header và footer
+    const loadFragments = async () => {
+      try {
+        const [headerResponse, footerResponse] = await Promise.all([
+          fetch('/fragments/header-lite.html'),
+          fetch('/fragments/footer.html')
+        ])
+        
+        const headerText = await headerResponse.text()
+        const footerText = await footerResponse.text()
+        
+        const headerParser = new DOMParser()
+        const footerParser = new DOMParser()
+        
+        const headerDoc = headerParser.parseFromString(headerText, 'text/html')
+        const footerDoc = footerParser.parseFromString(footerText, 'text/html')
+        
+        const headerContent = headerDoc.querySelector('header')?.outerHTML || ''
+        const footerContent = footerDoc.querySelector('footer')?.outerHTML || ''
+        
         setHeaderHtml(headerContent)
-      })
-      .catch(err => console.error('Error loading header fragment:', err))
-
-    // Tải fragment footer
-    fetch('/fragments/footer.html')
-      .then(response => response.text())
-      .then(html => {
-        const parser = new DOMParser()
-        const doc = parser.parseFromString(html, 'text/html')
-        const footerContent = doc.querySelector('footer')?.outerHTML || ''
         setFooterHtml(footerContent)
-      })
-      .catch(err => console.error('Error loading footer fragment:', err))
-  }, [])
+      } catch (err) {
+        console.error('Lỗi khi tải fragments:', err)
+      }
+    }
+    
+    loadFragments()
+  }, [isAuthenticated])
 
-  const handleLogin = async (e: any) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setIsLoading(true)
     
     try {
-      // Dựa vào Service_Account_Frontend_v2 để xác định định dạng đăng nhập
-      const response = await fetch('http://localhost:8101/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Quan trọng để nhận cookie từ backend
-        body: JSON.stringify({
-          username, // Backend sử dụng 'username' để nhận email/username
-          password
-        })
-      })
-      
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.message || 'Đăng nhập thất bại')
-      }
-      
-      const data = await response.json()
-      
-      // Lưu thông tin người dùng vào localStorage
-      if (data.data && data.data.user) {
-        localStorage.setItem('userName', data.data.user.name || data.data.user.email)
-        localStorage.setItem('userEmail', data.data.user.email)
-      }
-      
-      setIsLoading(false)
-      
-      // Chuyển hướng về trang chủ
+      await login(username, password)
+      // Sau khi đăng nhập thành công, chuyển hướng về trang chủ
       window.location.href = '/'
-    } catch (err) {
-      setIsLoading(false)
-      setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi khi đăng nhập')
-      console.error('Login error:', err)
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Đã xảy ra lỗi khi đăng nhập')
     }
   }
 
@@ -143,17 +112,17 @@ const Login = () => {
               </div>
               
               <div className="flex justify-end text-sm">
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href="/forgot-password" className="text-gray-300 hover:text-white">
                   Quên Mật Khẩu?
                 </a>
               </div>
               
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={loading}
                 className="w-full py-3 bg-[#f8f3ea] text-gray-900 font-medium rounded-md hover:bg-opacity-90 transition-colors disabled:opacity-50"
               >
-                {isLoading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
+                {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
               </button>
             </form>
           </div>

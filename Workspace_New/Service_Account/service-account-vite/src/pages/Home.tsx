@@ -1,67 +1,70 @@
+// src/pages/Home.tsx
 import { useState, useEffect } from 'react'
+import { useAuth } from '../contexts/AuthContext'
 
 const Home = () => {
-  const [isLoading, setIsLoading] = useState(true)
   const [headerHtml, setHeaderHtml] = useState('')
-  
+  const [footerHtml, setFooterHtml] = useState('')
+  const [contentHtml, setContentHtml] = useState('')
+  const { user, isAuthenticated, loading } = useAuth()
+
   useEffect(() => {
-    // Kiểm tra đăng nhập
-    const checkAuth = async () => {
+    // Nếu đang tải hoặc chưa xác thực thì không làm gì
+    if (loading) return;
+
+    // Nếu không xác thực thì chuyển hướng đến trang đăng nhập
+    if (!isAuthenticated) {
+      window.location.href = '/login'
+      return
+    }
+
+    // Tải fragments
+    const loadFragments = async () => {
       try {
-        // Kiểm tra từ localStorage
-        const storedName = localStorage.getItem('userName')
+        // Tải header-auth fragment
+        const headerResponse = await fetch('/fragments/header-auth.html')
+        let headerText = await headerResponse.text()
         
-        if (!storedName) {
-          // Nếu không có trong localStorage, gọi API để kiểm tra
-          const response = await fetch('http://localhost:8101/api/v1/auth/refresh', {
-            method: 'GET',
-            credentials: 'include',
-          })
-          
-          if (!response.ok) {
-            // Chưa đăng nhập, chuyển về trang đăng nhập
-            window.location.href = '/login'
-            return
-          }
-          
-          const data = await response.json()
-          if (data.data && data.data.user) {
-            const name = data.data.user.name || data.data.user.email
-            localStorage.setItem('userName', name)
-            localStorage.setItem('userEmail', data.data.user.email || '')
-          } else {
-            window.location.href = '/login'
-            return
-          }
+        // Tải footer fragment
+        const footerResponse = await fetch('/fragments/footer.html')
+        const footerText = await footerResponse.text()
+        
+        // Tải nội dung trang chủ
+        const contentResponse = await fetch('/fragments/home-content.html')
+        let contentText = await contentResponse.text()
+        
+        // Thay thế placeholder trong header bằng tên người dùng thực tế
+        if (user?.name) {
+          headerText = headerText.replace('{{userName}}', user.name)
+          contentText = contentText.replace('{{userName}}', user.name)
         }
         
-        // Tải header-auth với script đã được chuẩn bị
-        const response = await fetch('/fragments/header-auth.html')
-        const html = await response.text()
-        setHeaderHtml(html)
-        setIsLoading(false)
-      } catch (error) {
-        console.error('Error verifying authentication:', error)
-        window.location.href = '/login'
+        setHeaderHtml(headerText)
+        setFooterHtml(footerText)
+        setContentHtml(contentText)
+      } catch (err) {
+        console.error('Lỗi khi tải fragments:', err)
       }
     }
     
-    checkAuth()
-  }, [])
+    loadFragments()
+  }, [isAuthenticated, loading, user])
 
-  if (isLoading) {
+  if (loading) {
     return <div className="flex justify-center items-center min-h-screen">Đang tải...</div>
   }
 
   return (
-    <div>
-      {/* Sử dụng iframe để đảm bảo tất cả styles và scripts từ fragment hoạt động đúng */}
-      <iframe
-        srcDoc={headerHtml}
-        title="Header"
-        style={{ width: '100%', height: '100vh', border: 'none' }}
-      ></iframe>
-    </div>
+    <>
+      {/* Header */}
+      <div dangerouslySetInnerHTML={{ __html: headerHtml }}></div>
+      
+      {/* Main Content */}
+      <div dangerouslySetInnerHTML={{ __html: contentHtml }}></div>
+      
+      {/* Footer */}
+      <div dangerouslySetInnerHTML={{ __html: footerHtml }}></div>
+    </>
   )
 }
 
