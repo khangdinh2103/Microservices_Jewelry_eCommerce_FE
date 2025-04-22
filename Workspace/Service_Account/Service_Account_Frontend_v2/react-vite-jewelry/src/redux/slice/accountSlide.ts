@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { callFetchAccount, updateUserProfile } from '@/config/api';
-
+import { callLogin } from '../../config/api';
 // Fetch account data
 export const fetchAccount = createAsyncThunk(
     'account/fetchAccount',

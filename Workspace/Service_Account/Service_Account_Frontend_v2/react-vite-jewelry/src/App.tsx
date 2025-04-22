@@ -24,7 +24,7 @@ import RolePage from './pages/admin/role';
 import UserPage from './pages/admin/user';
 import { fetchAccount } from './redux/slice/accountSlide';
 import LayoutApp from './components/share/layout.app';
-
+import OAuthCallback from '@/pages/auth/oauth-callback';
 
 
 const LayoutClient = () => {
@@ -122,6 +122,7 @@ export default function App() {
     },
     { path: "/forgot-password", element: <ForgotPasswordPage /> },
     { path: "/reset-password", element: <ResetPasswordPage /> },
+    { path: "/oauth-callback", element: <OAuthCallback />}
   ]);
 
   return (

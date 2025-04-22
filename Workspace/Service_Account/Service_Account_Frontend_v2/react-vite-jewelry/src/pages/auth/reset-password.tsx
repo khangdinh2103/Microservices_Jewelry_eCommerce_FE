@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { resetPassword } from "../../config/api";
+import styles from 'styles/auth.module.scss';
+import AuthHeader from '@/components/auth/AuthHeader';
+import AuthFooter from '@/components/auth/AuthFooter';
 
 const ResetPassword = () => {
     const [newPassword, setNewPassword] = useState("");
@@ -26,7 +29,26 @@ const ResetPassword = () => {
     };
 
     return (
-        <>
+        <div className={styles["reset-password-page"]}>
+            <AuthHeader />
+            <main className={styles.main}>
+                <div className="auth-container">
+                    <h2 className="auth-title">Đặt Lại Mật Khẩu</h2>
+                    <form onSubmit={handleSubmit} className="auth-form">
+                        <input
+                            type="password"
+                            placeholder="Nhập mật khẩu mới"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            required
+                            className="auth-input"
+                        />
+                        <button type="submit" className="auth-button">Xác nhận</button>
+                    </form>
+                    {message && <p className="auth-message">{message}</p>}
+                </div>
+            </main>
+            <AuthFooter />
             <style>
                 {`
                     .auth-container {
@@ -83,22 +105,7 @@ const ResetPassword = () => {
                     }
                 `}
             </style>
-            <div className="auth-container">
-                <h2 className="auth-title">Đặt Lại Mật Khẩu</h2>
-                <form onSubmit={handleSubmit} className="auth-form">
-                    <input
-                        type="password"
-                        placeholder="Nhập mật khẩu mới"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        required
-                        className="auth-input"
-                    />
-                    <button type="submit" className="auth-button">Xác nhận</button>
-                </form>
-                {message && <p className="auth-message">{message}</p>}
-            </div>
-        </>
+        </div>
     );
 };
 
