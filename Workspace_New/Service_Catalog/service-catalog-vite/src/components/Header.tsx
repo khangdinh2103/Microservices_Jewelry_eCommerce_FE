@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 import './Header.css';
 import ChatBot from './ChatBot';
 
 const Header = () => {
     const { user, logout, isAuthenticated, loading } = useAuth();
+    const { totalItems } = useCart();
     const [showDropdown, setShowDropdown] = useState(false);
     const [showChatbot, setShowChatbot] = useState(false);
 
@@ -67,9 +69,16 @@ const Header = () => {
                         <i className="fas fa-phone-alt"></i>
                         <span className="ml-2">Liên Hệ</span>
                     </Link>
-                    <Link to="/cart" className="text-white hover:text-gray-300 transition-colors flex items-center">
+                    
+                    {/* Giỏ Hàng với số lượng sản phẩm */}
+                    <Link to="/cart" className="text-white hover:text-gray-300 transition-colors flex items-center relative">
                         <i className="fas fa-shopping-cart"></i>
                         <span className="ml-2 hidden md:inline">Giỏ Hàng</span>
+                        {totalItems > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                {totalItems}
+                            </span>
+                        )}
                     </Link>
                     
                     {loading ? (

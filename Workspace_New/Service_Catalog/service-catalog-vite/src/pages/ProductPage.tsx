@@ -5,6 +5,8 @@ import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import { Product } from '../types';
 import { fetchProductById, fetchSimilarProducts } from '../services/api';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,6 +16,11 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  
+  const { addToCart, error: cartError } = useCart();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -63,6 +70,33 @@ const ProductPage = () => {
   const handleDecreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
+    }
+  };
+
+  // Hàm xử lý thêm vào giỏ hàng
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      // Hiển thị thông báo hoặc chuyển hướng đến trang đăng nhập
+      window.alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+      // Hoặc: navigate('/login');
+      return;
+    }
+    
+    if (!product) return;
+    
+    setAddingToCart(true);
+    try {
+      await addToCart(product.id, quantity);
+      setSuccessMessage('Đã thêm sản phẩm vào giỏ hàng!');
+      
+      // Xóa thông báo sau 3 giây
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+    } catch (err) {
+      console.error('Error adding to cart:', err);
+    } finally {
+      setAddingToCart(false);
     }
   };
 
