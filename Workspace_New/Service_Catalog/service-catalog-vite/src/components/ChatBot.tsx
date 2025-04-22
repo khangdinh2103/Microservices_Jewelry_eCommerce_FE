@@ -42,9 +42,9 @@ const ChatBot: React.FC<ChatBotProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="chatbot-modal fixed bottom-0 right-0 mb-4 mr-4 flex flex-col w-80 h-96 bg-white rounded-lg shadow-lg z-50">
+    <div className="chatbot-modal fixed bottom-0 left-0 flex flex-col w-80 bg-white shadow-lg z-50 h-[calc(100vh-96px)]">
       {/* Header */}
-      <div className="bg-[#333333] text-white p-3 rounded-t-lg flex justify-between items-center">
+      <div className="bg-[#333333] text-white p-3 flex justify-between items-center">
         <h3 className="font-medium">Chat Bot</h3>
         <button onClick={onClose} className="hover:text-gray-300">
           <i className="fas fa-times"></i>
