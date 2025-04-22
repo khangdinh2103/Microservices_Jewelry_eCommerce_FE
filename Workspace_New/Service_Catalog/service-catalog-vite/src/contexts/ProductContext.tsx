@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import { fetchCategories, fetchFeaturedProducts } from '../services/api';
 import { Category, Product } from '../types';
 
 interface ProductContextProps {
@@ -32,25 +33,22 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
       setLoading(true);
       setError(null);
       try {
-        // Fetch categories
-        const categoriesResponse = await fetch('http://localhost:8105/api/categories');
-        if (!categoriesResponse.ok) {
-          throw new Error(`Categories API error: ${categoriesResponse.status}`);
-        }
-        const categoriesData = await categoriesResponse.json();
-        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+        // Fetch các dữ liệu cần thiết
+        const [categoriesData, featuredProductsData] = await Promise.all([
+          fetchCategories(),
+          fetchFeaturedProducts()
+        ]);
 
-        // Fetch featured products - assuming we can get featured products from a certain endpoint
-        const productsResponse = await fetch('http://localhost:8105/api/products?limit=8');
-        if (!productsResponse.ok) {
-          throw new Error(`Products API error: ${productsResponse.status}`);
-        }
-        const productsData = await productsResponse.json();
-        setFeaturedProducts(Array.isArray(productsData) ? productsData : []);
+        console.log('Categories:', categoriesData);
+        console.log('Featured Products:', featuredProductsData);
+
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+        setFeaturedProducts(Array.isArray(featuredProductsData) ? featuredProductsData : []);
       } catch (err) {
-        console.error('Error fetching data:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error');
-        // Set empty arrays to prevent map() errors
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        console.error('Error fetching data:', errorMessage);
+        setError(errorMessage);
+        // Đặt giá trị mặc định là mảng rỗng để tránh lỗi map()
         setCategories([]);
         setFeaturedProducts([]);
       } finally {

@@ -1,4 +1,5 @@
-import { Category, Collection, Product } from '../types';
+import { Category, Collection, Product } from "../types";
+
 
 const API_URL = 'http://localhost:8105/api';
 
