@@ -68,7 +68,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await authService.logout();
       setUser(null);
       setIsAuthenticated(false);
-      window.location.href = 'http://localhost:8201/login';
     } catch (error) {
       console.error('Lỗi khi đăng xuất:', error);
     }
@@ -78,21 +77,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const checkAuth = async () => {
       try {
         setLoading(true);
-        if (authService.isAuthenticated()) {
+        console.log('Khởi động ứng dụng, kiểm tra xác thực...');
+        
+        // Kiểm tra và lấy token từ refresh token nếu cần
+        const hasToken = await authService.checkAndGetToken();
+        console.log('Kết quả kiểm tra token:', hasToken);
+        
+        if (hasToken) {
           try {
+            console.log('Đang lấy thông tin user...');
             const userData = await authService.getCurrentUser();
             if (userData) {
+              console.log('Đã nhận thông tin user:', userData);
               setUser(userData.data || userData);
               setIsAuthenticated(true);
+            } else {
+              console.log('Không lấy được thông tin user');
             }
           } catch (err) {
-            console.error("Failed to get user data:", err);
-            await logout();
+            console.error("Lỗi khi lấy dữ liệu người dùng:", err);
           }
+        } else {
+          console.log('Không có token hợp lệ');
+          setIsAuthenticated(false);
         }
       } catch (err) {
         console.error('Kiểm tra xác thực thất bại:', err);
-        await logout();
       } finally {
         setLoading(false);
       }

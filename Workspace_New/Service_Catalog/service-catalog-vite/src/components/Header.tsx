@@ -1,15 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import ChatBot from './ChatBot';
 import './Header.css';
+import ChatBot from './ChatBot';
 
 const Header = () => {
-    const { user, logout, isAuthenticated } = useAuth();
+    const { user, logout, isAuthenticated, loading } = useAuth();
     const [showDropdown, setShowDropdown] = useState(false);
     const [showChatbot, setShowChatbot] = useState(false);
 
-    const handleLogout = async () => {
+    // Auth service URLs
+    const authServiceBaseUrl = 'http://localhost:8201';
+
+    useEffect(() => {
+        if (user) {
+            console.log('User data loaded in header:', user);
+        }
+    }, [user]);
+
+    const handleLogout = async (e: React.MouseEvent) => {
+        e.preventDefault();
         try {
             await logout();
         } catch (error) {
@@ -17,14 +27,14 @@ const Header = () => {
         }
     };
 
-    const handleImageError = (e: any) => {
-        e.target.src = '/default-avatar.png';
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+        e.currentTarget.src = '/default-avatar.png';
     };
 
     return (
         <header className="bg-[#333333] py-3 px-6">
             <div className="container mx-auto flex justify-between items-center">
-                {/* Left Side - Chatbot */}
+                {/* Left Side */}
                 <div className="w-1/3 flex justify-start">
                     <button
                         className="text-white hover:text-gray-300 transition-colors"
@@ -51,7 +61,7 @@ const Header = () => {
                     </Link>
                 </div>
 
-                {/* Right Side - Navigation */}
+                {/* Right Side - User Info or Login/Register */}
                 <div className="w-1/3 flex justify-end items-center space-x-6">
                     <Link to="/contact" className="text-white hover:text-gray-300 transition-colors hidden md:flex items-center">
                         <i className="fas fa-phone-alt"></i>
@@ -62,7 +72,9 @@ const Header = () => {
                         <span className="ml-2 hidden md:inline">Giỏ Hàng</span>
                     </Link>
                     
-                    {isAuthenticated && user ? (
+                    {loading ? (
+                        <div className="text-white">Đang tải...</div>
+                    ) : isAuthenticated && user ? (
                         <div className="nav-item relative">
                             <div
                                 className="flex items-center cursor-pointer text-white"
@@ -81,10 +93,10 @@ const Header = () => {
                             </div>
                             {showDropdown && (
                                 <div className="dropdown-menu absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-lg z-20">
-                                    <a href="http://localhost:8201/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <a href={`${authServiceBaseUrl}/profile`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                         Hồ Sơ
                                     </a>
-                                    <a href="http://localhost:8201/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <a href={`${authServiceBaseUrl}/settings`} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                         Cài Đặt
                                     </a>
                                     <a
@@ -99,10 +111,10 @@ const Header = () => {
                         </div>
                     ) : (
                         <div className="flex items-center space-x-4">
-                            <a href="http://localhost:8201/login" className="text-white hover:text-gray-300 transition-colors">
+                            <a href={`${authServiceBaseUrl}/login`} className="text-white hover:text-gray-300 transition-colors">
                                 Đăng Nhập
                             </a>
-                            <a href="http://localhost:8201/register" className="text-white hover:text-gray-300 transition-colors">
+                            <a href={`${authServiceBaseUrl}/register`} className="text-white hover:text-gray-300 transition-colors">
                                 Đăng Ký
                             </a>
                         </div>
@@ -110,7 +122,6 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* Chatbot Modal */}
             {showChatbot && <ChatBot onClose={() => setShowChatbot(false)} />}
         </header>
     );

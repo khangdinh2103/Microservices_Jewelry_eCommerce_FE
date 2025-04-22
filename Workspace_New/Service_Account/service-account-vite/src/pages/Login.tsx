@@ -27,11 +27,11 @@ const Login = () => {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
-
+    
         try {
             await login(username, password);
-            // Sau khi đăng nhập thành công, chuyển hướng về trang chủ
-            window.location.href = '/';
+            // Sau khi đăng nhập thành công, chuyển hướng về catalog service
+            window.location.href = 'http://localhost:8205/';
         } catch (err: any) {
             setError(err.response?.data?.message || 'Đã xảy ra lỗi khi đăng nhập');
         }
