@@ -13,21 +13,30 @@ const Login = () => {
     const {login, loading, isAuthenticated} = useAuth();
 
     useEffect(() => {
-        // Kiểm tra nếu đã đăng nhập thì chuyển hướng về trang chủ
-        if (isAuthenticated) {
-            window.location.href = '/';
+        // Kiểm tra URL có param logout=true không
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('logout') === 'true') {
+            // Nếu có, xóa token và đặt lại trạng thái
+            localStorage.removeItem('access_token');
+            // Có thể thêm một thông báo "Đã đăng xuất thành công"
+            return;
         }
         
+        // Kiểm tra nếu đã đăng nhập thì chuyển hướng về trang chủ
+        if (isAuthenticated) {
+            window.location.href = 'http://localhost:8205/';
+        }
+
         // Tự động scroll đến form đăng nhập
         if (formRef.current) {
-            formRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            formRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
         }
     }, [isAuthenticated]);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
-    
+
         try {
             await login(username, password);
             // Sau khi đăng nhập thành công, chuyển hướng về catalog service
@@ -43,12 +52,13 @@ const Login = () => {
 
             {/* Main Content - Thu gọn còn 80% chiều dài */}
             <div className="flex-grow flex bg-[#333333] text-white justify-center">
-                <div className="w-4/5 flex"> {/* 80% of screen width */}
+                <div className="w-4/5 flex">
+                    {' '}
+                    {/* 80% of screen width */}
                     {/* Left Side - Image */}
                     <div className="hidden md:block md:w-1/2 p-8">
                         <img src={loginImage} alt="Jewelry Collection" className="w-full h-full object-cover" />
                     </div>
-
                     {/* Right Side - Form */}
                     <div className="w-full md:w-1/2 flex items-center justify-center p-8">
                         <div ref={formRef} className="w-full max-w-md">

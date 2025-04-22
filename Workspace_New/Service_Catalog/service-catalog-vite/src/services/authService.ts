@@ -54,7 +54,7 @@ export const authService = {
     } finally {
       localStorage.removeItem('access_token');
       // Chuyển hướng về trang đăng nhập của Service_Account
-      window.location.href = `${accountBaseURL}/login`;
+      window.location.href = `${accountBaseURL}/login?logout=true`;
     }
   },
 
