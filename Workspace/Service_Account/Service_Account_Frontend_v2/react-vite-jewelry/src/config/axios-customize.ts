@@ -57,47 +57,47 @@ instance.interceptors.request.use(function (config) {
 // );
 
 // ... rest of the file ...
-instance.interceptors.request.use(
-    function (config) {
-      // Check if token exists in localStorage
-      const token = localStorage.getItem('access_token');
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    },
-    function (error) {
-      return Promise.reject(error);
-    }
-  );
-  export const handleTokenFromURL = () => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    const userId = params.get('userId');
-    const email = params.get('email');
-    const name = params.get('name');
-    const role = params.get('role');
+// instance.interceptors.request.use(
+//     function (config) {
+//       // Check if token exists in localStorage
+//       const token = localStorage.getItem('access_token');
+//       if (token) {
+//         config.headers.Authorization = `Bearer ${token}`;
+//       }
+//       return config;
+//     },
+//     function (error) {
+//       return Promise.reject(error);
+//     }
+//   );
+//   export const handleTokenFromURL = () => {
+//     const params = new URLSearchParams(window.location.search);
+//     const token = params.get('token');
+//     const userId = params.get('userId');
+//     const email = params.get('email');
+//     const name = params.get('name');
+//     const role = params.get('role');
   
-    if (token) {
-      localStorage.setItem('access_token', token);
+//     if (token) {
+//       localStorage.setItem('access_token', token);
       
-      // Store user info
-      if (userId && email && name) {
-        const userInfo = {
-          id: userId,
-          email,
-          name,
-          role: role || 'ROLE_USER'
-        };
-        localStorage.setItem('user_info', JSON.stringify(userInfo));
-      }
+//       // Store user info
+//       if (userId && email && name) {
+//         const userInfo = {
+//           id: userId,
+//           email,
+//           name,
+//           role: role || 'ROLE_USER'
+//         };
+//         localStorage.setItem('user_info', JSON.stringify(userInfo));
+//       }
       
-      // Clean up URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-      return true;
-    }
-    return false;
-  };
+//       // Clean up URL
+//       window.history.replaceState({}, document.title, window.location.pathname);
+//       return true;
+//     }
+//     return false;
+//   };
 /**
  * Handle all responses. It is possible to add handlers
  * for requests, but it is omitted here for brevity.
