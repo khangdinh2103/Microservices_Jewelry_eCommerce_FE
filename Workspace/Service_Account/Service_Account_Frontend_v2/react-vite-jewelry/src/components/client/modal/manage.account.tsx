@@ -3,6 +3,7 @@ import { isMobile } from "react-device-detect";
 import type { TabsProps } from 'antd';
 import { useState, useEffect } from 'react';
 import { getUserProfile, updateUserProfile, changeUserPassword } from "@/config/api";
+import OccasionManager from "./manage.occasions";
 
 interface IProps {
     open: boolean;
@@ -87,6 +88,11 @@ const ManageAccount = ({ open, onClose }: IProps) => {
             key: 'user-password',
             label: `Thay đổi mật khẩu`,
             children: <UserChangePassword />,
+        },
+        {
+            key: 'user-occasions',
+            label: `Dịp đặc biệt`,
+            children: <OccasionManager />,
         },
     ];
 

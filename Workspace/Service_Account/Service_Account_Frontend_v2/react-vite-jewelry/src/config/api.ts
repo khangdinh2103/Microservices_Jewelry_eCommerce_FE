@@ -1,4 +1,4 @@
-import { IBackendRes, IAccount, IUser, IModelPaginate, IGetAccount, IPermission, IRole} from '@/types/backend';
+import { IBackendRes, IAccount, IUser, IModelPaginate, IGetAccount, IPermission, IRole, IReqOccasionReminderDTO} from '@/types/backend';
 import axios from 'config/axios-customize';
 
 /**
@@ -136,6 +136,8 @@ export const getUserProfile = async () => {
   };
 
 
+
+
 //Module auth login with google
 export const getGoogleLoginUrl = () => {
     return axios.get<IBackendRes<{login_url: string}>>('/api/v1/auth/google-login-link');
@@ -144,3 +146,24 @@ export const getGoogleLoginUrl = () => {
 export const handleGoogleLoginCallback = () => {
     return axios.get<IBackendRes<IAccount>>('/api/v1/auth/google');
 }
+
+// Module Occasion Reminders
+export const getUserOccasionReminders = async (query = '') => {
+    return axios.get(`/api/v1/profile/occasions${query ? '?' + query : ''}`);
+};
+  
+export const getUpcomingOccasions = async () => {
+    return axios.get('/api/v1/profile/occasions/upcoming');
+};
+  
+export const createOccasionReminder = async (data: IReqOccasionReminderDTO) => {
+    return axios.post('/api/v1/profile/occasions', data);
+};
+  
+export const updateOccasionReminder = async (id: number, data: IReqOccasionReminderDTO) => {
+    return axios.put(`/api/v1/profile/occasions/${id}`, data);
+};
+
+export const deleteOccasionReminder = async (id: number) => {
+    return axios.delete(`/api/v1/profile/occasions/${id}`);
+};

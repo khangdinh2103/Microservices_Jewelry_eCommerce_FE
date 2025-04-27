@@ -25,6 +25,7 @@ import UserPage from './pages/admin/user';
 import { fetchAccount } from './redux/slice/accountSlide';
 import LayoutApp from './components/share/layout.app';
 import OAuthCallback from '@/pages/auth/oauth-callback';
+import LoginSuccess from './pages/auth/login-success';
 
 
 const LayoutClient = () => {
@@ -122,7 +123,8 @@ export default function App() {
     },
     { path: "/forgot-password", element: <ForgotPasswordPage /> },
     { path: "/reset-password", element: <ResetPasswordPage /> },
-    { path: "/oauth-callback", element: <OAuthCallback />}
+    { path: "/oauth-callback", element: <OAuthCallback />},
+    { path:"/login/success", element:<LoginSuccess />}
   ]);
 
   return (

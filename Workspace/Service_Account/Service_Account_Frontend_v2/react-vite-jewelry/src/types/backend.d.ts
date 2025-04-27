@@ -91,3 +91,36 @@ export interface IRole {
     createdAt?: string;
     updatedAt?: string;
 }
+
+// Thêm interface cho Occasion
+export interface IOccasionReminder {
+    id?: number;
+    occasionName: string;
+    occasionDate: string;
+    reminderDaysBefore: number;
+    notes?: string;
+    yearlyRecurring: boolean;
+    recipientName: string;
+    relationship: string;
+    giftPreferences?: string;
+    reminderSent?: boolean;
+    daysRemaining?: number;
+    productRecommendations?: any[];
+    createdAt?: string;
+    updatedAt?: string;
+  }
+  
+export interface IReqOccasionReminderDTO {
+    occasionName: string;
+    occasionDate: string;
+    reminderDaysBefore: number;
+    notes?: string;
+    yearlyRecurring: boolean;
+    recipientName: string;
+    relationship: string;
+    giftPreferences?: string;
+}
+  
+export interface IUpcomingOccasion extends IOccasionReminder {
+    daysUntil: number;
+}
