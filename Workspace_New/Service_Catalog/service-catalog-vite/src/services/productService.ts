@@ -80,5 +80,35 @@ export const productService = {
       console.error('Lỗi khi lấy màu sắc:', error);
       return [];
     }
+  },
+
+  getProductsBelowPrice: async (maxPrice: number): Promise<Product[]> => {
+    try {
+      const response = await axios.get(`/api/products/price/below/${maxPrice}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi lấy sản phẩm có giá dưới ${maxPrice}:`, error);
+      return [];
+    }
+  },
+  
+  getProductsBetweenPrices: async (minPrice: number, maxPrice: number): Promise<Product[]> => {
+    try {
+      const response = await axios.get(`/api/products/price/between/${minPrice}/${maxPrice}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi lấy sản phẩm có giá từ ${minPrice} đến ${maxPrice}:`, error);
+      return [];
+    }
+  },
+  
+  getProductsAbovePrice: async (minPrice: number): Promise<Product[]> => {
+    try {
+      const response = await axios.get(`/api/products/price/above/${minPrice}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Lỗi khi lấy sản phẩm có giá trên ${minPrice}:`, error);
+      return [];
+    }
   }
 };
