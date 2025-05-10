@@ -5,18 +5,19 @@ import federation from '@originjs/vite-plugin-federation';
 
 // https://vite.dev/config/
 export default defineConfig({
-	server: {
-		port: 3000,
-	},
+    server: {
+        port: 3001,
+    },
     plugins: [
-		react(), 
-		tailwindcss(),
-		federation({
-			name: 'container',
-			remotes: {
-				account: 'http://localhost:3001/assets/remoteEntry.js',
-			},
-			shared: ["react", "react-dom"],
-		})
-	],
+      react(),
+      tailwindcss(),
+      federation({
+        name: 'service-account',
+		filename: 'remoteEntry.js',
+		exposes: {
+			'./App': './src/App.tsx',
+		},
+		shared: ["react", "react-dom"],
+      })
+    ],
 });
