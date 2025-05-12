@@ -105,7 +105,6 @@ const Header = () => {
                         <span className="ml-2 font-medium">Liên Hệ</span>
                     </Link>
 
-                    {/* Giỏ Hàng với số lượng sản phẩm */}
                     <Link to="/cart" className="text-white hover:text-yellow-300 transition-colors flex items-center relative">
                         <i className="fas fa-shopping-cart text-lg"></i>
                         <span className="ml-2 hidden md:inline font-medium">Giỏ Hàng</span>
