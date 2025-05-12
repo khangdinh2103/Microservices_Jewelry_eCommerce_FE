@@ -1,15 +1,14 @@
 import React from 'react';
 import './App.css';
+import Header from './components/Header';
 
 const RemoteApp = React.lazy(() => import('catalog/App'));
 
 function App() {
     return (
         <div>
-            <h1>Container</h1>
-            <React.Suspense fallback="Loading Account App">
-                <RemoteApp />
-            </React.Suspense>
+            <Header />
+            <RemoteApp />
         </div>
     );
 }
