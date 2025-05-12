@@ -5,7 +5,7 @@ const Header = () => {
     const [showChatbot, setShowChatbot] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const {totalItems} = {totalItems: 0};
+    const {totalItems} = {totalItems: 2}; // Added demo value to show cart badge
     const {user, isAuthenticated, loading, logout} = {
         user: {
             name: 'Nguyễn Văn A',
@@ -19,7 +19,7 @@ const Header = () => {
     const authHref = '/auth';
     const userHref = '/user';
 
-    // Xử lý hiệu ứng cuộn trang
+    // Scroll effect handler
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > 50) {
@@ -49,7 +49,7 @@ const Header = () => {
         e.currentTarget.src = 'images/default.png';
     };
 
-    // Đóng dropdown khi click ra ngoài
+    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: any) => {
             if (showDropdown && !event.target.closest('.nav-item')) {
@@ -64,122 +64,172 @@ const Header = () => {
     }, [showDropdown]);
 
     return (
-        <header
-            className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 
-            ${scrolled ? 'bg-[#222222] shadow-lg py-2' : 'bg-[#333333] py-4'}`}
-        >
-            <div className="container mx-auto px-4 lg:px-6 flex justify-between items-center">
-                <div className="w-1/3 flex justify-start">
-                    <button
-                        className="text-white hover:text-yellow-300 transition-colors flex items-center"
-                        title="Chat Bot"
-                        onClick={() => setShowChatbot(!showChatbot)}
-                    >
-                        <i className="fas fa-comment text-xl"></i>
-                        <span className="ml-2 hidden md:inline font-medium">Chat Bot</span>
-                    </button>
-                </div>
-
-                <div className="w-1/3 flex justify-center">
-                    <Link to="/" className="flex items-center gap-3 group">
-                        <div className="w-12 h-12 border-2 border-white flex items-center justify-center relative group-hover:border-yellow-300 transition-colors">
-                            <svg viewBox="0 0 100 100" className="w-10 h-10 fill-[#000000]">
-                                <polygon points="50,0 100,50 50,100 0,50" />
-                                <text x="50" y="65" textAnchor="middle" fill="white" fontSize="40" fontWeight="bold">
-                                    T
-                                </text>
-                            </svg>
-                        </div>
-                        <div className="text-white text-xl font-bold tracking-widest group-hover:text-yellow-300 transition-colors">
-                            TINH TÚ
-                        </div>
-                    </Link>
-                </div>
-
-                <div className="w-1/3 flex justify-end items-center space-x-6">
-                    <Link
-                        to="/contact"
-                        className="text-white hover:text-yellow-300 transition-colors hidden md:flex items-center"
-                    >
-                        <i className="fas fa-phone-alt"></i>
-                        <span className="ml-2 font-medium">Liên Hệ</span>
-                    </Link>
-
-                    <Link to="/cart" className="text-white hover:text-yellow-300 transition-colors flex items-center relative">
-                        <i className="fas fa-shopping-cart text-lg"></i>
-                        <span className="ml-2 hidden md:inline font-medium">Giỏ Hàng</span>
-                        {totalItems > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-                                {totalItems}
-                            </span>
-                        )}
-                    </Link>
-
-                    {loading ? (
-                        <div className="text-white">
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        </div>
-                    ) : isAuthenticated && user ? (
-                        <div className="nav-item relative">
-                            <div
-                                className="flex items-center cursor-pointer text-white hover:text-yellow-300 transition-colors"
-                                onClick={() => setShowDropdown(!showDropdown)}
+        <>
+            <header
+                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 
+                ${scrolled 
+                    ? 'bg-white/95 backdrop-blur-sm shadow-md py-2' 
+                    : 'bg-gradient-to-r from-white to-gray-50 py-4'}`}
+            >
+                <div className="container mx-auto px-4 lg:px-6">
+                    {/* Top header with branding and user actions */}
+                    <div className="flex justify-between items-center">
+                        {/* Left section with chat bot */}
+                        <div className="w-1/4 flex justify-start">
+                            <button
+                                className="text-gray-700 hover:text-amber-600 transition-colors flex items-center group"
+                                title="Trợ giúp & Tư vấn"
+                                onClick={() => setShowChatbot(!showChatbot)}
                             >
-                                <div className="w-8 h-8 rounded-full overflow-hidden border border-white hover:border-yellow-300 transition-colors mr-2">
-                                    <img
-                                        src={user.avatarUrl || '/default-avatar.png'}
-                                        alt={user.name}
-                                        className="w-full h-full object-cover"
-                                        onError={handleImageError}
-                                    />
-                                </div>
-                                <span id="username-display" className="font-medium">
-                                    {user.name}
+                                <span className="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-amber-50 flex items-center justify-center transition-colors">
+                                    <i className="fas fa-gem text-sm group-hover:text-amber-600"></i>
                                 </span>
-                                <i
-                                    className={`fa-solid ${
-                                        showDropdown ? 'fa-chevron-up' : 'fa-chevron-down'
-                                    } ml-2 transition-transform`}
-                                ></i>
-                            </div>
-                            {showDropdown && (
-                                <div className="dropdown-menu absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-lg z-20 animate-fadeIn">
-                                    <a
-                                        href={`${userHref}/profile`}
-                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black transition-colors"
+                                <span className="ml-2 hidden md:inline font-medium text-sm">Tư vấn</span>
+                            </button>
+                        </div>
+
+                        {/* Center logo section */}
+                        <div className="w-1/2 flex justify-center">
+                            <Link to="/" className="flex items-center gap-2 group py-1">
+                                <div className="w-10 h-10 flex items-center justify-center relative">
+                                    <svg viewBox="0 0 100 100" className="w-full h-full">
+                                        <defs>
+                                            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" stopColor="#D4AF37" />
+                                                <stop offset="50%" stopColor="#F9F295" />
+                                                <stop offset="100%" stopColor="#D4AF37" />
+                                            </linearGradient>
+                                        </defs>
+                                        <polygon points="50,0 95,25 95,75 50,100 5,75 5,25" fill="url(#goldGradient)" />
+                                        <text x="50" y="62" textAnchor="middle" fill="#1A1A1A" fontSize="42" fontWeight="bold" fontFamily="serif">
+                                            T
+                                        </text>
+                                    </svg>
+                                </div>
+                                <div className="text-gray-800 text-xl font-serif tracking-wider group-hover:text-amber-700 transition-colors">
+                                    <span className="font-bold">TINH</span> <span className="font-light">TÚ</span>
+                                </div>
+                            </Link>
+                        </div>
+
+                        {/* Right section with user actions */}
+                        <div className="w-1/4 flex justify-end items-center space-x-5">
+                            <Link
+                                to="/contact"
+                                className="text-gray-700 hover:text-amber-600 transition-colors hidden md:flex items-center"
+                            >
+                                <span className="w-8 h-8 rounded-full bg-gray-100 hover:bg-amber-50 flex items-center justify-center transition-colors">
+                                    <i className="fas fa-phone-alt text-xs"></i>
+                                </span>
+                            </Link>
+
+                            <Link to="/cart" className="text-gray-700 hover:text-amber-600 transition-colors flex items-center relative">
+                                <span className="w-8 h-8 rounded-full bg-gray-100 hover:bg-amber-50 flex items-center justify-center transition-colors">
+                                    <i className="fas fa-shopping-bag text-sm"></i>
+                                </span>
+                                {totalItems > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                        {totalItems}
+                                    </span>
+                                )}
+                            </Link>
+
+                            {loading ? (
+                                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                                    <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            ) : isAuthenticated && user ? (
+                                <div className="nav-item relative">
+                                    <div
+                                        className="flex items-center cursor-pointer text-gray-700 hover:text-amber-600 transition-colors"
+                                        onClick={() => setShowDropdown(!showDropdown)}
                                     >
-                                        <i className="fas fa-user mr-2"></i>Hồ Sơ
-                                    </a>
+                                        <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 hover:border-amber-300 transition-colors">
+                                            <img
+                                                src={user.avatarUrl || '/default-avatar.png'}
+                                                alt={user.name}
+                                                className="w-full h-full object-cover"
+                                                onError={handleImageError}
+                                            />
+                                        </div>
+                                        <i
+                                            className={`fa-solid ${
+                                                showDropdown ? 'fa-chevron-up' : 'fa-chevron-down'
+                                            } ml-2 text-xs transition-transform`}
+                                        ></i>
+                                    </div>
+                                    {showDropdown && (
+                                        <div className="dropdown-menu absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-lg z-20 animate-fadeIn border border-gray-100">
+                                            <div className="px-4 py-2 border-b border-gray-100">
+                                                <p className="text-sm font-medium text-gray-800">{user.name}</p>
+                                                <p className="text-xs text-gray-500">Khách hàng VIP</p>
+                                            </div>
+                                            <a
+                                                href={`${userHref}/profile`}
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+                                            >
+                                                <i className="fas fa-user-circle mr-2 text-amber-600"></i>Hồ Sơ
+                                            </a>
+                                            <a
+                                                href={`${userHref}/orders`}
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+                                            >
+                                                <i className="fas fa-history mr-2 text-amber-600"></i>Lịch Sử Mua Hàng
+                                            </a>
+                                            <a
+                                                href={`${userHref}/wishlist`}
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+                                            >
+                                                <i className="fas fa-heart mr-2 text-amber-600"></i>Sản Phẩm Yêu Thích
+                                            </a>
+                                            <a
+                                                href={`${userHref}/settings`}
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
+                                            >
+                                                <i className="fas fa-cog mr-2 text-amber-600"></i>Cài Đặt
+                                            </a>
+                                            <div className="border-t border-gray-100 my-1"></div>
+                                            <a
+                                                href="#"
+                                                onClick={handleLogout}
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                                            >
+                                                <i className="fas fa-sign-out-alt mr-2"></i>Đăng Xuất
+                                            </a>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="flex items-center">
                                     <a
-                                        href={`${userHref}/settings`}
-                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-black transition-colors"
+                                        href={`${authHref}/login`}
+                                        className="text-gray-700 hover:text-amber-600 transition-colors font-medium text-sm border border-transparent hover:border-amber-200 px-4 py-1.5 rounded-full hover:bg-amber-50"
                                     >
-                                        <i className="fas fa-cog mr-2"></i>Cài Đặt
-                                    </a>
-                                    <div className="border-t border-gray-200 my-1"></div>
-                                    <a
-                                        href="#"
-                                        onClick={handleLogout}
-                                        className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                                    >
-                                        <i className="fas fa-sign-out-alt mr-2"></i>Đăng Xuất
+                                        <i className="fas fa-user-circle mr-1.5"></i> Đăng Nhập
                                     </a>
                                 </div>
                             )}
                         </div>
-                    ) : (
-                        <div className="flex items-center space-x-4">
-                            <a
-                                href={`${authHref}/login`}
-                                className="text-white hover:text-yellow-300 transition-colors font-medium"
-                            >
-                                <i className="fas fa-sign-in-alt mr-1"></i> Đăng Nhập
-                            </a>
-                        </div>
-                    )}
+                    </div>
+
+                    {/* Navigation menu - Add for a more complete header */}
+                    <nav className={`${scrolled ? 'mt-1' : 'mt-3'} transition-all duration-300 border-t border-gray-100 pt-2 hidden md:block`}>
+                        <ul className="flex justify-center space-x-10 text-sm font-medium">
+                            <li><Link to="/" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Trang Chủ</Link></li>
+                            <li><Link to="/collections/new" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Bộ Sưu Tập Mới</Link></li>
+                            <li><Link to="/category/nhan" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Nhẫn</Link></li>
+                            <li><Link to="/category/day-chuyen" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Dây Chuyền</Link></li>
+                            <li><Link to="/category/vong-tay" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Vòng Tay</Link></li>
+                            <li><Link to="/category/bong-tai" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Bông Tai</Link></li>
+                            <li><Link to="/promotions" className="text-amber-700 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Khuyến Mãi</Link></li>
+                        </ul>
+                    </nav>
                 </div>
-            </div>
-        </header>
+            </header>
+            
+            {/* Add header spacer to prevent content from hiding under fixed header */}
+            <div className={`${scrolled ? 'h-28' : 'h-36'} md:${scrolled ? 'h-32' : 'h-40'} transition-all duration-300`}></div>
+        </>
     );
 };
 
