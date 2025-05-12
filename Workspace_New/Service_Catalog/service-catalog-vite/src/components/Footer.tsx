@@ -3,16 +3,6 @@ const Footer = () => {
     <footer className="bg-[#1e1e1e] text-white py-10">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Bộ Trang Sức Mới Section */}
-          <div>
-            <h3 className="text-lg font-medium mb-4">Bộ Trang Sức Mới</h3>
-            <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Nhẫn Kim Cương</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Vòng Cổ Vàng</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Lắc Tay Bạc</a></li>
-            </ul>
-          </div>
-
           {/* Hỗ Trợ Section */}
           <div>
             <h3 className="text-lg font-medium mb-4">Hỗ Trợ</h3>

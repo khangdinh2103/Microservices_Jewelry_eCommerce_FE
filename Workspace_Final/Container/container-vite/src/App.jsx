@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from './components/Header';
+import Footer from './components/Footer';
 
 const CatalogApp = React.lazy(() => import('catalog/App'));
 
@@ -8,6 +9,7 @@ function App() {
         <div>
             <Header />
             {/* <CatalogApp /> */}
+            <Footer />
         </div>
     );
 }
