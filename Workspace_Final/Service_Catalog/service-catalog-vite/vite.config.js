@@ -9,26 +9,26 @@ export default defineConfig({
         react(),
         tailwindcss(),
         federation({
-            name: 'container',
-            remotes: {
-                account: 'http://localhost:3001/assets/remoteEntry.js',
-                catalog: 'http://localhost:3005/assets/remoteEntry.js',
+            name: 'service-catalog',
+            filename: 'remoteEntry.js',
+            exposes: {
+                './App': './src/App.jsx',
             },
             shared: ['react', 'react-dom'],
         }),
     ],
-	build: {
-		modulePreload: false,
-		target: 'esnext',
-		minify: false,
-		cssCodeSplit: false,
-	},
-	server: {
-		port: 3000,
-		cors: true,
-	},
-    preview: {
-        port: 3000,
+    build: {
+        modulePreload: false,
+        target: 'esnext',
+        minify: false,
+        cssCodeSplit: false,
+    },
+    server: {
+        port: 3005,
         cors: true,
-    }
+    },
+    preview: {
+        port: 3005,
+        cors: true,
+    },
 });

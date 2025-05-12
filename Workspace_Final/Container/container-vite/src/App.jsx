@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 
-const RemoteApp = React.lazy(() => import('account/App'));
+const RemoteApp = React.lazy(() => import('catalog/App'));
 
 function App() {
     return (
