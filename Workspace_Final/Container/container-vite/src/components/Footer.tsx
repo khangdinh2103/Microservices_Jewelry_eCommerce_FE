@@ -14,7 +14,8 @@ const Footer = () => {
                             placeholder="Email của bạn"
                             className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400"
                         />
-                        <button className="px-6 py-3 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition duration-300 font-medium">
+                        <button
+                            className="px-6 py-3 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition duration-300 font-medium">
                             Đăng Ký
                         </button>
                     </div>
@@ -29,12 +30,13 @@ const Footer = () => {
                                 <svg viewBox="0 0 100 100">
                                     <defs>
                                         <linearGradient id="footerGoldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" stopColor="#D4AF37" />
-                                            <stop offset="50%" stopColor="#F9F295" />
-                                            <stop offset="100%" stopColor="#D4AF37" />
+                                            <stop offset="0%" stopColor="#D4AF37"/>
+                                            <stop offset="50%" stopColor="#F9F295"/>
+                                            <stop offset="100%" stopColor="#D4AF37"/>
                                         </linearGradient>
                                     </defs>
-                                    <polygon points="50,0 95,25 95,75 50,100 5,75 5,25" fill="url(#footerGoldGradient)" />
+                                    <polygon points="50,0 95,25 95,75 50,100 5,75 5,25"
+                                             fill="url(#footerGoldGradient)"/>
                                     <text
                                         x="50"
                                         y="62"
@@ -90,12 +92,14 @@ const Footer = () => {
                         </h3>
                         <ul className="space-y-2.5">
                             <li>
-                                <Link to="/collections/new" className="text-gray-600 hover:text-amber-600 transition-colors">
+                                <Link to="/collections/new"
+                                      className="text-gray-600 hover:text-amber-600 transition-colors">
                                     Bộ Sưu Tập Mới
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/category/nhan" className="text-gray-600 hover:text-amber-600 transition-colors">
+                                <Link to="/category/nhan"
+                                      className="text-gray-600 hover:text-amber-600 transition-colors">
                                     Nhẫn
                                 </Link>
                             </li>
@@ -108,12 +112,14 @@ const Footer = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/category/vong-tay" className="text-gray-600 hover:text-amber-600 transition-colors">
+                                <Link to="/category/vong-tay"
+                                      className="text-gray-600 hover:text-amber-600 transition-colors">
                                     Vòng Tay
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/category/bong-tai" className="text-gray-600 hover:text-amber-600 transition-colors">
+                                <Link to="/category/bong-tai"
+                                      className="text-gray-600 hover:text-amber-600 transition-colors">
                                     Bông Tai
                                 </Link>
                             </li>
@@ -178,7 +184,7 @@ const Footer = () => {
                             <div className="flex items-start">
                                 <i className="fas fa-map-marker-alt text-amber-600 mt-1 mr-3"></i>
                                 <p className="text-gray-600">
-                                    12 Nguyễn Văn Bảo, Phường 4<br />
+                                    12 Nguyễn Văn Bảo, Phường 4<br/>
                                     Quận Gò Vấp, TP. Hồ Chí Minh
                                 </p>
                             </div>
@@ -230,13 +236,16 @@ const Footer = () => {
                         <div>
                             <h4 className="text-sm font-medium text-gray-700 mb-2">Vận Chuyển Bởi</h4>
                             <div className="flex space-x-3">
-                                <div className="h-7 px-2 bg-white rounded shadow-sm flex items-center justify-center text-xs font-medium text-gray-700">
+                                <div
+                                    className="h-7 px-2 bg-white rounded shadow-sm flex items-center justify-center text-xs font-medium text-gray-700">
                                     GHN
                                 </div>
-                                <div className="h-7 px-2 bg-white rounded shadow-sm flex items-center justify-center text-xs font-medium text-gray-700">
+                                <div
+                                    className="h-7 px-2 bg-white rounded shadow-sm flex items-center justify-center text-xs font-medium text-gray-700">
                                     GHTK
                                 </div>
-                                <div className="h-7 px-2 bg-white rounded shadow-sm flex items-center justify-center text-xs font-medium text-gray-700">
+                                <div
+                                    className="h-7 px-2 bg-white rounded shadow-sm flex items-center justify-center text-xs font-medium text-gray-700">
                                     Viettel Post
                                 </div>
                             </div>
@@ -247,7 +256,8 @@ const Footer = () => {
                 {/* Copyright */}
                 <div className="border-t border-gray-200 pt-6 text-center">
                     <p className="text-gray-500 text-sm">
-                        © {new Date().getFullYear()} Tinh Tú Jewelry. Phát Triển Bởi Sinh Viên Đại học Công Nghiệp TP. HCM
+                        © {new Date().getFullYear()} Tinh Tú Jewelry. Phát Triển Bởi Sinh Viên Đại học Công Nghiệp TP.
+                        HCM
                     </p>
                     <div className="mt-2 text-xs text-gray-400">
                         Tất cả các hình ảnh sản phẩm và nội dung chỉ dành cho mục đích giáo dục

@@ -17,16 +17,16 @@ export default defineConfig({
             shared: ['react', 'react-dom'],
         }),
     ],
-	build: {
-		modulePreload: false,
-		target: 'esnext',
-		minify: false,
-		cssCodeSplit: false,
-	},
-	server: {
-		port: 3000,
-		cors: true,
-	},
+    build: {
+        modulePreload: false,
+        target: 'esnext',
+        minify: false,
+        cssCodeSplit: false,
+    },
+    server: {
+        port: 3000,
+        cors: true,
+    },
     preview: {
         port: 3000,
         cors: true,

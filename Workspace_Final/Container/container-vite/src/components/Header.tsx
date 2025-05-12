@@ -13,7 +13,8 @@ const Header = () => {
         },
         isAuthenticated: true,
         loading: false,
-        logout: async () => {},
+        logout: async () => {
+        },
     };
 
     const authHref = '/auth';
@@ -67,8 +68,8 @@ const Header = () => {
         <>
             <header
                 className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 
-                ${scrolled 
-                    ? 'bg-white/95 backdrop-blur-sm shadow-md py-2' 
+                ${scrolled
+                    ? 'bg-white/95 backdrop-blur-sm shadow-md py-2'
                     : 'bg-gradient-to-r from-white to-gray-50 py-4'}`}
             >
                 <div className="container mx-auto px-4 lg:px-6">
@@ -81,7 +82,8 @@ const Header = () => {
                                 title="Trợ giúp & Tư vấn"
                                 onClick={() => setShowChatbot(!showChatbot)}
                             >
-                                <span className="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-amber-50 flex items-center justify-center transition-colors">
+                                <span
+                                    className="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-amber-50 flex items-center justify-center transition-colors">
                                     <i className="fas fa-gem text-sm group-hover:text-amber-600"></i>
                                 </span>
                                 <span className="ml-2 hidden md:inline font-medium text-sm">Tư vấn</span>
@@ -95,18 +97,20 @@ const Header = () => {
                                     <svg viewBox="0 0 100 100" className="w-full h-full">
                                         <defs>
                                             <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                <stop offset="0%" stopColor="#D4AF37" />
-                                                <stop offset="50%" stopColor="#F9F295" />
-                                                <stop offset="100%" stopColor="#D4AF37" />
+                                                <stop offset="0%" stopColor="#D4AF37"/>
+                                                <stop offset="50%" stopColor="#F9F295"/>
+                                                <stop offset="100%" stopColor="#D4AF37"/>
                                             </linearGradient>
                                         </defs>
-                                        <polygon points="50,0 95,25 95,75 50,100 5,75 5,25" fill="url(#goldGradient)" />
-                                        <text x="50" y="62" textAnchor="middle" fill="#1A1A1A" fontSize="42" fontWeight="bold" fontFamily="serif">
+                                        <polygon points="50,0 95,25 95,75 50,100 5,75 5,25" fill="url(#goldGradient)"/>
+                                        <text x="50" y="62" textAnchor="middle" fill="#1A1A1A" fontSize="42"
+                                              fontWeight="bold" fontFamily="serif">
                                             T
                                         </text>
                                     </svg>
                                 </div>
-                                <div className="text-gray-800 text-xl font-serif tracking-wider group-hover:text-amber-700 transition-colors">
+                                <div
+                                    className="text-gray-800 text-xl font-serif tracking-wider group-hover:text-amber-700 transition-colors">
                                     <span className="font-bold">TINH</span> <span className="font-light">TÚ</span>
                                 </div>
                             </Link>
@@ -118,17 +122,21 @@ const Header = () => {
                                 to="/contact"
                                 className="text-gray-700 hover:text-amber-600 transition-colors hidden md:flex items-center"
                             >
-                                <span className="w-8 h-8 rounded-full bg-gray-100 hover:bg-amber-50 flex items-center justify-center transition-colors">
+                                <span
+                                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-amber-50 flex items-center justify-center transition-colors">
                                     <i className="fas fa-phone-alt text-xs"></i>
                                 </span>
                             </Link>
 
-                            <Link to="/cart" className="text-gray-700 hover:text-amber-600 transition-colors flex items-center relative">
-                                <span className="w-8 h-8 rounded-full bg-gray-100 hover:bg-amber-50 flex items-center justify-center transition-colors">
+                            <Link to="/cart"
+                                  className="text-gray-700 hover:text-amber-600 transition-colors flex items-center relative">
+                                <span
+                                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-amber-50 flex items-center justify-center transition-colors">
                                     <i className="fas fa-shopping-bag text-sm"></i>
                                 </span>
                                 {totalItems > 0 && (
-                                    <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                    <span
+                                        className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                         {totalItems}
                                     </span>
                                 )}
@@ -136,7 +144,8 @@ const Header = () => {
 
                             {loading ? (
                                 <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                                    <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+                                    <div
+                                        className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
                                 </div>
                             ) : isAuthenticated && user ? (
                                 <div className="nav-item relative">
@@ -144,7 +153,8 @@ const Header = () => {
                                         className="flex items-center cursor-pointer text-gray-700 hover:text-amber-600 transition-colors"
                                         onClick={() => setShowDropdown(!showDropdown)}
                                     >
-                                        <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 hover:border-amber-300 transition-colors">
+                                        <div
+                                            className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 hover:border-amber-300 transition-colors">
                                             <img
                                                 src={user.avatarUrl || '/default-avatar.png'}
                                                 alt={user.name}
@@ -159,7 +169,8 @@ const Header = () => {
                                         ></i>
                                     </div>
                                     {showDropdown && (
-                                        <div className="dropdown-menu absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-lg z-20 animate-fadeIn border border-gray-100">
+                                        <div
+                                            className="dropdown-menu absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-lg z-20 animate-fadeIn border border-gray-100">
                                             <div className="px-4 py-2 border-b border-gray-100">
                                                 <p className="text-sm font-medium text-gray-800">{user.name}</p>
                                                 <p className="text-xs text-gray-500">Khách hàng VIP</p>
@@ -213,22 +224,38 @@ const Header = () => {
                     </div>
 
                     {/* Navigation menu - Add for a more complete header */}
-                    <nav className={`${scrolled ? 'mt-1' : 'mt-3'} transition-all duration-300 border-t border-gray-100 pt-2 hidden md:block`}>
+                    <nav
+                        className={`${scrolled ? 'mt-1' : 'mt-3'} transition-all duration-300 border-t border-gray-100 pt-2 hidden md:block`}>
                         <ul className="flex justify-center space-x-10 text-sm font-medium">
-                            <li><Link to="/" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Trang Chủ</Link></li>
-                            <li><Link to="/collections/new" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Bộ Sưu Tập Mới</Link></li>
-                            <li><Link to="/category/nhan" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Nhẫn</Link></li>
-                            <li><Link to="/category/day-chuyen" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Dây Chuyền</Link></li>
-                            <li><Link to="/category/vong-tay" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Vòng Tay</Link></li>
-                            <li><Link to="/category/bong-tai" className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Bông Tai</Link></li>
-                            <li><Link to="/promotions" className="text-amber-700 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Khuyến Mãi</Link></li>
+                            <li><Link to="/"
+                                      className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Trang
+                                Chủ</Link></li>
+                            <li><Link to="/collections/new"
+                                      className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Bộ
+                                Sưu Tập Mới</Link></li>
+                            <li><Link to="/category/nhan"
+                                      className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Nhẫn</Link>
+                            </li>
+                            <li><Link to="/category/day-chuyen"
+                                      className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Dây
+                                Chuyền</Link></li>
+                            <li><Link to="/category/vong-tay"
+                                      className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Vòng
+                                Tay</Link></li>
+                            <li><Link to="/category/bong-tai"
+                                      className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Bông
+                                Tai</Link></li>
+                            <li><Link to="/promotions"
+                                      className="text-amber-700 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Khuyến
+                                Mãi</Link></li>
                         </ul>
                     </nav>
                 </div>
             </header>
-            
+
             {/* Add header spacer to prevent content from hiding under fixed header */}
-            <div className={`${scrolled ? 'h-28' : 'h-36'} md:${scrolled ? 'h-32' : 'h-40'} transition-all duration-300`}></div>
+            <div
+                className={`${scrolled ? 'h-28' : 'h-36'} md:${scrolled ? 'h-32' : 'h-40'} transition-all duration-300`}></div>
         </>
     );
 };

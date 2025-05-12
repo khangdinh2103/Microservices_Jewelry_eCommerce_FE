@@ -7,9 +7,9 @@ const CatalogApp = React.lazy(() => import('catalog/App'));
 function App() {
     return (
         <div>
-            <Header />
+            <Header/>
             {/* <CatalogApp /> */}
-            <Footer />
+            <Footer/>
         </div>
     );
 }
