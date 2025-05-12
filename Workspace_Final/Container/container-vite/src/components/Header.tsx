@@ -1,5 +1,6 @@
 import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
+import ChatBot from './Chatbot';
 
 const Header = () => {
     const [showChatbot, setShowChatbot] = useState(false);
@@ -253,9 +254,9 @@ const Header = () => {
                 </div>
             </header>
 
-            {/* Add header spacer to prevent content from hiding under fixed header */}
-            <div
-                className={`${scrolled ? 'h-28' : 'h-36'} md:${scrolled ? 'h-32' : 'h-40'} transition-all duration-300`}></div>
+            <div className={`${scrolled ? 'h-28' : 'h-36'} md:${scrolled ? 'h-32' : 'h-40'} transition-all duration-300`}></div>
+
+            {showChatbot && <ChatBot onClose={() => setShowChatbot(false)} />}
         </>
     );
 };
