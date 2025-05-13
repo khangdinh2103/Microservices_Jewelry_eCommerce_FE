@@ -14,7 +14,7 @@ export default defineConfig({
                 account: 'http://localhost:3001/assets/remoteEntry.js',
                 catalog: 'http://localhost:3005/assets/remoteEntry.js',
             },
-            shared: ['react', 'react-dom'],
+            shared: ['react', 'react-dom', 'react-router-dom'],
         }),
     ],
     build: {
