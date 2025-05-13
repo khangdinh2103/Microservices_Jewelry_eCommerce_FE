@@ -1,22 +1,14 @@
 import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import ChatBot from './Chatbot';
+import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
     const [showChatbot, setShowChatbot] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const {totalItems} = {totalItems: 2}; // Added demo value to show cart badge
-    const {user, isAuthenticated, loading, logout} = {
-        user: {
-            name: 'Nguyễn Văn A',
-            avatarUrl: 'https://example.com/avatar.jpg',
-        },
-        isAuthenticated: false,
-        loading: false,
-        logout: async () => {
-        },
-    };
+    const { user, isAuthenticated, loading, logout } = useAuth(); // Assuming you have a useAuth hook to get user info and logout function
 
     const authHref = '/account';
     const userHref = '/user';

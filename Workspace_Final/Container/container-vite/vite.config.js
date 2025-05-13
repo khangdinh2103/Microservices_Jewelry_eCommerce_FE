@@ -10,6 +10,10 @@ export default defineConfig({
         tailwindcss(),
         federation({
             name: 'container',
+            filename: 'remoteEntry.js',
+            exposes: {
+                './AuthContext': './src/contexts/AuthContext.tsx',
+            },
             remotes: {
                 account: 'http://localhost:3001/assets/remoteEntry.js',
                 catalog: 'http://localhost:3005/assets/remoteEntry.js',
@@ -30,5 +34,5 @@ export default defineConfig({
     preview: {
         port: 3000,
         cors: true,
-    }
+    },
 });
