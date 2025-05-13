@@ -1,5 +1,5 @@
-import React, {createContext, useContext, useState, useEffect, ReactNode} from 'react';
-import axios from 'axios';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import authService from '../services/authService';
 
 interface User {
     id: string;
@@ -21,6 +21,7 @@ interface AuthContextType {
     login: (username: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     isAuthenticated: boolean;
+    updateProfile: (userData: any) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -37,26 +38,19 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem('access_token'));
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
 
     const login = async (username: string, password: string) => {
         try {
             setLoading(true);
             setError(null);
-            const response = await axios.post('http://localhost:8101/api/v1/auth/login', {
-                username,
-                password,
-            });
-
-            if (response.data?.data?.access_token) {
-                localStorage.setItem('access_token', response.data.data.access_token);
-            }
-
-            setUser(response.data.data.user);
+            
+            const response = await authService.login(username, password);
+            setUser(response.data.user);
             setIsAuthenticated(true);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Đăng nhập thất bại');
@@ -68,20 +62,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 
     const logout = async () => {
         try {
-            await axios.post(
-                'http://localhost:8101/api/v1/auth/logout',
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-                    },
-                }
-            );
+            await authService.logout();
             setUser(null);
             setIsAuthenticated(false);
-            localStorage.removeItem('access_token');
         } catch (error) {
             console.error('Lỗi khi đăng xuất:', error);
+        }
+    };
+
+    const updateProfile = async (userData: any) => {
+        try {
+            setLoading(true);
+            const response = await authService.updateProfile(userData);
+            setUser(prev => ({ ...prev, ...response.data }));
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Cập nhật thông tin thất bại');
+            throw err;
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -89,23 +87,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         const checkAuth = async () => {
             try {
                 setLoading(true);
-                const token = localStorage.getItem('access_token');
-
-                if (token) {
-                    const response = await axios.get('http://localhost:8101/api/v1/profile', {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-
-                    if (response.data) {
-                        setUser(response.data.data || response.data);
+                if (authService.isAuthenticated()) {
+                    const response = await authService.getCurrentUser();
+                    if (response) {
+                        setUser(response.data);
                         setIsAuthenticated(true);
                     }
                 }
             } catch (err) {
                 console.error('Kiểm tra xác thực thất bại:', err);
-                localStorage.removeItem('access_token');
                 setIsAuthenticated(false);
             } finally {
                 setLoading(false);
@@ -124,6 +114,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
                 login,
                 logout,
                 isAuthenticated,
+                updateProfile
             }}
         >
             {children}
