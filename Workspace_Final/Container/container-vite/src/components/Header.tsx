@@ -12,13 +12,13 @@ const Header = () => {
             name: 'Nguyễn Văn A',
             avatarUrl: 'https://example.com/avatar.jpg',
         },
-        isAuthenticated: true,
+        isAuthenticated: false,
         loading: false,
         logout: async () => {
         },
     };
 
-    const authHref = '/auth';
+    const authHref = '/account';
     const userHref = '/user';
 
     // Scroll effect handler
