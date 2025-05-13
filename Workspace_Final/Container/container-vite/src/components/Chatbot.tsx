@@ -1,4 +1,4 @@
-import {useState, useRef, useEffect} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 interface ChatMessage {
     text: string;
@@ -102,13 +102,15 @@ const ChatBot: React.FC<ChatBotProps> = ({onClose}) => {
     };
 
     return (
-        <div className="fixed bottom-0 left-0 md:left-6 md:bottom-6 w-full md:w-96 h-[500px] md:h-[550px] bg-white rounded-t-lg md:rounded-lg shadow-2xl flex flex-col z-50 overflow-hidden border border-gray-100">
+        <div
+            className="fixed bottom-0 left-0 md:left-6 md:bottom-6 w-full md:w-96 h-[500px] md:h-[550px] bg-white rounded-t-lg md:rounded-lg shadow-2xl flex flex-col z-50 overflow-hidden border border-gray-100">
             {/* Header */}
-            <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-4 py-3 flex justify-between items-center">
+            <div
+                className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-4 py-3 flex justify-between items-center">
                 <div className="flex items-center">
                     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center mr-3">
                         <svg viewBox="0 0 100 100" className="w-5 h-5">
-                            <polygon points="50,20 80,40 80,70 50,90 20,70 20,40" fill="url(#goldGradient)" />
+                            <polygon points="50,20 80,40 80,70 50,90 20,70 20,40" fill="url(#goldGradient)"/>
                             <text
                                 x="50"
                                 y="60"
@@ -147,7 +149,8 @@ const ChatBot: React.FC<ChatBotProps> = ({onClose}) => {
                     {messages.map((msg, index) => (
                         <div key={index} className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}>
                             {msg.isBot && (
-                                <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-2 flex-shrink-0 mt-1">
+                                <div
+                                    className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-2 flex-shrink-0 mt-1">
                                     <i className="fas fa-gem text-amber-600 text-xs"></i>
                                 </div>
                             )}
@@ -161,12 +164,14 @@ const ChatBot: React.FC<ChatBotProps> = ({onClose}) => {
                                 <p className={`text-sm leading-relaxed ${msg.isBot ? 'text-gray-700' : 'text-white'}`}>
                                     {msg.text}
                                 </p>
-                                <span className={`text-xs block mt-1 ${msg.isBot ? 'text-gray-400' : 'text-amber-200'}`}>
+                                <span
+                                    className={`text-xs block mt-1 ${msg.isBot ? 'text-gray-400' : 'text-amber-200'}`}>
                                     {new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
                                 </span>
                             </div>
                             {!msg.isBot && (
-                                <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center ml-2 flex-shrink-0 mt-1">
+                                <div
+                                    className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center ml-2 flex-shrink-0 mt-1">
                                     <i className="fas fa-user text-white text-xs"></i>
                                 </div>
                             )}
@@ -174,19 +179,23 @@ const ChatBot: React.FC<ChatBotProps> = ({onClose}) => {
                     ))}
                     {isLoading && (
                         <div className="flex justify-start">
-                            <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-2 flex-shrink-0 mt-1">
+                            <div
+                                className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-2 flex-shrink-0 mt-1">
                                 <i className="fas fa-gem text-amber-600 text-xs"></i>
                             </div>
-                            <div className="bg-white text-gray-800 rounded-lg py-3 px-4 shadow-sm border border-gray-100">
+                            <div
+                                className="bg-white text-gray-800 rounded-lg py-3 px-4 shadow-sm border border-gray-100">
                                 <div className="flex space-x-1.5">
                                     <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
-                                    <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse animation-delay-300"></div>
-                                    <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse animation-delay-600"></div>
+                                    <div
+                                        className="w-2 h-2 rounded-full bg-amber-500 animate-pulse animation-delay-300"></div>
+                                    <div
+                                        className="w-2 h-2 rounded-full bg-amber-500 animate-pulse animation-delay-600"></div>
                                 </div>
                             </div>
                         </div>
                     )}
-                    <div ref={messagesEndRef} />
+                    <div ref={messagesEndRef}/>
                 </div>
             </div>
 

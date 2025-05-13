@@ -10,7 +10,8 @@ const RemoteModuleLayout = ({children, title}) => {
             <Suspense
                 fallback={
                     <div className="flex flex-col items-center justify-center py-20">
-                        <div className="w-16 h-16 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin mb-4"></div>
+                        <div
+                            className="w-16 h-16 border-4 border-amber-200 border-t-amber-600 rounded-full animate-spin mb-4"></div>
                         <p className="text-amber-700 font-medium">Đang tải...</p>
                     </div>
                 }

@@ -1,5 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
+import {Route, Routes} from 'react-router-dom';
+import {AuthProvider} from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -14,20 +14,20 @@ function App() {
     return (
         <AuthProvider>
             <div className="flex flex-col min-h-screen bg-gray-50">
-                <Header />
+                <Header/>
 
                 <main className="flex-grow">
                     <ErrorBoundary>
                         <Routes>
                             {/* Trang chủ */}
-                            <Route path="/" element={<HomePage />} />
+                            <Route path="/" element={<HomePage/>}/>
 
                             {/* Module Catalog */}
                             <Route
                                 path="/catalog/*"
                                 element={
                                     <RemoteModuleLayout title="Bộ Sưu Tập Trang Sức">
-                                        <CatalogApp />
+                                        <CatalogApp/>
                                     </RemoteModuleLayout>
                                 }
                             />
@@ -37,7 +37,7 @@ function App() {
                                 path="/account/*"
                                 element={
                                     <RemoteModuleLayout>
-                                        <AccountApp />
+                                        <AccountApp/>
                                     </RemoteModuleLayout>
                                 }
                             />
@@ -64,7 +64,7 @@ function App() {
                     </ErrorBoundary>
                 </main>
 
-                <Footer />
+                <Footer/>
             </div>
         </AuthProvider>
     );

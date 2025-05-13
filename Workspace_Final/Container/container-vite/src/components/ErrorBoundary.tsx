@@ -1,14 +1,14 @@
-import React, { ReactNode, ErrorInfo } from 'react';
+import React, {ErrorInfo, ReactNode} from 'react';
 
 // Define interfaces for props and state
 interface ErrorBoundaryProps {
-  children: ReactNode;
-  fallback?: ReactNode;
+    children: ReactNode;
+    fallback?: ReactNode;
 }
 
 interface ErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
+    hasError: boolean;
+    error: Error | null;
 }
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {

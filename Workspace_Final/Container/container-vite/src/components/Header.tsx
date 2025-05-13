@@ -1,14 +1,14 @@
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import ChatBot from './Chatbot';
-import { useAuth } from '../contexts/AuthContext';
+import {useAuth} from '../contexts/AuthContext';
 
 const Header = () => {
     const [showChatbot, setShowChatbot] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const {totalItems} = {totalItems: 2}; // Added demo value to show cart badge
-    const { user, isAuthenticated, loading, logout } = useAuth(); // Assuming you have a useAuth hook to get user info and logout function
+    const {user, isAuthenticated, loading, logout} = useAuth(); // Assuming you have a useAuth hook to get user info and logout function
 
     const authHref = '/account';
     const userHref = '/user';
@@ -246,9 +246,10 @@ const Header = () => {
                 </div>
             </header>
 
-            <div className={`${scrolled ? 'h-28' : 'h-36'} md:${scrolled ? 'h-32' : 'h-40'} transition-all duration-300`}></div>
+            <div
+                className={`${scrolled ? 'h-28' : 'h-36'} md:${scrolled ? 'h-32' : 'h-40'} transition-all duration-300`}></div>
 
-            {showChatbot && <ChatBot onClose={() => setShowChatbot(false)} />}
+            {showChatbot && <ChatBot onClose={() => setShowChatbot(false)}/>}
         </>
     );
 };

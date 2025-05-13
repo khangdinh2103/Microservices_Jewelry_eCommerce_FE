@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {useAuth} from 'container/AuthContext';
 import loginImage from '../assets/images/login.png';
@@ -36,7 +36,8 @@ const Login = () => {
     };
 
     return (
-        <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-gray-100 min-h-[calc(100vh-200px)]">
+        <div
+            className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-gray-100 min-h-[calc(100vh-200px)]">
             <div className="w-full max-w-5xl bg-white rounded-xl shadow-xl overflow-hidden flex flex-col md:flex-row">
                 {/* Left Image Section */}
                 <div className="md:w-1/2 bg-amber-50 hidden md:block relative">
@@ -54,7 +55,8 @@ const Login = () => {
                     <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
                         <h2 className="text-3xl font-serif font-medium mb-2">Chào Mừng Trở Lại</h2>
                         <p className="text-sm text-amber-50/90">
-                            Đăng nhập để khám phá bộ sưu tập trang sức độc quyền và trải nghiệm dịch vụ khách hàng cao cấp.
+                            Đăng nhập để khám phá bộ sưu tập trang sức độc quyền và trải nghiệm dịch vụ khách hàng cao
+                            cấp.
                         </p>
                     </div>
                 </div>
@@ -86,7 +88,8 @@ const Login = () => {
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                                 Email
                             </label>
-                            <div className="flex items-center border border-gray-300 rounded-md bg-white focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-amber-500">
+                            <div
+                                className="flex items-center border border-gray-300 rounded-md bg-white focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-amber-500">
                                 <div className="px-3 py-3">
                                     <svg
                                         className="h-5 w-5 text-gray-400"
@@ -123,7 +126,8 @@ const Login = () => {
                                     Quên mật khẩu?
                                 </Link>
                             </div>
-                            <div className="flex items-center border border-gray-300 rounded-md bg-white focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-amber-500">
+                            <div
+                                className="flex items-center border border-gray-300 rounded-md bg-white focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-amber-500">
                                 <div className="px-3 py-3">
                                     <svg
                                         className="h-5 w-5 text-gray-400"
@@ -148,7 +152,8 @@ const Login = () => {
                                     className="flex-1 border-0 py-3 pr-4 bg-white focus:outline-none focus:ring-0"
                                     required
                                 />
-                                <div className="pr-3 py-3 cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
+                                <div className="pr-3 py-3 cursor-pointer"
+                                     onClick={() => setShowPassword(!showPassword)}>
                                     {showPassword ? (
                                         <svg
                                             className="h-5 w-5 text-gray-500"

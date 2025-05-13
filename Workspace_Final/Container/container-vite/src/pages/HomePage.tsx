@@ -8,7 +8,8 @@ const HomePage = () => {
                     Chào mừng đến với <span className="text-amber-700">Tinh Tú Jewelry</span>
                 </h1>
                 <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                    Khám phá bộ sưu tập trang sức tinh xảo với những thiết kế độc đáo, mang đến vẻ đẹp tinh tế và đẳng cấp cho
+                    Khám phá bộ sưu tập trang sức tinh xảo với những thiết kế độc đáo, mang đến vẻ đẹp tinh tế và đẳng
+                    cấp cho
                     người sở hữu.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">

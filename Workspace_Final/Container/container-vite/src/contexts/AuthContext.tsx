@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
 import authService from '../services/authService';
 
 interface User {
@@ -38,7 +38,7 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -48,7 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             setLoading(true);
             setError(null);
-            
+
             const response = await authService.login(username, password);
             setUser(response.data.user);
             setIsAuthenticated(true);
@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             setLoading(true);
             const response = await authService.updateProfile(userData);
-            setUser(prev => ({ ...prev, ...response.data }));
+            setUser(prev => ({...prev, ...response.data}));
         } catch (err: any) {
             setError(err.response?.data?.message || 'Cập nhật thông tin thất bại');
             throw err;
