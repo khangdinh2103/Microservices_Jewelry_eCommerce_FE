@@ -75,12 +75,11 @@ export const accountSlide = createSlice({
         setUserLoginInfo: (state, action) => {
             state.isAuthenticated = true;
             state.isLoading = false;
-            state.user.id = action?.payload?.id;
-            state.user.email = action.payload.email;
-            state.user.name = action.payload.name;
-            state.user.role = action?.payload?.role;
-            if (!action?.payload?.user?.role) state.user.role = {};
-            state.user.role.permissions = action?.payload?.role?.permissions ?? [];
+            state.user.id = action?.payload?.id || '';
+            state.user.email = action?.payload?.email || '';
+            state.user.name = action?.payload?.name || '';
+            state.user.role = action?.payload?.role || { name: 'NORMAL_USER', permissions: [] };
+            state.user.role.permissions = action?.payload?.role?.permissions || [];
         },
         setLogoutAction: (state) => {
             localStorage.removeItem('access_token');

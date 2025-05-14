@@ -4,107 +4,121 @@ import { resetPassword } from "../../config/api";
 import styles from 'styles/auth.module.scss';
 import AuthHeader from '@/components/auth/AuthHeader';
 import AuthFooter from '@/components/auth/AuthFooter';
+import { Button, Form, Input, message } from 'antd';
+import { LockOutlined } from '@ant-design/icons';
+
+// Placeholder images (thay thế bằng URL hình ảnh thực tế)
+const image1 = '/public/Rectangle 2.png'; // Thay thế bằng hình ảnh thực tế
+const image2 = '/public/Rectangle 3.png'; // Thay thế bằng hình ảnh thực tế
+const image3 = '/public/Rectangle 4.png'; // Thay thế bằng hình ảnh thực tế
 
 const ResetPassword = () => {
-    const [newPassword, setNewPassword] = useState("");
-    const [message, setMessage] = useState("");
+    const [isSubmit, setIsSubmit] = useState(false);
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
     const navigate = useNavigate();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const onFinish = async (values: any) => {
         if (!token) {
-            setMessage("Token không hợp lệ!");
+            message.error("Token không hợp lệ!");
             return;
         }
 
+        setIsSubmit(true);
         try {
-            const response = await resetPassword(token, newPassword);
-            setMessage(response.data.message);
+            const response = await resetPassword(token, values.password);
+            message.success(response.data.message || "Mật khẩu đã được đặt lại thành công!");
             setTimeout(() => navigate("/login"), 3000);
         } catch (error: any) {
-            setMessage(error.response?.data?.message || "Có lỗi xảy ra!");
+            message.error(error.response?.data?.message || "Có lỗi xảy ra khi đặt lại mật khẩu!");
+        } finally {
+            setIsSubmit(false);
         }
     };
 
     return (
-        <div className={styles["reset-password-page"]}>
+        <div className={styles["login-page"]}>
             <AuthHeader />
             <main className={styles.main}>
-                <div className="auth-container">
-                    <h2 className="auth-title">Đặt Lại Mật Khẩu</h2>
-                    <form onSubmit={handleSubmit} className="auth-form">
-                        <input
-                            type="password"
-                            placeholder="Nhập mật khẩu mới"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            required
-                            className="auth-input"
-                        />
-                        <button type="submit" className="auth-button">Xác nhận</button>
-                    </form>
-                    {message && <p className="auth-message">{message}</p>}
+                <div className={styles.container}>
+                    <div className={styles["split-container"]}>
+                        {/* Phần bên trái: Bộ sưu tập hình ảnh */}
+                        <div className={styles["image-section"]}>
+                            <div className={styles["image-collage"]}>
+                                <img src={image1} alt="Jewelry 1" className={styles["main-image"]} />
+                                <div className={styles["sub-images"]}>
+                                    <img src={image2} alt="Jewelry 2" className={styles["sub-image"]} />
+                                    <img src={image3} alt="Jewelry 3" className={styles["sub-image"]} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Phần bên phải: Biểu mẫu đặt lại mật khẩu */}
+                        <section className={styles["form-section"]}>
+                            <div className={styles.heading}>
+                                <h2 className={`${styles.text} ${styles["text-large"]}`}>Đặt Lại Mật Khẩu</h2>
+                                <p className={styles["welcome-text"]}>Vui lòng nhập mật khẩu mới của bạn</p>
+                            </div>
+                            <Form
+                                name="reset_password"
+                                onFinish={onFinish}
+                                autoComplete="off"
+                                className={styles["login-form"]}
+                            >
+                                <Form.Item
+                                    labelCol={{ span: 24 }}
+                                    label="Mật Khẩu Mới"
+                                    name="password"
+                                    rules={[
+                                        { required: true, message: 'Vui lòng nhập mật khẩu mới!' },
+                                        { min: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự!' }
+                                    ]}
+                                >
+                                    <Input.Password 
+                                        prefix={<LockOutlined className={styles["input-icon"]} />} 
+                                        placeholder="Nhập mật khẩu mới" 
+                                    />
+                                </Form.Item>
+
+                                <Form.Item
+                                    labelCol={{ span: 24 }}
+                                    label="Xác Nhận Mật Khẩu"
+                                    name="confirmPassword"
+                                    dependencies={['password']}
+                                    rules={[
+                                        { required: true, message: 'Vui lòng xác nhận mật khẩu!' },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (!value || getFieldValue('password') === value) {
+                                                    return Promise.resolve();
+                                                }
+                                                return Promise.reject(new Error('Hai mật khẩu không khớp!'));
+                                            },
+                                        }),
+                                    ]}
+                                >
+                                    <Input.Password 
+                                        prefix={<LockOutlined className={styles["input-icon"]} />} 
+                                        placeholder="Xác nhận mật khẩu mới" 
+                                    />
+                                </Form.Item>
+
+                                <Form.Item>
+                                    <Button
+                                        type="default"
+                                        htmlType="submit"
+                                        loading={isSubmit}
+                                        className={styles["login-button"]}
+                                    >
+                                        Xác Nhận
+                                    </Button>
+                                </Form.Item>
+                            </Form>
+                        </section>
+                    </div>
                 </div>
             </main>
             <AuthFooter />
-            <style>
-                {`
-                    .auth-container {
-                        max-width: 400px;
-                        margin: 80px auto;
-                        padding: 30px;
-                        background: #ffffff;
-                        border-radius: 10px;
-                        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-                        text-align: center;
-                        font-family: Arial, sans-serif;
-                    }
-                    .auth-title {
-                        font-size: 24px;
-                        font-weight: bold;
-                        color: #333;
-                        margin-bottom: 20px;
-                    }
-                    .auth-form {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 15px;
-                    }
-                    .auth-input {
-                        width: 100%;
-                        padding: 12px;
-                        border: 1px solid #ddd;
-                        border-radius: 5px;
-                        font-size: 16px;
-                        outline: none;
-                        transition: border-color 0.3s;
-                    }
-                    .auth-input:focus {
-                        border-color: #1677ff;
-                    }
-                    .auth-button {
-                        width: 100%;
-                        padding: 12px;
-                        font-size: 18px;
-                        color: white;
-                        background-color: #1677ff;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        transition: background 0.3s ease-in-out;
-                    }
-                    .auth-button:hover {
-                        background-color: #125ecc;
-                    }
-                    .auth-message {
-                        margin-top: 15px;
-                        font-size: 14px;
-                        color: #d9534f;
-                    }
-                `}
-            </style>
         </div>
     );
 };
