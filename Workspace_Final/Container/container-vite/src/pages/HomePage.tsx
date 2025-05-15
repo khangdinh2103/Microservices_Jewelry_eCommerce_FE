@@ -10,6 +10,7 @@ const HomePage = () => {
     const [collections, setCollections] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [categoryImages, setCategoryImages] = useState<{[key: number]: string}>({});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,6 +25,25 @@ const HomePage = () => {
                 setBestSellingProducts(productsRes);
                 setCategories(categoriesRes);
                 setCollections(collectionsRes);
+                
+                // Fetch random images for categories
+                const imagePromises = categoriesRes.map(async (category) => {
+                    try {
+                        const imageUrl = await catalogService.getRandomProductImageByCategoryId(category.id);
+                        return { categoryId: category.id, imageUrl };
+                    } catch (err) {
+                        console.error(`Error fetching image for category ${category.id}:`, err);
+                        return { categoryId: category.id, imageUrl: '' };
+                    }
+                });
+                
+                const imageResults = await Promise.all(imagePromises);
+                const imagesMap = imageResults.reduce((acc, curr) => {
+                    acc[curr.categoryId] = curr.imageUrl;
+                    return acc;
+                }, {});
+                
+                setCategoryImages(imagesMap);
             } catch (err) {
                 console.error('Error fetching homepage data:', err);
                 setError('Không thể tải dữ liệu. Vui lòng thử lại sau.');
@@ -145,7 +165,6 @@ const HomePage = () => {
                         <h2 className="text-3xl font-serif font-medium text-gray-800 mb-2">Danh Mục Sản Phẩm</h2>
                         <div className="h-1 w-24 bg-amber-500 mx-auto"></div>
                     </div>
-
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {categories.slice(0, 6).map((category) => (
                             <Link 
@@ -155,9 +174,14 @@ const HomePage = () => {
                             >
                                 <div className="relative h-64 overflow-hidden rounded-lg shadow-lg">
                                     <img 
-                                        src={category.url || `https://source.unsplash.com/500x400/?jewelry,${category.name}`}
+                                        src={categoryImages[category.id] || category.url || `https://source.unsplash.com/500x400/?jewelry,${category.name}`}
                                         alt={category.name}
                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        onError={(e) => {
+                                            // Fallback nếu hình ảnh không tải được
+                                            e.currentTarget.onerror = null;
+                                            e.currentTarget.src = `https://source.unsplash.com/500x400/?jewelry,${category.name}`;
+                                        }}
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
                                         <h3 className="text-xl text-white font-medium">{category.name}</h3>

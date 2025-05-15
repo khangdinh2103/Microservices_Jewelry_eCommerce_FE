@@ -146,7 +146,28 @@ const catalogService = {
   getProductsByPriceRange: async (minPrice: number, maxPrice: number): Promise<Product[]> => {
     const response = await axiosInstance.get(`${BASE_URL}/products/price/between/${minPrice}/${maxPrice}`);
     return response.data;
-  }
+  },
+
+  /**
+   * Lấy URL hình ảnh ngẫu nhiên của sản phẩm thuộc một danh mục
+   * @param categoryId ID của danh mục
+   * @returns URL của hình ảnh ngẫu nhiên từ một sản phẩm trong danh mục đó
+   */
+  getRandomProductImageByCategoryId: async (categoryId: number): Promise<string> => {
+    try {
+      const response = await axiosInstance.get(`${BASE_URL}/products/category/${categoryId}/random-image`);
+      if (response.data && response.data.imageUrl) {
+        return response.data.imageUrl;
+      } else {
+        console.warn(`No image found for category ${categoryId}`);
+        return '';
+      }
+    } catch (error) {
+      // Nếu không tìm thấy hình ảnh hoặc có lỗi, trả về chuỗi rỗng
+      console.error(`Failed to get random image for category ${categoryId}:`, error);
+      return '';
+    }
+  },
 };
 
 export default catalogService;
