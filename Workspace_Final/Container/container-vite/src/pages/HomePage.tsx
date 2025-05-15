@@ -23,10 +23,14 @@ const HomePage = () => {
                 ]);
 
                 setBestSellingProducts(productsRes);
-                setCategories(categoriesRes);
+                
+                const categoriesWithProducts = categoriesRes.filter(category => 
+                    category.productIds && category.productIds.length > 0
+                );
+                setCategories(categoriesWithProducts);
+
                 setCollections(collectionsRes);
                 
-                // Fetch random images for categories
                 const imagePromises = categoriesRes.map(async (category) => {
                     try {
                         const imageUrl = await catalogService.getRandomProductImageByCategoryId(category.id);
