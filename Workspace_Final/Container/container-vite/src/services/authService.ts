@@ -1,5 +1,8 @@
 import axiosInstance from './axiosConfig';
 
+// Cấu hình API Gateway endpoint cho service account
+const BASE_URL = 'http://localhost:8000/api/v1/account';
+
 interface LoginResponse {
     data: {
         access_token: string;
@@ -32,7 +35,7 @@ const authService = {
      * @returns Thông tin người dùng và token truy cập
      */
     login: async (username: string, password: string): Promise<LoginResponse> => {
-        const response = await axiosInstance.post<LoginResponse>('/auth/login', {
+        const response = await axiosInstance.post<LoginResponse>(`${BASE_URL}/auth/login`, {
             username,
             password,
         });
@@ -49,7 +52,7 @@ const authService = {
      */
     logout: async (): Promise<void> => {
         try {
-            await axiosInstance.post('/auth/logout');
+            await axiosInstance.post(`${BASE_URL}/auth/logout`);
         } finally {
             localStorage.removeItem('access_token');
         }
@@ -60,7 +63,7 @@ const authService = {
      * @param userData Thông tin đăng ký (email, password, name, etc.)
      */
     register: async (userData: any): Promise<any> => {
-        const response = await axiosInstance.post('/auth/register', userData);
+        const response = await axiosInstance.post(`${BASE_URL}/auth/register`, userData);
         return response.data;
     },
 
@@ -69,7 +72,7 @@ const authService = {
      */
     getCurrentUser: async (): Promise<ProfileResponse | null> => {
         try {
-            const response = await axiosInstance.get<ProfileResponse>('/profile');
+            const response = await axiosInstance.get<ProfileResponse>(`${BASE_URL}/profile`);
             return response.data;
         } catch (error) {
             return null;
@@ -88,7 +91,7 @@ const authService = {
      * @param email Email của người dùng
      */
     requestPasswordReset: async (email: string): Promise<any> => {
-        const response = await axiosInstance.post('/auth/forgot-password', {email});
+        const response = await axiosInstance.post(`${BASE_URL}/auth/forgot-password`, {email});
         return response.data;
     },
 
@@ -99,7 +102,7 @@ const authService = {
      * @param confirmPassword Xác nhận mật khẩu mới
      */
     resetPassword: async (token: string, password: string, confirmPassword: string): Promise<any> => {
-        const response = await axiosInstance.post('/auth/reset-password', {
+        const response = await axiosInstance.post(`${BASE_URL}/auth/reset-password`, {
             token,
             password,
             confirmPassword
@@ -112,7 +115,7 @@ const authService = {
      * @param userData Thông tin cần cập nhật
      */
     updateProfile: async (userData: any): Promise<any> => {
-        const response = await axiosInstance.put('/profile', userData);
+        const response = await axiosInstance.put(`${BASE_URL}/profile`, userData);
         return response.data;
     }
 };
