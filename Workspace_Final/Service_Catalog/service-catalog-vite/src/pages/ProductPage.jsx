@@ -2,8 +2,8 @@ import {useState, useEffect} from 'react';
 import {useParams, Link, useNavigate} from 'react-router-dom';
 import {motion} from 'framer-motion';
 import catalogService from 'container/catalogService';
-import { useCartOrder } from 'container/CartOrderContext';
-import { useAuth } from 'container/AuthContext';
+import {useCartOrder} from 'container/CartOrderContext';
+import {useAuth} from 'container/AuthContext';
 
 const ProductPage = () => {
     const {productId} = useParams();
@@ -28,8 +28,8 @@ const ProductPage = () => {
     const [activeTab, setActiveTab] = useState('description');
     const [cartMessage, setCartMessage] = useState(null);
 
-    const { addToCart } = useCartOrder();
-    const { isAuthenticated } = useAuth();
+    const {addToCart} = useCartOrder();
+    const {isAuthenticated} = useAuth();
 
     // Fetch product data when productId changes
     useEffect(() => {
@@ -160,14 +160,14 @@ const ProductPage = () => {
             navigate('/account/login');
             return;
         }
-        
+
         try {
             // Thêm sản phẩm vào giỏ hàng sử dụng context
             await addToCart(parseInt(productId), quantity);
-            
+
             // Hiển thị thông báo thành công
             setCartMessage('Sản phẩm đã được thêm vào giỏ hàng!');
-            
+
             // Ẩn thông báo sau 3 giây
             setTimeout(() => {
                 setCartMessage(null);
@@ -175,7 +175,7 @@ const ProductPage = () => {
         } catch (error) {
             console.error('Lỗi khi thêm vào giỏ hàng:', error);
             setCartMessage('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng');
-            
+
             setTimeout(() => {
                 setCartMessage(null);
             }, 3000);
@@ -640,12 +640,12 @@ const ProductPage = () => {
                             </div>
 
                             {/* Add to Cart */}
-                            <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 mb-6">
+                            <div className="flex flex-col space-y-3 mb-6 w-full">
                                 <motion.button
                                     whileHover={{scale: 1.02}}
                                     whileTap={{scale: 0.98}}
                                     onClick={handleAddToCart}
-                                    className="px-6 py-3 sm:px-10 bg-amber-600 text-white font-medium rounded-lg hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 shadow-md hover:shadow-lg transition-all flex-1"
+                                    className="w-full px-6 py-3 bg-amber-600 text-white font-medium rounded-lg hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 shadow-md hover:shadow-lg transition-all"
                                 >
                                     <span className="flex items-center justify-center">
                                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -659,10 +659,11 @@ const ProductPage = () => {
                                         Thêm vào giỏ hàng
                                     </span>
                                 </motion.button>
+
                                 <motion.button
                                     whileHover={{scale: 1.02}}
                                     whileTap={{scale: 0.98}}
-                                    className="px-4 py-3 border border-amber-600 text-amber-600 font-medium rounded-lg hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all"
+                                    className="w-full px-6 py-3 border border-amber-600 text-amber-600 font-medium rounded-lg hover:bg-amber-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all"
                                 >
                                     <span className="flex items-center justify-center">
                                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
