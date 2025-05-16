@@ -23,12 +23,7 @@ const HomePage = () => {
                 ]);
 
                 setBestSellingProducts(productsRes);
-                
-                const categoriesWithProducts = categoriesRes.filter(category => 
-                    category.productIds && category.productIds.length > 0
-                );
-                setCategories(categoriesWithProducts);
-
+                setCategories(categoriesRes);
                 setCollections(collectionsRes);
                 
                 const imagePromises = categoriesRes.map(async (category) => {
