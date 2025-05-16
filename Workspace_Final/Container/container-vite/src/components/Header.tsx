@@ -222,7 +222,7 @@ const Header = () => {
 
                     {/* Navigation menu - Add for a more complete header */}
                     <nav
-                        className={`${scrolled ? 'mt-1' : 'mt-3'} transition-all duration-300 border-t border-gray-100 pt-2 hidden md:block`}>
+                        className={`${scrolled ? 'mt-1' : 'mt-3'} transition-all duration-300 border-t border-gray-100 pt-2 md:block`}>
                         <ul className="flex justify-center space-x-10 text-sm font-medium">
                             <li><Link to="/"
                                       className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Trang

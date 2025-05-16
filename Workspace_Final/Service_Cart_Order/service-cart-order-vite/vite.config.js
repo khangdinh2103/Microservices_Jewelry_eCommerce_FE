@@ -13,6 +13,9 @@ export default defineConfig({
             filename: 'remoteEntry.js',
             exposes: {
                 './App': './src/App.jsx',
+                './Cart': './src/pages/Cart.jsx',
+                './Checkout': './src/pages/Checkout.jsx',
+                './OrderConfirmation': './src/pages/OrderConfirmation.jsx',
             },
             remotes: {
                 container: 'http://localhost:3000/assets/remoteEntry.js',

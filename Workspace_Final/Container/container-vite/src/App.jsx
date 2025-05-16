@@ -8,8 +8,9 @@ import ErrorBoundary from './components/ErrorBoundary';
 import RemoteModuleLayout from './components/RemoteModuleLayout';
 
 // Remote components
-import CatalogApp from 'catalog/App';
 import AccountApp from 'account/App';
+import CatalogApp from 'catalog/App';
+import CartOrderApp from 'cart_order/App';
 
 function App() {
     return (
@@ -40,6 +41,16 @@ function App() {
                                     element={
                                         <RemoteModuleLayout>
                                             <AccountApp/>
+                                        </RemoteModuleLayout>
+                                    }
+                                />
+
+                                {/* Module Cart Order */}
+                                <Route
+                                    path="/cart/*"
+                                    element={
+                                        <RemoteModuleLayout>
+                                            <CartOrderApp/>
                                         </RemoteModuleLayout>
                                     }
                                 />
