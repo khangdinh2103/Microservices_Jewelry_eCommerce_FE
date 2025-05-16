@@ -13,6 +13,11 @@ export default defineConfig({
             filename: 'remoteEntry.js',
             exposes: {
                 './App': './src/App.jsx',
+                './CategoryPage': './src/pages/CategoryPage.jsx',
+                './ProductPage': './src/pages/ProductPage.jsx',
+            },
+            remotes: {
+                container: 'http://localhost:3000/assets/remoteEntry.js',
             },
             shared: ['react', 'react-dom', 'react-router-dom'],
         }),

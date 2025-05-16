@@ -13,6 +13,7 @@ export default defineConfig({
             filename: 'remoteEntry.js',
             exposes: {
                 './AuthContext': './src/contexts/AuthContext.jsx',
+                './catalogService': './src/services/catalogService.ts',
             },
             remotes: {
                 account: 'http://localhost:3001/assets/remoteEntry.js',
