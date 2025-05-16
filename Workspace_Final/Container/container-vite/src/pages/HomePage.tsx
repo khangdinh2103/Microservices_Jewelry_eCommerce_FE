@@ -164,7 +164,7 @@ const HomePage = () => {
                         <h2 className="text-3xl font-serif font-medium text-gray-800 mb-2">Danh Mục Sản Phẩm</h2>
                         <div className="h-1 w-24 bg-amber-500 mx-auto"></div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {categories.slice(0, 6).map((category) => (
                             <Link 
                                 key={category.id}
