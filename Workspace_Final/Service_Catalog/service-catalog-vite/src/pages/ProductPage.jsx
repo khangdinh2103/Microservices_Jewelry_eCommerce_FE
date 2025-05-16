@@ -172,47 +172,40 @@ const ProductPage = () => {
     const formatHTMLDescription = (htmlContent) => {
         if (!htmlContent) return [];
 
-        // Check if the content is HTML
         const isHTML = htmlContent.includes('<div') || htmlContent.includes('<p>');
-        if (!isHTML) {
-            // If it's just plain text, return as a single item
-            return [htmlContent];
-        }
+        if (!isHTML) return [htmlContent];
 
-        // Parse HTML string to DOM
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlContent, 'text/html');
 
-        // Extract paragraphs
         const paragraphs = [];
 
-        // First try to find .mp-block-description elements (like in the example)
+        // Case 1: .mp-block-description structure
         const descBlocks = doc.querySelectorAll('.mp-block-description');
-
         if (descBlocks.length > 0) {
-            // If we find the specific structure from the example
             descBlocks.forEach((block) => {
                 const pElement = block.querySelector('p');
-                if (pElement) {
-                    // Remove links but keep their text
-                    const links = pElement.querySelectorAll('a');
-                    links.forEach((link) => {
-                        const text = link.textContent;
-                        link.parentNode.replaceChild(doc.createTextNode(text), link);
-                    });
-
-                    paragraphs.push(pElement.textContent);
-                }
+                if (pElement) paragraphs.push(pElement.textContent);
             });
-        } else {
-            // Otherwise just get all paragraphs
-            const pElements = doc.querySelectorAll('p');
-            pElements.forEach((p) => {
-                paragraphs.push(p.textContent);
-            });
+            return paragraphs;
         }
 
-        return paragraphs;
+        // Case 2: Multiple <p> inside a single container
+        const pElements = doc.querySelectorAll('p');
+        if (pElements.length > 0) {
+            pElements.forEach((p) => paragraphs.push(p.textContent));
+            return paragraphs;
+        }
+
+        // Case 3: Just extract text from HTML
+        const text = doc.body.textContent;
+        if (text) {
+            // Split by periods, semicolons and other sentence terminators
+            const sentences = text.split(/[.;!?]\s+/);
+            return sentences.filter((s) => s.trim().length > 0).map((s) => s.trim() + '.');
+        }
+
+        return [htmlContent]; // Fallback to original text
     };
 
     // Render star rating
