@@ -241,7 +241,7 @@ const Login = () => {
                         <div className="mt-6 text-center">
                             <p className="text-gray-600">
                                 Chưa có tài khoản?{' '}
-                                <Link to="/register" className="text-amber-600 font-medium hover:text-amber-800">
+                                <Link to="/account/register" className="text-amber-600 font-medium hover:text-amber-800">
                                     Đăng ký ngay
                                 </Link>
                             </p>

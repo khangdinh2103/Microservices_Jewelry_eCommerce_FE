@@ -20,6 +20,7 @@ interface AuthContextType {
     error: string | null;
     login: (username: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
+    register: (userData: any) => Promise<void>;
     isAuthenticated: boolean;
     updateProfile: (userData: any) => Promise<void>;
 }
@@ -70,6 +71,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         }
     };
 
+    const register = async (userData: any) => {
+        try {
+            setLoading(true);
+            await authService.register(userData);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Đăng ký thất bại');
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const updateProfile = async (userData: any) => {
         try {
             setLoading(true);
@@ -113,6 +126,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
                 error,
                 login,
                 logout,
+                register,
                 isAuthenticated,
                 updateProfile
             }}

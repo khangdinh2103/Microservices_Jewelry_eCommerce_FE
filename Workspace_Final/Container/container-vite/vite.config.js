@@ -12,7 +12,7 @@ export default defineConfig({
             name: 'container',
             filename: 'remoteEntry.js',
             exposes: {
-                './AuthContext': './src/contexts/AuthContext.tsx',
+                './AuthContext': './src/contexts/AuthContext.jsx',
             },
             remotes: {
                 account: 'http://localhost:3001/assets/remoteEntry.js',

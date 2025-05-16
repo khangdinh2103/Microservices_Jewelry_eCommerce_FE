@@ -1,10 +1,11 @@
 import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
+import {useAuth} from 'container/AuthContext';
 import registerImage from '../assets/images/register.png';
 
 const Register = () => {
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
+    const {register, loading, isAuthenticated} = useAuth();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -98,42 +99,27 @@ const Register = () => {
             return;
         }
 
-        setLoading(true);
-
         try {
-            const response = await fetch('http://localhost:8101/api/v1/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
-                    name: formData.name,
-                    gender: formData.gender,
-                    age: formData.age,
-                    address: formData.address,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || data.error || 'Đăng ký thất bại');
-            }
-
+            const userData = {
+                email: formData.email,
+                password: formData.password,
+                name: formData.name,
+                gender: formData.gender,
+                age: formData.age,
+                address: formData.address
+            };
+            
+            await register(userData);
+            
             // Registration successful
             setSuccess(true);
-
+            
             // Redirect after 2 seconds
             setTimeout(() => {
-                navigate('/login');
+                navigate('/account/login');
             }, 2000);
-
         } catch (err) {
-            setError(err.message || 'Đã xảy ra lỗi khi đăng ký');
-        } finally {
-            setLoading(false);
+            setError(err.response?.data?.message || err.message || 'Đăng ký thất bại. Vui lòng thử lại.');
         }
     };
 

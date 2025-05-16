@@ -223,22 +223,22 @@ const Header = () => {
                             <li><Link to="/"
                                       className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Trang
                                 Chủ</Link></li>
-                            <li><Link to="/collections/new"
+                            <li><Link to="/catalog/collections/new"
                                       className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Bộ
                                 Sưu Tập Mới</Link></li>
-                            <li><Link to="/category/nhan"
+                            <li><Link to="/catalog/category/nhan"
                                       className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Nhẫn</Link>
                             </li>
-                            <li><Link to="/category/day-chuyen"
+                            <li><Link to="/catalog/category/day-chuyen"
                                       className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Dây
                                 Chuyền</Link></li>
-                            <li><Link to="/category/vong-tay"
+                            <li><Link to="/catalog/category/vong-tay"
                                       className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Vòng
                                 Tay</Link></li>
-                            <li><Link to="/category/bong-tai"
+                            <li><Link to="/catalog/category/bong-tai"
                                       className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Bông
                                 Tai</Link></li>
-                            <li><Link to="/promotions"
+                            <li><Link to="/catalog/promotions"
                                       className="text-amber-700 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600">Khuyến
                                 Mãi</Link></li>
                         </ul>
