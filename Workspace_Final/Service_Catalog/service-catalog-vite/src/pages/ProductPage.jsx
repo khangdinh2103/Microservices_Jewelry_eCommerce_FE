@@ -169,6 +169,52 @@ const ProductPage = () => {
         }).format(price);
     };
 
+    const formatHTMLDescription = (htmlContent) => {
+        if (!htmlContent) return [];
+
+        // Check if the content is HTML
+        const isHTML = htmlContent.includes('<div') || htmlContent.includes('<p>');
+        if (!isHTML) {
+            // If it's just plain text, return as a single item
+            return [htmlContent];
+        }
+
+        // Parse HTML string to DOM
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, 'text/html');
+
+        // Extract paragraphs
+        const paragraphs = [];
+
+        // First try to find .mp-block-description elements (like in the example)
+        const descBlocks = doc.querySelectorAll('.mp-block-description');
+
+        if (descBlocks.length > 0) {
+            // If we find the specific structure from the example
+            descBlocks.forEach((block) => {
+                const pElement = block.querySelector('p');
+                if (pElement) {
+                    // Remove links but keep their text
+                    const links = pElement.querySelectorAll('a');
+                    links.forEach((link) => {
+                        const text = link.textContent;
+                        link.parentNode.replaceChild(doc.createTextNode(text), link);
+                    });
+
+                    paragraphs.push(pElement.textContent);
+                }
+            });
+        } else {
+            // Otherwise just get all paragraphs
+            const pElements = doc.querySelectorAll('p');
+            pElements.forEach((p) => {
+                paragraphs.push(p.textContent);
+            });
+        }
+
+        return paragraphs;
+    };
+
     // Render star rating
     const renderStarRating = (rating) => {
         const stars = [];
@@ -472,7 +518,25 @@ const ProductPage = () => {
 
                             {/* Short Description */}
                             <div className="text-amber-800 mb-6 prose prose-amber">
-                                <p>{product.description}</p>
+                                <div>
+                                    <h3 className="text-lg font-medium text-amber-900 mb-4">Đặc điểm nổi bật</h3>
+                                    <ul className="list-disc pl-5 space-y-3">
+                                        {formatHTMLDescription(product.description).map((paragraph, index) => (
+                                            <li key={index} className="text-amber-800">
+                                                {paragraph}
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <h3 className="text-lg font-medium text-amber-900 mt-8 mb-4">Thông tin thêm</h3>
+                                    <ul className="list-disc pl-5 space-y-3">
+                                        <li>Phù hợp cho nhiều dịp sử dụng: đi làm, dự tiệc, hay các sự kiện quan trọng.</li>
+                                        <li>
+                                            Thiết kế hiện đại kết hợp với chất liệu cao cấp mang lại vẻ sang trọng, quý phái.
+                                        </li>
+                                        <li>Món quà ý nghĩa cho người thân, bạn bè hoặc đối tác trong các dịp đặc biệt.</li>
+                                    </ul>
+                                </div>
                             </div>
 
                             {/* Divider */}
@@ -728,13 +792,50 @@ const ProductPage = () => {
                         {/* Description Tab */}
                         {activeTab === 'description' && (
                             <div className="prose prose-amber max-w-none text-amber-800">
-                                <p className="mb-4">{product.description}</p>
-                                <p className="mb-4">
-                                    Thưởng thức vẻ đẹp tinh tế và sự sang trọng của {product.name} - một kiệt tác từ Tinh Tú
-                                    Jewelry. Được chế tác tỉ mỉ từ {product.material}{' '}
-                                    {product.goldKarat && `${product.goldKarat}K`}, sản phẩm này không chỉ là một món trang sức
-                                    mà còn là biểu tượng của đẳng cấp và phong cách.
-                                </p>
+                                {/* Check if description might be HTML */}
+                                {product.description && product.description.includes('<') ? (
+                                    <div>
+                                        <h3 className="text-lg font-medium text-amber-900 mb-4">Đặc điểm nổi bật</h3>
+                                        <ul className="list-disc pl-5 space-y-3">
+                                            {formatHTMLDescription(product.description).map((paragraph, index) => (
+                                                <li key={index} className="text-amber-800">
+                                                    {paragraph}
+                                                </li>
+                                            ))}
+                                        </ul>
+
+                                        <h3 className="text-lg font-medium text-amber-900 mt-8 mb-4">Thông tin thêm</h3>
+                                        <ul className="list-disc pl-5 space-y-3">
+                                            <li>Phù hợp cho nhiều dịp sử dụng: đi làm, dự tiệc, hay các sự kiện quan trọng.</li>
+                                            <li>
+                                                Thiết kế hiện đại kết hợp với chất liệu cao cấp mang lại vẻ sang trọng, quý
+                                                phái.
+                                            </li>
+                                            <li>Món quà ý nghĩa cho người thân, bạn bè hoặc đối tác trong các dịp đặc biệt.</li>
+                                        </ul>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <h3 className="text-lg font-medium text-amber-900 mb-4">Đặc điểm nổi bật</h3>
+                                        <ul className="list-disc pl-5 space-y-3">
+                                            <li>
+                                                Sở hữu thiết kế trẻ trung cộng hưởng cùng ánh kim quý phái của vàng{' '}
+                                                {product.goldKarat}K.
+                                            </li>
+                                            <li>Tôn lên vẻ đẹp hiện đại và thời thượng của các quý cô.</li>
+                                            <li>Giúp nàng trông thật xinh đẹp rạng rỡ khi trưng diện.</li>
+                                            <li>Thiết kế mềm mại nhưng đầy quyền năng, phá cách tạo nên sự khác biệt.</li>
+                                            <li>Sự kết hợp hài hòa giữa vàng và đá, tạo nên vẻ đẹp tinh tế.</li>
+                                        </ul>
+
+                                        <h3 className="text-lg font-medium text-amber-900 mt-8 mb-4">Ý nghĩa sản phẩm</h3>
+                                        <ul className="list-disc pl-5 space-y-3">
+                                            <li>Là biểu tượng của sự sang trọng và đẳng cấp.</li>
+                                            <li>Thể hiện cá tính và phong cách riêng của người phụ nữ hiện đại.</li>
+                                            <li>Món quà ý nghĩa trong các dịp đặc biệt như sinh nhật, kỷ niệm.</li>
+                                        </ul>
+                                    </div>
+                                )}
                             </div>
                         )}
 
