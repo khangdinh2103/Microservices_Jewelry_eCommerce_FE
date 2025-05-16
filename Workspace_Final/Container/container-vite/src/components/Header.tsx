@@ -2,13 +2,17 @@ import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import ChatBot from './Chatbot';
 import {useAuth} from '../contexts/AuthContext';
+import {useCartOrder} from '../contexts/CartOrderContext'; // Import CartOrder context
 
 const Header = () => {
     const [showChatbot, setShowChatbot] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const {totalItems} = {totalItems: 2}; // Added demo value to show cart badge
-    const {user, isAuthenticated, loading, logout} = useAuth(); // Assuming you have a useAuth hook to get user info and logout function
+    
+    // Use CartOrder context to get real cart items count
+    const {totalItems} = useCartOrder();
+    
+    const {user, isAuthenticated, loading, logout} = useAuth();
 
     const authHref = '/account';
     const userHref = '/user';
