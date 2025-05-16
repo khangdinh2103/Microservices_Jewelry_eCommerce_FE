@@ -9,18 +9,13 @@ export default defineConfig({
         react(),
         tailwindcss(),
         federation({
-            name: 'container',
+            name: 'service-cart-order',
             filename: 'remoteEntry.js',
             exposes: {
-                './AuthContext': './src/contexts/AuthContext.tsx',
-                './CartOrderContext': './src/contexts/CartOrderContext.tsx',
-                './catalogService': './src/services/catalogService.ts',
-                './cartOrderService': './src/services/cartOrderService.ts',
+                './App': './src/App.jsx',
             },
             remotes: {
-                account: 'http://localhost:3001/assets/remoteEntry.js',
-                catalog: 'http://localhost:3005/assets/remoteEntry.js',
-                cart_order: 'http://localhost:3006/assets/remoteEntry.js',
+                container: 'http://localhost:3000/assets/remoteEntry.js',
             },
             shared: ['react', 'react-dom', 'react-router-dom'],
         }),
@@ -32,11 +27,11 @@ export default defineConfig({
         cssCodeSplit: false,
     },
     server: {
-        port: 3000,
+        port: 3006,
         cors: true,
     },
     preview: {
-        port: 3000,
+        port: 3006,
         cors: true,
     },
 });
