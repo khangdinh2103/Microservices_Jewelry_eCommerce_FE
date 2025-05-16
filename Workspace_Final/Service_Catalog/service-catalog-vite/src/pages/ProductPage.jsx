@@ -2,6 +2,8 @@ import {useState, useEffect} from 'react';
 import {useParams, Link, useNavigate} from 'react-router-dom';
 import {motion} from 'framer-motion';
 import catalogService from 'container/catalogService';
+import { useCartOrder } from 'container/CartOrderContext';
+import { useAuth } from 'container/AuthContext';
 
 const ProductPage = () => {
     const {productId} = useParams();
@@ -23,8 +25,11 @@ const ProductPage = () => {
         averageRating: 0,
         totalReviews: 0,
     });
-    const [activeTab, setActiveTab] = useState('description'); // 'description', 'features', 'reviews'
+    const [activeTab, setActiveTab] = useState('description');
     const [cartMessage, setCartMessage] = useState(null);
+
+    const { addToCart } = useCartOrder();
+    const { isAuthenticated } = useAuth();
 
     // Fetch product data when productId changes
     useEffect(() => {
@@ -149,14 +154,32 @@ const ProductPage = () => {
     };
 
     // Add to cart functionality
-    const handleAddToCart = () => {
-        // For this example, we'll just show a success message
-        // In a real app, you'd integrate with a cart context/service
-        setCartMessage('Sản phẩm đã được thêm vào giỏ hàng!');
-
-        setTimeout(() => {
-            setCartMessage(null);
-        }, 3000);
+    const handleAddToCart = async () => {
+        if (!isAuthenticated) {
+            // Điều hướng người dùng đến trang đăng nhập nếu chưa đăng nhập
+            navigate('/account/login');
+            return;
+        }
+        
+        try {
+            // Thêm sản phẩm vào giỏ hàng sử dụng context
+            await addToCart(parseInt(productId), quantity);
+            
+            // Hiển thị thông báo thành công
+            setCartMessage('Sản phẩm đã được thêm vào giỏ hàng!');
+            
+            // Ẩn thông báo sau 3 giây
+            setTimeout(() => {
+                setCartMessage(null);
+            }, 3000);
+        } catch (error) {
+            console.error('Lỗi khi thêm vào giỏ hàng:', error);
+            setCartMessage('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng');
+            
+            setTimeout(() => {
+                setCartMessage(null);
+            }, 3000);
+        }
     };
 
     // Format price with VND currency

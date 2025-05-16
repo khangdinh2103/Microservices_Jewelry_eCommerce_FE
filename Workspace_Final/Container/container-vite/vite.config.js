@@ -12,8 +12,10 @@ export default defineConfig({
             name: 'container',
             filename: 'remoteEntry.js',
             exposes: {
-                './AuthContext': './src/contexts/AuthContext.jsx',
+                './AuthContext': './src/contexts/AuthContext.tsx',
+                './CartOrderContext': './src/contexts/CartOrderContext.tsx',
                 './catalogService': './src/services/catalogService.ts',
+                './cartOrderService': './src/services/cartOrderService.ts',
             },
             remotes: {
                 account: 'http://localhost:3001/assets/remoteEntry.js',
