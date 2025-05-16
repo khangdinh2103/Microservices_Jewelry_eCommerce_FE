@@ -40,7 +40,7 @@ const Header = () => {
     };
 
     const handleImageError = (e) => {
-        e.currentTarget.src = 'images/default.png';
+        e.currentTarget.src = '/images/default.png';
     };
 
     // Close dropdown when clicking outside
