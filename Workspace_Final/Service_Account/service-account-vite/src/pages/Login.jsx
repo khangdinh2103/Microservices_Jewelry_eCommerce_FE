@@ -42,7 +42,7 @@ const Login = () => {
                 <div className="md:w-1/2 bg-amber-50 md:block relative">
                     <div className="absolute inset-0 bg-gradient-to-t from-amber-900/30 to-transparent"></div>
                     <img
-                        src="/images/login.png"
+                        src="/images/account-login.png"
                         alt="Tinh Tú Jewelry Collection"
                         className="w-full h-full object-cover"
                         onError={(e) => {

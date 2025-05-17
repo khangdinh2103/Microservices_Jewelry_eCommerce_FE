@@ -4,7 +4,7 @@ import {useAuth} from 'container/AuthContext';
 
 const Register = () => {
     const navigate = useNavigate();
-    const {register, loading, isAuthenticated} = useAuth();
+    const {register, loading} = useAuth();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -145,10 +145,10 @@ const Register = () => {
                 <div
                     className="w-full max-w-6xl bg-white rounded-xl shadow-xl overflow-hidden flex flex-col md:flex-row">
                     {/* Left Image Section */}
-                    <div className="md:w-5/12 bg-amber-50 hidden md:block relative">
+                    <div className="md:w-5/12 bg-amber-50 md:block relative">
                         <div className="absolute inset-0 bg-gradient-to-t from-amber-900/30 to-transparent"></div>
                         <img
-                            src="images/register.png"
+                            src="/images/account-register.png"
                             alt="Tinh Tú Jewelry Collection"
                             className="w-full h-full object-cover"
                             onError={(e) => {
