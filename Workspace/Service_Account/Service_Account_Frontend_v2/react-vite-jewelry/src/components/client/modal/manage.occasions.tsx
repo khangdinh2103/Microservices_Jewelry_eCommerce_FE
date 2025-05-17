@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, DatePicker, InputNumber, Switch, Space, Popconfirm, message, Tabs, Card, Badge, Tooltip } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, GiftOutlined, CalendarOutlined } from '@ant-design/icons';
+import { Table, Button, Modal, Form, Input, DatePicker, InputNumber, Switch, Space, Popconfirm, message, Tabs, Card, Badge, Tooltip, Tag, Typography, Row, Col, Empty, Skeleton } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, GiftOutlined, CalendarOutlined, HeartOutlined, NotificationOutlined, ClockCircleOutlined, UserOutlined, TeamOutlined } from '@ant-design/icons';
 import { getUserOccasionReminders, getUpcomingOccasions, createOccasionReminder, updateOccasionReminder, deleteOccasionReminder } from '@/config/api';
 import { IOccasionReminder, IUpcomingOccasion } from '@/types/backend';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+
+const { Title, Text, Paragraph } = Typography;
 
 dayjs.extend(relativeTime);
 
@@ -21,27 +23,7 @@ const OccasionManager = () => {
     total: 0
   });
 
-//   const fetchOccasions = async () => {
-//     setLoading(true);
-//     try {
-//       const query = `page=${pagination.current - 1}&size=${pagination.pageSize}`;
-//       const res = await getUserOccasionReminders(query);
-//       if (res && res.data) {
-//         setOccasions(res.data.result || []);
-//         setPagination({
-//           ...pagination,
-//           total: res.data.meta?.total || 0
-//         });
-//       }
-//     } catch (error) {
-//       console.error('Error fetching occasions:', error);
-//       message.error('Không thể tải danh sách dịp đặc biệt');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-const fetchOccasions = async () => {
+  const fetchOccasions = async () => {
     setLoading(true);
     try {
       const query = `page=${pagination.current - 1}&size=${pagination.pageSize}&sort=occasionDate,asc`;
@@ -190,42 +172,69 @@ const fetchOccasions = async () => {
       title: 'Tên dịp',
       dataIndex: 'occasionName',
       key: 'occasionName',
+      render: (text: string) => (
+        <Space>
+          <GiftOutlined style={{ color: '#1890ff' }} />
+          <Text strong>{text}</Text>
+        </Space>
+      )
     },
     {
       title: 'Người nhận',
       dataIndex: 'recipientName',
       key: 'recipientName',
-    },
-    {
-      title: 'Mối quan hệ',
-      dataIndex: 'relationship',
-      key: 'relationship',
+      render: (text: string, record: IOccasionReminder) => (
+        <Space direction="vertical" size={0}>
+          <Text>{text}</Text>
+          <Text type="secondary" style={{ fontSize: '12px' }}>{record.relationship}</Text>
+        </Space>
+      )
     },
     {
       title: 'Ngày',
       dataIndex: 'occasionDate',
       key: 'occasionDate',
-      render: (text: string) => dayjs(text).format('DD/MM/YYYY')
+      render: (text: string) => (
+        <Space>
+          <CalendarOutlined style={{ color: '#52c41a' }} />
+          <Text>{dayjs(text).format('DD/MM/YYYY')}</Text>
+        </Space>
+      )
     },
     {
-      title: 'Nhắc trước (ngày)',
-      dataIndex: 'reminderDaysBefore',
-      key: 'reminderDaysBefore',
+      title: 'Nhắc nhở',
+      key: 'reminder',
+      render: (_: any, record: IOccasionReminder) => (
+        <Space direction="vertical" size={0}>
+          <Space>
+            <ClockCircleOutlined />
+            <Text>{record.reminderDaysBefore} ngày trước</Text>
+          </Space>
+          <Tag color={record.reminderSent ? 'success' : 'default'} style={{ marginTop: 4 }}>
+            {record.reminderSent ? 'Đã gửi' : 'Chưa gửi'}
+          </Tag>
+        </Space>
+      )
     },
     {
-      title: 'Lặp lại hàng năm',
+      title: 'Lặp lại',
       dataIndex: 'yearlyRecurring',
       key: 'yearlyRecurring',
-      render: (recurring: boolean) => (recurring ? 'Có' : 'Không')
+      render: (recurring: boolean) => (
+        <Tag color={recurring ? 'blue' : 'default'}>
+          {recurring ? 'Hàng năm' : 'Một lần'}
+        </Tag>
+      )
     },
     {
       title: 'Thao tác',
       key: 'action',
       render: (_: any, record: IOccasionReminder) => (
-        <Space size="middle">
+        <Space size="small">
           <Button 
             type="primary" 
             icon={<EditOutlined />} 
+            size="small"
             onClick={() => showModal(record)}
           />
           <Popconfirm
@@ -234,83 +243,183 @@ const fetchOccasions = async () => {
             okText="Có"
             cancelText="Không"
           >
-            <Button danger icon={<DeleteOutlined />} />
+            <Button danger icon={<DeleteOutlined />} size="small" />
           </Popconfirm>
         </Space>
       ),
     },
   ];
 
-  const UpcomingOccasionsView = () => (
-    <div style={{ marginBottom: 20 }}>
-      <h3 style={{ marginBottom: 16 }}>Dịp đặc biệt sắp tới</h3>
-      {upcomingOccasions.length === 0 ? (
-        <Card>Không có dịp đặc biệt nào sắp tới</Card>
-      ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-          {upcomingOccasions.map(occasion => (
-            <Card 
-              key={occasion.id} 
-              title={
-                <Space>
-                  <CalendarOutlined />
-                  {occasion.occasionName}
-                </Space>
-              }
-              extra={
-                <Badge 
-                  count={occasion.daysUntil} 
-                  style={{ backgroundColor: occasion.daysUntil <= 7 ? '#ff4d4f' : '#52c41a' }}
-                  overflowCount={99}
-                />
-              }
-              style={{ width: 300 }}
-            >
-              <p><strong>Người nhận:</strong> {occasion.recipientName} ({occasion.relationship})</p>
-              <p><strong>Ngày:</strong> {dayjs(occasion.occasionDate).format('DD/MM/YYYY')}</p>
-              <p><strong>Còn lại:</strong> {occasion.daysUntil} ngày</p>
-              {occasion.giftPreferences && (
-                <p>
-                  <strong>Quà yêu thích:</strong> {occasion.giftPreferences}
-                </p>
-              )}
-            </Card>
-          ))}
+  const getOccasionCardColor = (daysUntil: number) => {
+    if (daysUntil <= 3) return '#ff4d4f';
+    if (daysUntil <= 7) return '#faad14';
+    return '#52c41a';
+  };
+
+  const UpcomingOccasionsView = () => {
+    if (loading) {
+      return (
+        <div style={{ padding: '0 24px' }}>
+          <Skeleton active />
+          <Skeleton active />
         </div>
-      )}
+      );
+    }
+
+    return (
+      <div style={{ padding: '0 24px' }}>
+        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+          {upcomingOccasions.length === 0 ? (
+            <Col span={24}>
+              <Empty 
+                description="Không có dịp đặc biệt nào sắp tới" 
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+              />
+            </Col>
+          ) : (
+            upcomingOccasions.map(occasion => (
+              <Col xs={24} sm={12} md={8} key={occasion.id}>
+                <Card 
+                  hoverable
+                  style={{ 
+                    borderLeft: `4px solid ${getOccasionCardColor(occasion.daysUntil)}`,
+                    height: '100%'
+                  }}
+                  actions={[
+                    <Tooltip title="Chỉnh sửa">
+                      <EditOutlined key="edit" onClick={() => {
+                        const fullOccasion = occasions.find(o => o.id === occasion.id);
+                        if (fullOccasion) {
+                          showModal(fullOccasion);
+                        }
+                      }} />
+                    </Tooltip>,
+                    <Tooltip title="Xóa">
+                      <Popconfirm
+                        title="Bạn có chắc muốn xóa dịp này?"
+                        onConfirm={() => handleDelete(occasion.id!)}
+                        okText="Có"
+                        cancelText="Không"
+                      >
+                        <DeleteOutlined key="delete" />
+                      </Popconfirm>
+                    </Tooltip>
+                  ]}
+                >
+                  <div style={{ position: 'absolute', top: 12, right: 12 }}>
+                    <Badge 
+                      count={occasion.daysUntil} 
+                      style={{ 
+                        backgroundColor: getOccasionCardColor(occasion.daysUntil),
+                        fontSize: '12px'
+                      }}
+                      overflowCount={99}
+                    />
+                  </div>
+                  
+                  <Space direction="vertical" size={12} style={{ width: '100%' }}>
+                    <Space>
+                      <GiftOutlined style={{ fontSize: '20px', color: '#1890ff' }} />
+                      <Title level={5} style={{ margin: 0 }}>{occasion.occasionName}</Title>
+                    </Space>
+                    
+                    <Space>
+                      <UserOutlined />
+                      <Text>{occasion.recipientName}</Text>
+                      <Tag color="blue">{occasion.relationship}</Tag>
+                    </Space>
+                    
+                    <Space>
+                      <CalendarOutlined />
+                      <Text>{dayjs(occasion.occasionDate).format('DD/MM/YYYY')}</Text>
+                    </Space>
+                    
+                    <Space>
+                      <ClockCircleOutlined />
+                      <Text>Còn {occasion.daysUntil} ngày</Text>
+                    </Space>
+                    
+                    {occasion.giftPreferences && (
+                      <Space align="start">
+                        <HeartOutlined style={{ color: '#ff4d4f' }} />
+                        <Text type="secondary" style={{ flex: 1 }}>
+                          {occasion.giftPreferences}
+                        </Text>
+                      </Space>
+                    )}
+                    
+                    {occasion.reminderSent && (
+                      <Tag color="success" icon={<NotificationOutlined />}>
+                        Đã gửi nhắc nhở
+                      </Tag>
+                    )}
+                  </Space>
+                </Card>
+              </Col>
+            ))
+          )}
+        </Row>
+        
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <Button 
+            type="primary" 
+            icon={<PlusOutlined />} 
+            onClick={() => showModal()}
+          >
+            Thêm dịp đặc biệt mới
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  const AllOccasionsView = () => (
+    <div style={{ padding: '0 24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <Title level={5} style={{ margin: 0 }}>Tất cả dịp đặc biệt</Title>
+        <Button 
+          type="primary" 
+          icon={<PlusOutlined />} 
+          onClick={() => showModal()}
+        >
+          Thêm dịp đặc biệt
+        </Button>
+      </div>
+      
+      <Table 
+        columns={columns} 
+        dataSource={occasions} 
+        rowKey="id"
+        pagination={pagination}
+        loading={loading}
+        onChange={handleTableChange}
+        size="middle"
+        bordered
+        style={{ marginBottom: 16 }}
+      />
     </div>
   );
 
   const items = [
     {
       key: 'upcoming',
-      label: 'Sắp tới',
+      label: (
+        <span>
+          <CalendarOutlined />
+          Sắp tới
+        </span>
+      ),
       children: <UpcomingOccasionsView />
     },
     {
       key: 'all',
-      label: 'Tất cả dịp đặc biệt',
-      children: (
-        <>
-          <div style={{ marginBottom: 16, textAlign: 'right' }}>
-            <Button 
-              type="primary" 
-              icon={<PlusOutlined />} 
-              onClick={() => showModal()}
-            >
-              Thêm dịp đặc biệt
-            </Button>
-          </div>
-          <Table 
-            columns={columns} 
-            dataSource={occasions} 
-            rowKey="id"
-            pagination={pagination}
-            loading={loading}
-            onChange={handleTableChange}
-          />
-        </>
-      )
+      label: (
+        <span>
+          <GiftOutlined />
+          Tất cả dịp đặc biệt
+        </span>
+      ),
+      children: <AllOccasionsView />
     }
   ];
 
@@ -319,11 +428,17 @@ const fetchOccasions = async () => {
       <Tabs defaultActiveKey="upcoming" items={items} />
       
       <Modal
-        title={editingOccasion ? "Cập nhật dịp đặc biệt" : "Thêm dịp đặc biệt mới"}
+        title={
+          <Space>
+            {editingOccasion ? <EditOutlined /> : <PlusOutlined />}
+            <span>{editingOccasion ? "Cập nhật dịp đặc biệt" : "Thêm dịp đặc biệt mới"}</span>
+          </Space>
+        }
         open={modalVisible}
         onCancel={handleCancel}
         footer={null}
         destroyOnClose
+        width={600}
       >
         <Form
           form={form}
@@ -334,69 +449,98 @@ const fetchOccasions = async () => {
             reminderDaysBefore: 7
           }}
         >
-          <Form.Item
-            name="occasionName"
-            label="Tên dịp"
-            rules={[{ required: true, message: 'Vui lòng nhập tên dịp' }]}
-          >
-            <Input placeholder="Ví dụ: Sinh nhật, Kỷ niệm..." />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item
+                name="occasionName"
+                label="Tên dịp"
+                rules={[{ required: true, message: 'Vui lòng nhập tên dịp' }]}
+              >
+                <Input prefix={<GiftOutlined />} placeholder="Ví dụ: Sinh nhật, Kỷ niệm..." />
+              </Form.Item>
+            </Col>
+            
+            <Col span={12}>
+              <Form.Item
+                name="recipientName"
+                label="Người nhận"
+                rules={[{ required: true, message: 'Vui lòng nhập tên người nhận' }]}
+              >
+                <Input prefix={<UserOutlined />} placeholder="Tên người nhận quà/chúc mừng" />
+              </Form.Item>
+            </Col>
+            
+            <Col span={12}>
+              <Form.Item
+                name="relationship"
+                label="Mối quan hệ"
+                rules={[{ required: true, message: 'Vui lòng nhập mối quan hệ' }]}
+              >
+                <Input prefix={<TeamOutlined />} placeholder="Ví dụ: Bạn bè, Gia đình..." />
+              </Form.Item>
+            </Col>
+            
+            <Col span={12}>
+              <Form.Item
+                name="occasionDate"
+                label="Ngày diễn ra"
+                rules={[{ required: true, message: 'Vui lòng chọn ngày' }]}
+              >
+                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+              </Form.Item>
+            </Col>
+            
+            <Col span={12}>
+              <Form.Item
+                name="reminderDaysBefore"
+                label="Nhắc trước (ngày)"
+                rules={[{ required: true, message: 'Vui lòng nhập số ngày nhắc trước' }]}
+                tooltip="Hệ thống sẽ gửi email nhắc nhở trước ngày diễn ra theo số ngày này"
+              >
+                <InputNumber min={1} max={30} style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
+            
+            <Col span={24}>
+              <Form.Item
+                name="yearlyRecurring"
+                label="Lặp lại hàng năm"
+                valuePropName="checked"
+              >
+                <Switch />
+              </Form.Item>
+            </Col>
+            
+            <Col span={24}>
+              <Form.Item
+                name="giftPreferences"
+                label="Quà yêu thích"
+              >
+                <Input.TextArea 
+                  placeholder="Gợi ý quà tặng..." 
+                  rows={2}
+                  showCount
+                  maxLength={200}
+                />
+              </Form.Item>
+            </Col>
+            
+            <Col span={24}>
+              <Form.Item
+                name="notes"
+                label="Ghi chú"
+              >
+                <Input.TextArea 
+                  placeholder="Ghi chú thêm..." 
+                  rows={2}
+                  showCount
+                  maxLength={200}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
           
-          <Form.Item
-            name="recipientName"
-            label="Người nhận"
-            rules={[{ required: true, message: 'Vui lòng nhập tên người nhận' }]}
-          >
-            <Input placeholder="Tên người nhận quà/chúc mừng" />
-          </Form.Item>
-          
-          <Form.Item
-            name="relationship"
-            label="Mối quan hệ"
-            rules={[{ required: true, message: 'Vui lòng nhập mối quan hệ' }]}
-          >
-            <Input placeholder="Ví dụ: Bạn bè, Gia đình, Đồng nghiệp..." />
-          </Form.Item>
-          
-          <Form.Item
-            name="occasionDate"
-            label="Ngày diễn ra"
-            rules={[{ required: true, message: 'Vui lòng chọn ngày' }]}
-          >
-            <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
-          </Form.Item>
-          
-          <Form.Item
-            name="reminderDaysBefore"
-            label="Nhắc trước (ngày)"
-            rules={[{ required: true, message: 'Vui lòng nhập số ngày nhắc trước' }]}
-          >
-            <InputNumber min={1} max={30} style={{ width: '100%' }} />
-          </Form.Item>
-          
-          <Form.Item
-            name="yearlyRecurring"
-            label="Lặp lại hàng năm"
-            valuePropName="checked"
-          >
-            <Switch />
-          </Form.Item>
-          
-          <Form.Item
-            name="giftPreferences"
-            label="Quà yêu thích"
-          >
-            <Input.TextArea placeholder="Gợi ý quà tặng..." rows={2} />
-          </Form.Item>
-          
-          <Form.Item
-            name="notes"
-            label="Ghi chú"
-          >
-            <Input.TextArea placeholder="Ghi chú thêm..." rows={2} />
-          </Form.Item>
-          
-          <Form.Item>
+          <Form.Item style={{ marginBottom: 0, marginTop: 16 }}>
             <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
               <Button onClick={handleCancel}>Hủy</Button>
               <Button type="primary" htmlType="submit" loading={loading}>
