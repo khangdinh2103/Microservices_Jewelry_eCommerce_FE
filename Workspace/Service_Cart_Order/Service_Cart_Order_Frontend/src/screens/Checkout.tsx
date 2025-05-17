@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import PaymentMethodSelector from "../components/PaymentMethodSelector";
-import { useNavigate } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, Polyline, Popup, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Polyline, Popup } from "react-leaflet";
 import LocationPicker from "../components/PickerLocation";
 import { getCurrentLocation } from "../components/PickerLocation";
 import { calculateShipping } from "../components/calculateShipping";
@@ -34,8 +33,70 @@ const Checkout: React.FC = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const { selectedItems, cartItems } = location.state || { selectedItems: [], cartItems: [] };
+  const [isProcessingPayment, setIsProcessingPayment] = useState<boolean>(false);
+
+  // Check for payment return from Momo
+  useEffect(() => {
+    const checkPaymentStatus = async () => {
+      // Get orderId from URL parameters (Momo will redirect back with parameters)
+      const orderId = searchParams.get('orderId');
+      const resultCode = searchParams.get('resultCode');
+      
+      if (orderId && resultCode) {
+        setIsProcessingPayment(true);
+        try {
+          console.log("Checking payment status for order:", orderId);
+          
+          // Call the confirm transaction API with the MOMO orderId
+          const result = await apiService.confirmPaymentTransaction(orderId);
+          
+          if (result.success && result.data?.resultCode === 0) {
+            // Payment successful
+            alert("Thanh toán thành công! Đơn hàng của bạn đang được xử lý.");
+            
+            // Get the original order ID from localStorage if available
+            const originalOrderId = localStorage.getItem('pendingOrderId');
+            if (originalOrderId && !isNaN(parseInt(originalOrderId))) {
+              const orderIdNumber = parseInt(originalOrderId);
+              try {
+                // Update the payment status to PAID
+                console.log(`Updating payment status for order ${orderIdNumber} to PAID`);
+                const updateResult = await apiService.updateOrderStatus(
+                  orderIdNumber, 
+                  { paymentStatus: "PAID" }
+                );
+                console.log("Payment status updated successfully:", updateResult);
+              } catch (updateError) {
+                console.error("Error updating payment status:", updateError);
+              }
+              
+              // Clear localStorage
+              localStorage.removeItem('pendingOrderId');
+              localStorage.removeItem('momoOrderId');
+            } else {
+              console.warn("No valid order ID found in localStorage:", originalOrderId);
+            }
+          } else {
+            // Payment failed or pending
+            alert("Thanh toán chưa hoàn tất. Vui lòng kiểm tra lại trạng thái đơn hàng.");
+          }
+          
+          // Redirect to order list regardless of payment status
+          navigate("/order-list");
+        } catch (error) {
+          console.error("Error confirming payment:", error);
+          alert("Có lỗi xảy ra khi kiểm tra trạng thái thanh toán!");
+        } finally {
+          setIsProcessingPayment(false);
+        }
+      }
+    };
+    
+    checkPaymentStatus();
+  }, [searchParams, navigate]);
 
   if (!selectedItems.length || !cartItems.length) {
     return <h2 className="text-center text-white">Không có sản phẩm nào để thanh toán!</h2>;
@@ -139,7 +200,12 @@ const Checkout: React.FC = () => {
   };
 
   const handleOrder = async () => {
-    const paymentStatus = paymentMethod === "cod" ? "PENDING" : "PAID";
+    if (!paymentMethod) {
+      alert("Vui lòng chọn phương thức thanh toán!");
+      return;
+    }
+    
+    const paymentStatus = paymentMethod === "cod" ? "PENDING" : "PENDING"; // Changed from PAID to PENDING for MOMO
   
     const orderData = {
       userID: 1, 
@@ -156,62 +222,94 @@ const Checkout: React.FC = () => {
     };
   
     try {
+      setIsProcessingPayment(true);
       // Using apiService instead of direct fetch
       const orderResult = await apiService.createOrder(orderData);
       
-      // Remove purchased items from cart
-      try {
-        // Remove each purchased item from the cart using cartItemID instead of id
-        for (const item of selectedCartItems) {
-          // Check if cartItemID exists, otherwise fall back to id
-          const itemIdToRemove = item.cartItemID || item.id;
-          await apiService.removeCartItem(itemIdToRemove);
+      // Store the order ID in localStorage immediately after creation
+      // Check if orderResult has the order property with orderID
+      if (orderResult && orderResult.order && orderResult.order.orderID) {
+        const orderId = orderResult.order.orderID;
+        console.log("Storing order ID in localStorage:", orderId);
+        localStorage.setItem('pendingOrderId', orderId.toString());
+        
+        // Remove purchased items from cart
+        try {
+          // Remove each purchased item from the cart using cartItemID instead of id
+          for (const item of selectedCartItems) {
+            // Check if cartItemID exists, otherwise fall back to id
+            const itemIdToRemove = item.cartItemID || item.id;
+            await apiService.removeCartItem(itemIdToRemove);
+          }
+          console.log("Cart updated successfully after purchase");
+        } catch (error) {
+          console.error("Error updating cart after purchase:", error);
+          // Continue with checkout even if cart update fails
         }
-        console.log("Cart updated successfully after purchase");
-      } catch (error) {
-        console.error("Error updating cart after purchase:", error);
-        // Continue with checkout even if cart update fails
-      }
-  
-      if (paymentMethod === "cod") {
-        alert("Đặt hàng thành công! Đơn hàng của bạn đang chờ xử lý.");
-        navigate("/order-list", { state: { shippingCost } });
-        return;
-      }
-  
-      if (paymentMethod !== "momo") {
-        alert("Hiện tại chỉ hỗ trợ thanh toán bằng Momo hoặc COD.");
-        return;
-      }
-  
-      const paymentData = {
-        items: selectedCartItems.map((item: CartItem) => ({
-          image: item.image,
-          name: item.name,
-          quantity: item.quantity,
-          amount: item.price * item.quantity,
-        })),
-        userInfo: {
-          phoneNumber: userInfo.phone,
-          email: userInfo.email,
-          name: userInfo.name,
-        },
-        amount: finalAmount,
-        orderID: orderResult.orderID, 
-      };
-  
-      // Using apiService instead of direct fetch
-      const paymentResult = await apiService.processPayment(paymentData);
-  
-      if (paymentResult.success && paymentResult.data?.payUrl) {
-        window.open(paymentResult.data.payUrl, "_blank");
-        navigate("/order-list", { state: { shippingCost } });
+    
+        if (paymentMethod === "cod") {
+          alert("Đặt hàng thành công! Đơn hàng của bạn đang chờ xử lý.");
+          navigate("/order-list", { 
+            state: { 
+              shippingCost,
+              pendingOrderId: orderId, // Pass the order ID to OrderList
+            } 
+          });
+          return;
+        }
+    
+        if (paymentMethod !== "momo") {
+          alert("Hiện tại chỉ hỗ trợ thanh toán bằng Momo hoặc COD.");
+          return;
+        }
+    
+        const paymentData = {
+          items: selectedCartItems.map((item: CartItem) => ({
+            image: item.image,
+            name: item.name,
+            quantity: item.quantity,
+            amount: item.price * item.quantity,
+          })),
+          userInfo: {
+            phoneNumber: userInfo.phone,
+            email: userInfo.email,
+            name: userInfo.name,
+          },
+          amount: finalAmount,
+          orderID: orderId, 
+        };
+    
+        // Using apiService instead of direct fetch
+        const paymentResult = await apiService.processPayment(paymentData);
+    
+        if (paymentResult.success && paymentResult.data?.payUrl) {
+          // Store the order ID and MOMO orderId in localStorage before redirecting
+          // We already stored pendingOrderId above, so just store momoOrderId here
+          localStorage.setItem('momoOrderId', paymentResult.data.orderId);
+          
+          // Open Momo payment page
+          window.open(paymentResult.data.payUrl, "_blank");
+          
+          // Navigate to order list
+          navigate("/order-list", { 
+            state: { 
+              pendingPayment: true, 
+              orderId: orderId, 
+              momoOrderId: paymentResult.data.orderId 
+            } 
+          });
+        } else {
+          throw new Error("Không nhận được URL thanh toán!");
+        }
       } else {
-        throw new Error("Không nhận được URL thanh toán!");
+        console.warn("Order created but no orderID returned:", orderResult);
+        alert("Đơn hàng đã được tạo nhưng không thể lấy mã đơn hàng. Vui lòng kiểm tra lại!");
       }
     } catch (error) {
       alert("Có lỗi xảy ra khi đặt hàng hoặc thanh toán!");
       console.error(error);
+    } finally {
+      setIsProcessingPayment(false);
     }
   };
  
@@ -392,7 +490,13 @@ const Checkout: React.FC = () => {
         </div>
 
         {/* Nút thanh toán */}
-        <button onClick={handleOrder} className="w-full bg-red-500 text-white py-3 rounded mt-8 text-lg font-semibold font-mulish">Thanh toán</button>
+        <button 
+          onClick={handleOrder} 
+          disabled={isProcessingPayment}
+          className={`w-full ${isProcessingPayment ? 'bg-gray-500' : 'bg-red-500 hover:bg-red-600'} text-white py-3 rounded mt-8 text-lg font-semibold font-mulish transition`}
+        >
+          {isProcessingPayment ? 'Đang xử lý...' : 'Thanh toán'}
+        </button>
       </div>
     </div>
   );
