@@ -39,7 +39,7 @@ const HomePage = () => {
       <header className="header">
         <div className="flex justify-between items-center p-4">
           <div className="flex gap-4">
-            <a href="#" className="flex items-center gap-1">
+          <a href="#" className="flex items-center gap-1">
               <ShoppingCart size={18} />
               <span>Giỏ Hàng</span>
             </a>
@@ -58,10 +58,10 @@ const HomePage = () => {
               <MessageCircle size={18} />
               <span>Chat Bot</span>
             </a>
-            <a href="#" className="flex items-center gap-1">
+            <Link to="/account" className="flex items-center gap-1">
               <User size={18} />
               <span>Tài Khoản</span>
-            </a>
+            </Link>
           </div>
         </div>
 
