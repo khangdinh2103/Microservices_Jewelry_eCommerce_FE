@@ -1,7 +1,6 @@
 import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {useAuth} from 'container/AuthContext';
-import registerImage from '../assets/images/register.png';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -149,7 +148,7 @@ const Register = () => {
                     <div className="md:w-5/12 bg-amber-50 hidden md:block relative">
                         <div className="absolute inset-0 bg-gradient-to-t from-amber-900/30 to-transparent"></div>
                         <img
-                            src={registerImage}
+                            src="images/register.png"
                             alt="Tinh Tú Jewelry Collection"
                             className="w-full h-full object-cover"
                             onError={(e) => {
