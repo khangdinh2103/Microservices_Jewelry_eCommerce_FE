@@ -10,7 +10,7 @@ const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     
     // Use CartOrder context to get real cart items count
-    const {totalItems} = useCartOrder();
+    const {totalItems, resetCart} = useCartOrder();
     
     const {user, isAuthenticated, loading, logout} = useAuth();
 
@@ -37,6 +37,7 @@ const Header = () => {
         e.preventDefault();
         try {
             await logout();
+            resetCart();
             console.log('Đăng xuất thành công');
         } catch (error) {
             console.error('Lỗi khi đăng xuất:', error);
