@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
   
   // Payment
   PAYMENT: `${API_BASE_URL}/payment`,
+  PAYMENT_CONFIRM: `${API_BASE_URL}/payment/confirmTransaction`,
   
   // Cart
   CART: (userId: number) => `${API_BASE_URL}/cart/${userId}`,
@@ -65,6 +66,81 @@ export const apiService = {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(paymentData),
   }),
+  
+  // Confirm MOMO payment transaction
+  confirmPaymentTransaction: async (momoOrderId: string) => {
+    if (!momoOrderId) {
+      console.error("Cannot confirm transaction: momoOrderId is empty or undefined");
+      return {
+        success: false,
+        message: "Invalid order ID",
+        error: true
+      };
+    }
+    
+    try {
+      console.log("Confirming transaction for MOMO orderId:", momoOrderId);
+      
+      // Changed from orderId to id to match backend expectation
+      const response = await fetch(API_ENDPOINTS.PAYMENT_CONFIRM, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: momoOrderId }),
+      });
+      
+      if (!response.ok) {
+        // Log detailed error information
+        console.error(`Error confirming transaction. Status: ${response.status}`);
+        
+        try {
+          const errorData = await response.json();
+          console.error("Error response data:", errorData);
+          
+          // If we get a specific error about the transaction, return it
+          if (errorData && errorData.error) {
+            return {
+              success: false,
+              message: errorData.message || "Transaction confirmation failed",
+              error: true,
+              errorCode: response.status,
+              details: errorData.error
+            };
+          }
+        } catch (e) {
+          try {
+            const errorText = await response.text();
+            console.error("Error response text:", errorText);
+          } catch (textError) {
+            console.error("Could not read error response");
+          }
+        }
+        
+        // For 500 errors specifically, provide more context
+        if (response.status === 500) {
+          console.log("Server error occurred. This might be because the transaction is still processing at MOMO's end.");
+          // Return a structured error response instead of throwing
+          return {
+            success: false,
+            message: "Server error occurred while confirming payment",
+            error: true,
+            errorCode: 500
+          };
+        }
+        
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('API request failed in confirmPaymentTransaction:', error);
+      // Return a structured error response instead of throwing
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : "Unknown error occurred",
+        error: true
+      };
+    }
+  },
   
   // Cart
   getUserCart: (userId: number) => fetchApi(API_ENDPOINTS.CART(userId)),
