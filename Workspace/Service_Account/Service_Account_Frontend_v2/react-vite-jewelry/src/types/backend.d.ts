@@ -103,9 +103,8 @@ export interface IOccasionReminder {
     recipientName: string;
     relationship: string;
     giftPreferences?: string;
-    reminderSent?: boolean;
+    reminderSent: boolean; // Thêm trường này để theo dõi trạng thái gửi nhắc nhở
     daysRemaining?: number;
-    productRecommendations?: any[];
     createdAt?: string;
     updatedAt?: string;
   }
