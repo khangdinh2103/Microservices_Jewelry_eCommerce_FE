@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {useAuth} from 'container/AuthContext';
-import loginImage from '../assets/images/login.png';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -40,10 +39,10 @@ const Login = () => {
             className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-gray-100 min-h-[calc(100vh-200px)]">
             <div className="w-full max-w-5xl bg-white rounded-xl shadow-xl overflow-hidden flex flex-col md:flex-row">
                 {/* Left Image Section */}
-                <div className="md:w-1/2 bg-amber-50 hidden md:block relative">
+                <div className="md:w-1/2 bg-amber-50 md:block relative">
                     <div className="absolute inset-0 bg-gradient-to-t from-amber-900/30 to-transparent"></div>
                     <img
-                        src={loginImage}
+                        src="/images/account-login.png"
                         alt="Tinh Tú Jewelry Collection"
                         className="w-full h-full object-cover"
                         onError={(e) => {

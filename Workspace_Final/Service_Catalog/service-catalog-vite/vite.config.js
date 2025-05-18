@@ -30,10 +30,12 @@ export default defineConfig({
     },
     server: {
         port: 3005,
+        host: '0.0.0.0',
         cors: true,
     },
     preview: {
         port: 3005,
+        host: '0.0.0.0',
         cors: true,
     },
 });

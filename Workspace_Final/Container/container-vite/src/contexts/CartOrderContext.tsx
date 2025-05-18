@@ -1,6 +1,6 @@
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import cartOrderService, { CartItem, Cart, Order, ShippingInfo } from '../services/cartOrderService';
-import { useAuth } from './AuthContext';
+import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
+import cartOrderService, {CartItem, Cart, Order, ShippingInfo} from '../services/cartOrderService';
+import {useAuth} from './AuthContext';
 import catalogService from '../services/catalogService';
 
 interface CartSummary {
@@ -26,6 +26,7 @@ interface CartOrderContextType {
     updateCartItemQuantity: (cartItemId: number, quantity: number) => Promise<void>;
     removeFromCart: (cartItemId: number) => Promise<void>;
     clearCart: () => Promise<void>;
+    resetCart: () => void;
     // Checkout actions
     startCheckout: () => void;
     updateShippingInfo: (info: ShippingInfo) => void;
@@ -54,9 +55,9 @@ interface CartOrderProviderProps {
 const CART_STORAGE_KEY = 'jec_cart';
 const SHIPPING_INFO_KEY = 'jec_shipping_info';
 
-export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }) => {
-    const { user, isAuthenticated, loading: authLoading } = useAuth();
-    
+export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({children}) => {
+    const {user, isAuthenticated, loading: authLoading} = useAuth();
+
     // States
     const [cart, setCart] = useState<Cart | null>(null);
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -66,14 +67,14 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
     const [activeOrder, setActiveOrder] = useState<Order | null>(null);
     const [shippingInfo, setShippingInfo] = useState<ShippingInfo | null>(null);
     const [orders, setOrders] = useState<Order[]>([]);
-    
+
     // Cart summary with calculations
     const [cartSummary, setCartSummary] = useState<CartSummary>({
         totalItems: 0,
         subtotal: 0,
         shippingFee: 0,
         tax: 0,
-        totalAmount: 0
+        totalAmount: 0,
     });
 
     // Load cart from localStorage on init (for guest users)
@@ -109,47 +110,47 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
     // Calculate totals
     const calculateCartTotals = (items: CartItem[]) => {
         const itemCount = items.reduce((total, item) => total + item.quantity, 0);
-        const subtotal = items.reduce((total, item) => total + (item.price * item.quantity), 0);
+        const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
         // Simple tax calculation (10%)
         const tax = subtotal * 0.1;
         // Simple shipping calculation (for now, may be replaced with API call)
         const shippingFee = subtotal > 1000000 ? 0 : 30000;
-        
+
         setTotalItems(itemCount);
         setCartSummary({
             totalItems: itemCount,
             subtotal,
             shippingFee,
             tax,
-            totalAmount: subtotal + shippingFee + tax
+            totalAmount: subtotal + shippingFee + tax,
         });
     };
 
     // Fetch user cart from server
     const fetchUserCart = async () => {
         if (!user?.id) return;
-        
+
         setIsLoading(true);
         setError(null);
-        
+
         try {
             const userCart = await cartOrderService.getCartByUserId(parseInt(user.id));
             setCart(userCart);
             setCartItems(userCart.items || []);
             calculateCartTotals(userCart.items || []);
-            
+
             // Store in localStorage in case user logs out
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(userCart));
         } catch (err: any) {
             console.error('Error fetching cart:', err);
             setError(err.response?.data?.message || 'Could not fetch cart');
-            
+
             // If error is 404 (cart not found), create a new cart
             if (err.response?.status === 404) {
                 try {
                     const newCart = await cartOrderService.createCart(parseInt(user.id));
-                    setCart({ cartId: newCart.cartId, items: [] });
-                    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({ cartId: newCart.cartId, items: [] }));
+                    setCart({cartId: newCart.cartId, items: []});
+                    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({cartId: newCart.cartId, items: []}));
                 } catch (createErr: any) {
                     console.error('Error creating new cart:', createErr);
                 }
@@ -163,56 +164,55 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
     const addToCart = async (productId: number, quantity: number = 1) => {
         setIsLoading(true);
         setError(null);
-        
+
         try {
             // If not authenticated, handle locally
             if (!isAuthenticated || !user?.id) {
                 // Fetch product info to display in cart
                 const product = await catalogService.getProductById(productId);
-                
+
                 const newItem: CartItem = {
                     cartItemId: Date.now(), // temporary ID
                     productId: product.id,
                     productName: product.name,
                     quantity: quantity,
                     price: product.price,
-                    imageUrl: product.productImages?.[0]?.imageUrl || null
+                    imageUrl: product.productImages?.[0]?.imageUrl || null,
                 };
-                
+
                 const updatedItems = [...cartItems];
-                const existingItemIndex = updatedItems.findIndex(item => item.productId === productId);
-                
+                const existingItemIndex = updatedItems.findIndex((item) => item.productId === productId);
+
                 if (existingItemIndex > -1) {
                     updatedItems[existingItemIndex].quantity += quantity;
                 } else {
                     updatedItems.push(newItem);
                 }
-                
+
                 setCartItems(updatedItems);
-                
+
                 // Update local storage
-                const tempCart = { cartId: cart?.cartId || -1, items: updatedItems };
+                const tempCart = {cartId: cart?.cartId || -1, items: updatedItems};
                 localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(tempCart));
                 setCart(tempCart);
                 calculateCartTotals(updatedItems);
-                
+
                 return;
             }
-            
+
             // Add to server cart if authenticated
             if (!cart?.cartId) {
                 const newCart = await cartOrderService.createCart(parseInt(user.id));
-                setCart({ cartId: newCart.cartId, items: [] });
+                setCart({cartId: newCart.cartId, items: []});
             }
-            
+
             const cartId = cart?.cartId;
             if (!cartId) throw new Error('No cart ID available');
-            
+
             const newItem = await cartOrderService.addToCart(cartId, productId, quantity);
-            
+
             // Re-fetch the entire cart to ensure consistency
             await fetchUserCart();
-            
         } catch (err: any) {
             console.error('Error adding to cart:', err);
             setError(err.response?.data?.message || 'Could not add item to cart');
@@ -225,37 +225,34 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
     const updateCartItemQuantity = async (cartItemId: number, quantity: number) => {
         setIsLoading(true);
         setError(null);
-        
+
         try {
             // If not authenticated, handle locally
             if (!isAuthenticated || !user?.id) {
-                const updatedItems = cartItems.map(item => 
-                    item.cartItemId === cartItemId 
-                        ? { ...item, quantity: quantity } 
-                        : item
-                ).filter(item => item.quantity > 0);
-                
+                const updatedItems = cartItems
+                    .map((item) => (item.cartItemId === cartItemId ? {...item, quantity: quantity} : item))
+                    .filter((item) => item.quantity > 0);
+
                 setCartItems(updatedItems);
-                
+
                 // Update local storage
-                const tempCart = { cartId: cart?.cartId || -1, items: updatedItems };
+                const tempCart = {cartId: cart?.cartId || -1, items: updatedItems};
                 localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(tempCart));
                 setCart(tempCart);
                 calculateCartTotals(updatedItems);
-                
+
                 return;
             }
-            
+
             // Update on server if authenticated
             if (quantity === 0) {
                 await cartOrderService.removeFromCart(cartItemId);
             } else {
                 await cartOrderService.updateCartItemQuantity(cartItemId, quantity);
             }
-            
+
             // Re-fetch the entire cart
             await fetchUserCart();
-            
         } catch (err: any) {
             console.error('Error updating cart:', err);
             setError(err.response?.data?.message || 'Could not update item');
@@ -273,17 +270,17 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
     const clearCart = async () => {
         setIsLoading(true);
         setError(null);
-        
+
         try {
             if (!isAuthenticated || !user?.id) {
                 setCartItems([]);
-                const tempCart = { cartId: cart?.cartId || -1, items: [] };
+                const tempCart = {cartId: cart?.cartId || -1, items: []};
                 localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(tempCart));
                 setCart(tempCart);
                 calculateCartTotals([]);
                 return;
             }
-            
+
             // For authenticated users, remove each item individually
             // (assuming backend doesn't have a clear cart endpoint)
             if (cart?.items) {
@@ -291,10 +288,9 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
                     await cartOrderService.removeFromCart(item.cartItemId);
                 }
             }
-            
+
             // Re-fetch empty cart
             await fetchUserCart();
-            
         } catch (err: any) {
             console.error('Error clearing cart:', err);
             setError(err.response?.data?.message || 'Could not clear cart');
@@ -309,14 +305,31 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
             setError('Your cart is empty');
             return;
         }
-        
+
         // Load shipping info from storage if available
         const savedShippingInfo = localStorage.getItem(SHIPPING_INFO_KEY);
         if (savedShippingInfo) {
             setShippingInfo(JSON.parse(savedShippingInfo));
         }
-        
+
         // Prepare for checkout process
+    };
+
+    const resetCart = () => {
+        // Xóa dữ liệu giỏ hàng trong localStorage
+        localStorage.removeItem(CART_STORAGE_KEY);
+
+        // Reset các state liên quan đến giỏ hàng
+        setCart(null);
+        setCartItems([]);
+        setTotalItems(0);
+        setCartSummary({
+            totalItems: 0,
+            subtotal: 0,
+            shippingFee: 0,
+            tax: 0,
+            totalAmount: 0,
+        });
     };
 
     // Update shipping information
@@ -329,31 +342,31 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
     const processOrder = async (paymentMethod: string): Promise<Order> => {
         setIsLoading(true);
         setError(null);
-        
+
         try {
             if (!user?.id) {
                 throw new Error('You must be logged in to place an order');
             }
-            
+
             if (!shippingInfo) {
                 throw new Error('Shipping information is required');
             }
-            
+
             if (cartItems.length === 0) {
                 throw new Error('Your cart is empty');
             }
-            
+
             // Create the full address string
             const fullAddress = `${shippingInfo.address}, ${shippingInfo.ward}, ${shippingInfo.district}, ${shippingInfo.city}`;
-            
+
             // Prepare order details
-            const orderDetails = cartItems.map(item => ({
+            const orderDetails = cartItems.map((item) => ({
                 productId: item.productId,
                 quantity: item.quantity,
                 price: item.price,
-                productName: item.productName
+                productName: item.productName,
             }));
-            
+
             // Create order data
             const checkoutData = {
                 userId: parseInt(user.id),
@@ -362,16 +375,16 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
                 status: 'PENDING',
                 paymentStatus: paymentMethod === 'COD' ? 'PENDING' : 'PENDING',
                 paymentMethod: paymentMethod,
-                shippingInfo: shippingInfo
+                shippingInfo: shippingInfo,
             };
-            
+
             // Create order
             const createdOrder = await cartOrderService.createOrder(checkoutData);
             setActiveOrder(createdOrder);
-            
+
             // If payment is successful or COD, clear cart
             await clearCart();
-            
+
             return createdOrder;
         } catch (err: any) {
             console.error('Error processing order:', err);
@@ -386,12 +399,12 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
     const fetchOrders = async () => {
         setIsLoading(true);
         setError(null);
-        
+
         try {
             if (!user?.id) {
                 return;
             }
-            
+
             const userOrders = await cartOrderService.getOrdersByUserId(parseInt(user.id));
             setOrders(userOrders);
         } catch (err: any) {
@@ -406,7 +419,7 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
     const getOrderById = async (orderId: number): Promise<Order | undefined> => {
         setIsLoading(true);
         setError(null);
-        
+
         try {
             const order = await cartOrderService.getOrderById(orderId);
             return order;
@@ -423,7 +436,7 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
     const cancelOrder = async (orderId: number) => {
         setIsLoading(true);
         setError(null);
-        
+
         try {
             await cartOrderService.cancelOrder(orderId);
             // Update orders list
@@ -453,6 +466,7 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({ children }
                 updateCartItemQuantity,
                 removeFromCart,
                 clearCart,
+                resetCart,
                 // Checkout actions
                 startCheckout,
                 updateShippingInfo,

@@ -25,22 +25,22 @@ function App() {
                                 {/* Trang chủ */}
                                 <Route path="/" element={<HomePage/>}/>
 
-                                {/* Module Catalog */}
-                                <Route
-                                    path="/catalog/*"
-                                    element={
-                                        <RemoteModuleLayout>
-                                            <CatalogApp/>
-                                        </RemoteModuleLayout>
-                                    }
-                                />
-
                                 {/* Module Account */}
                                 <Route
                                     path="/account/*"
                                     element={
                                         <RemoteModuleLayout>
                                             <AccountApp/>
+                                        </RemoteModuleLayout>
+                                    }
+                                />
+
+                                {/* Module Catalog */}
+                                <Route
+                                    path="/catalog/*"
+                                    element={
+                                        <RemoteModuleLayout>
+                                            <CatalogApp/>
                                         </RemoteModuleLayout>
                                     }
                                 />
