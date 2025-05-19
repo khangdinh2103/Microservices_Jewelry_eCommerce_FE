@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import './App.css';
 
 // Lazy load pages for better performance
 const Cart = lazy(() => import('./pages/Cart'));
