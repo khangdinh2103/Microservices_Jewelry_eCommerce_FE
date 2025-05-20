@@ -35,12 +35,15 @@ pipeline {
     stage('Test Services') {
       steps {
         script {
-          sh '''
-            nc -zv localhost 3000
-            nc -zv localhost 3001
-            nc -zv localhost 3005
-            nc -zv localhost 3006
-          '''
+          def ports = [3000, 3001, 3005, 3006]
+          ports.each { port ->
+            def status = sh(script: "nc -zv localhost ${port}", returnStatus: true)
+            if (status != 0) {
+              error "Port ${port} is not available"
+            } else {
+              echo "Port ${port} is open."
+            }
+          }
         }
       }
     }
