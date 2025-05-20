@@ -1,0 +1,76 @@
+pipeline {
+  agent {
+    docker {
+      image 'docker:20-dind'  // Docker-in-Docker để chạy docker và docker-compose
+      args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+    }
+  }
+
+  environment {
+    NODE_VERSION = '20-alpine'
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub-cred-id')
+    DOCKERHUB_USERNAME = 'khangdinh2103'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+         git branch: 'master', url: 'https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git'
+      }
+    }
+
+    stage('Build & Start Services') {
+      steps {
+        script {
+          // Chạy docker-compose build (dù dùng image có sẵn, giữ để phòng khi thay đổi Dockerfile)
+          sh 'docker-compose build'
+
+          // Chạy services nền
+          sh 'docker-compose up -d'
+
+          // Đợi các service khởi động và cài đặt pnpm
+          sleep 40
+        }
+      }
+    }
+
+    stage('Test Services') {
+      steps {
+        script {
+          // Kiểm tra port các service (có thể thay thành test cụ thể)
+          sh '''
+            nc -zv localhost 3000
+            nc -zv localhost 3001
+            nc -zv localhost 3005
+            nc -zv localhost 3006
+          '''
+        }
+      }
+    }
+
+    stage('Build & Push Docker Images') {
+      steps {
+        script {
+          // Ví dụ build & push service-account image, bạn có thể lặp cho các service khác
+          def serviceName = 'service-account'
+          def imageName = "${DOCKERHUB_USERNAME}/${serviceName}"
+
+          sh """
+            docker build -t ${imageName}:latest ./Service_Account/service-account-vite
+            echo "Login to Docker Hub"
+            echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            docker push ${imageName}:latest
+            docker logout
+          """
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      echo 'Cleanup: stop and remove containers'
+      sh 'docker-compose down'
+    }
+  }
+}
