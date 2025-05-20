@@ -206,7 +206,91 @@ const cartOrderService = {
             weight
         });
         return response.data.fee;
-    }
+    },
+
+    /**
+     * Lấy địa chỉ từ tọa độ
+     */
+    getAddressFromCoordinates: async (lat: number, lng: number): Promise<any> => {
+      try {
+        const response = await axiosInstance.get(`${BASE_URL}/location?lat=${lat}&lng=${lng}`);
+        return response.data;
+      } catch (error) {
+        console.error('Error getting address from coordinates:', error);
+        throw error;
+      }
+    },
+    
+    /**
+     * Tính tuyến đường và khoảng cách
+     */
+    calculateRoute: async (
+      startLat: number, 
+      startLng: number, 
+      endLat: number, 
+      endLng: number
+    ): Promise<any> => {
+      try {
+        const response = await axiosInstance.get(
+          `${BASE_URL}/location/distance?startLat=${startLat}&startLng=${startLng}&endLat=${endLat}&endLng=${endLng}`
+        );
+        return response.data;
+      } catch (error) {
+        console.error('Error calculating route:', error);
+        throw error;
+      }
+    },
+    
+    /**
+     * Tạo thanh toán MOMO QR Code
+     */
+    createMomoQRPayment: async (
+      orderId: number, 
+      amount: number, 
+      orderInfo: string
+    ): Promise<any> => {
+      try {
+        const items = [
+          { 
+            name: `Đơn hàng #${orderId}`,
+            quantity: 1,
+            amount: amount
+          }
+        ];
+        
+        const userInfo = {
+          phoneNumber: "", // Sẽ được cập nhật từ shippingInfo
+          email: "",
+          name: ""
+        };
+        
+        const response = await axiosInstance.post(`${BASE_URL}/payment`, { 
+          items, 
+          userInfo,
+          amount,
+          orderId
+        });
+        return response.data;
+      } catch (error) {
+        console.error('Error creating MOMO QR payment:', error);
+        throw error;
+      }
+    },
+    
+    /**
+     * Kiểm tra trạng thái giao dịch MOMO
+     */
+    confirmPaymentTransaction: async (momoOrderId: string): Promise<any> => {
+      try {
+        const response = await axiosInstance.post(`${BASE_URL}/payment/confirmTransaction`, {
+          id: momoOrderId
+        });
+        return response.data;
+      } catch (error) {
+        console.error('Error confirming MOMO payment transaction:', error);
+        throw error;
+      }
+    },
 };
 
 export default cartOrderService;
