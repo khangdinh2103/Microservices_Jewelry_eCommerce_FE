@@ -1,0 +1,447 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+// Các biến màu cập nhật
+$color-white: #ffffff;
+$color-light: #f1f5f9;
+$color-black: #121212;
+$color-night: #001632;
+
+$color-red: #f44336;
+$color-blue: #4a90e2;
+$color-gold: #d4af37;
+$color-gray: #80868b;
+$color-grayish: #dadce0;
+
+$shadow-normal: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+$shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+// Kiểu dáng cập nhật cho trang đăng nhập
+.login-page,
+.register-page,
+.forgot-password-page {
+    background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: $color-white;
+    font-family: 'Roboto', sans-serif;
+
+  // Phần đầu trang (cho logo)
+  .header {
+    text-align: center;
+    padding: 20px 0;
+
+    .logo {
+        width: 100px;
+        margin: 0 auto;
+        display: block;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+        transition: transform 0.3s ease;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+  }
+
+  // Phần chính
+  .main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+
+      .split-container {
+        display: flex;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+        }
+
+        // Phần bên trái: Bộ sưu tập hình ảnh
+        .image-section {
+          flex: 1;
+          position: relative;
+          overflow: hidden;
+
+          .image-collage {
+            height: 100%;
+            
+            .main-image {
+              width: 100%;
+              height: 350px;
+              object-fit: cover;
+              transition: transform 0.5s ease;
+              
+              &:hover {
+                transform: scale(1.05);
+              }
+            }
+
+            .sub-images {
+              display: flex;
+              gap: 4px;
+              margin-top: 4px;
+
+              .sub-image {
+                width: 50%;
+                height: 150px;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+                
+                &:hover {
+                  transform: scale(1.05);
+                }
+              }
+            }
+            
+            .image-overlay {
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+              padding: 30px 20px;
+              text-align: center;
+              
+              h2 {
+                font-size: 28px;
+                font-weight: 700;
+                margin-bottom: 10px;
+                color: $color-gold;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+              }
+              
+              p {
+                font-size: 16px;
+                color: $color-white;
+                opacity: 0.9;
+                max-width: 80%;
+                margin: 0 auto;
+              }
+            }
+          }
+        }
+
+        // Phần bên phải: Biểu mẫu
+        .form-section {
+          flex: 1;
+          padding: 40px;
+          background: rgba(42, 42, 42, 0.7);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+
+          .heading {
+            text-align: center;
+            margin-bottom: 30px;
+
+            .text-large {
+              font-size: 32px;
+              font-weight: 700;
+              color: $color-gold;
+              margin-bottom: 5px;
+              letter-spacing: 1px;
+            }
+            
+            .welcome-text {
+              color: $color-grayish;
+              font-size: 16px;
+              margin-top: 5px;
+            }
+          }
+
+          .login-form {
+            .ant-form-item {
+              margin-bottom: 20px;
+            }
+
+            .ant-form-item-label {
+              label {
+                color: $color-light;
+                font-size: 14px;
+                font-weight: 500;
+              }
+            }
+
+            .ant-input,
+            .ant-input-password {
+              background: rgba(255, 255, 255, 0.1);
+              border: 1px solid rgba(255, 255, 255, 0.2);
+              color: $color-white;
+              padding: 12px 15px;
+              border-radius: 8px;
+              font-size: 14px;
+              height: auto;
+              transition: all 0.3s ease;
+
+              &::placeholder {
+                color: rgba(255, 255, 255, 0.5);
+              }
+
+              &:hover, &:focus {
+                background: rgba(255, 255, 255, 0.15);
+                border-color: $color-gold;
+                box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+              }
+            }
+            
+            .input-icon {
+              color: rgba(255, 255, 255, 0.6);
+              margin-right: 8px;
+            }
+
+            .forgot-password {
+              text-align: right;
+              margin-bottom: 20px;
+
+              a {
+                color: $color-gold;
+                text-decoration: none;
+                font-size: 14px;
+                transition: color 0.3s ease;
+
+                &:hover {
+                  color: lighten($color-gold, 10%);
+                  text-decoration: underline;
+                }
+              }
+            }
+
+            .login-button {
+              width: 100%;
+              background: linear-gradient(135deg, $color-gold, darken($color-gold, 15%));
+              color: $color-white;
+              border: none;
+              padding: 12px;
+              font-size: 16px;
+              font-weight: 600;
+              border-radius: 8px;
+              height: auto;
+              margin-top: 10px;
+              transition: all 0.3s ease;
+
+              &:hover {
+                background: linear-gradient(135deg, lighten($color-gold, 5%), darken($color-gold, 10%));
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+              }
+
+              &:active {
+                transform: translateY(0);
+              }
+            }
+            .divider {
+              display: flex;
+              align-items: center;
+              margin: 20px 0;
+              
+              &:before, &:after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: rgba(0, 0, 0, 0.1);
+              }
+              
+              span {
+                padding: 0 15px;
+                color: #666;
+                font-size: 14px;
+              }
+            }
+            
+            .social-login {
+              display: flex;
+              gap: 10px;
+              margin-bottom: 20px;
+              
+              button {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                height: 40px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+              }
+              
+              .facebook-btn {
+                background: #3b5998;
+                color: white;
+                border: none;
+                
+                &:hover {
+                  background: #344e86;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                }
+                
+                .social-icon {
+                  font-size: 18px;
+                }
+              }
+            }
+
+            .register-link {
+              text-align: center;
+              color: $color-white;
+              margin-top: 10px;
+              font-size: 14px;
+
+              a {
+                color: $color-gold;
+                text-decoration: none;
+                font-weight: 500;
+                transition: color 0.3s ease;
+
+                &:hover {
+                  color: lighten($color-gold, 10%);
+                  text-decoration: underline;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Phần chân trang
+  .footer {
+    padding: 30px 20px;
+    background: rgba(0, 0, 0, 0.3);
+    color: $color-white;
+    font-size: 14px;
+    margin-top: 40px;
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-bottom: 20px;
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 200px;
+        padding: 0 15px;
+        
+        h4 {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 15px;
+          color: $color-gold;
+          position: relative;
+          padding-bottom: 10px;
+          
+          &:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background: $color-gold;
+          }
+        }
+
+        p {
+          margin: 8px 0;
+          color: $color-grayish;
+          font-size: 13px;
+          transition: color 0.3s ease;
+          
+          &:hover {
+            color: $color-white;
+          }
+        }
+
+        .social-icons {
+          display: flex;
+          gap: 15px;
+          margin-top: 15px;
+
+          a {
+            color: $color-white;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+              color: $color-gold;
+              background: rgba(255, 255, 255, 0.2);
+              transform: translateY(-3px);
+            }
+          }
+        }
+      }
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: $color-grayish;
+      font-size: 12px;
+    }
+  }
+
+  // Kiểu chữ
+  .text {
+    font-family: inherit;
+    line-height: inherit;
+    text-transform: unset;
+    text-rendering: optimizeLegibility;
+
+    &-large {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $color-white;
+    }
+
+    &-normal {
+      font-size: 1rem;
+      font-weight: 400;
+      color: $color-white;
+    }
+
+    &-links {
+      font-size: 1rem;
+      font-weight: 400;
+      color: $color-gold;
+
+      &:hover {
+        text-decoration: underline;
+        color: lighten($color-gold, 10%);
+      }
+    }
+  }
+}
