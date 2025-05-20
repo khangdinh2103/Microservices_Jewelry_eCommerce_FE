@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'docker:20-dind'  // Docker-in-Docker để chạy docker và docker-compose
+      image 'docker:20-dind'
       args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
     }
   }
@@ -15,29 +15,26 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-         git branch: 'master', url: 'https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git'
+        git branch: 'master', url: 'https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git'
       }
     }
 
     stage('Build & Start Services') {
       steps {
-        script {
-          // Chạy docker-compose build (dù dùng image có sẵn, giữ để phòng khi thay đổi Dockerfile)
-          sh 'docker-compose build'
-
-          // Chạy services nền
-          sh 'docker-compose up -d'
-
-          // Đợi các service khởi động và cài đặt pnpm
-          sleep 40
+        dir('Workspace_Final') {
+          script {
+            sh 'docker-compose build'
+            sh 'docker-compose up -d'
+          }
         }
+        // Đợi service khởi động và cài pnpm
+        sleep 40
       }
     }
 
     stage('Test Services') {
       steps {
         script {
-          // Kiểm tra port các service (có thể thay thành test cụ thể)
           sh '''
             nc -zv localhost 3000
             nc -zv localhost 3001
@@ -51,7 +48,6 @@ pipeline {
     stage('Build & Push Docker Images') {
       steps {
         script {
-          // Ví dụ build & push service-account image, bạn có thể lặp cho các service khác
           def serviceName = 'service-account'
           def imageName = "${DOCKERHUB_USERNAME}/${serviceName}"
 
@@ -70,7 +66,9 @@ pipeline {
   post {
     always {
       echo 'Cleanup: stop and remove containers'
-      sh 'docker-compose down'
+      dir('Workspace_Final') {
+        sh 'docker-compose down'
+      }
     }
   }
 }
