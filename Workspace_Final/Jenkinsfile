@@ -27,21 +27,33 @@ pipeline {
             sh 'docker-compose up -d'
           }
         }
-        // Đợi service khởi động và cài pnpm
-        sleep 120
+        // Đợi service khởi động
+        sleep 30
       }
     }
 
     stage('Test Services') {
       steps {
-        script {
-          def ports = [3000, 3001, 3005, 3006]
-          ports.each { port ->
-            def status = sh(script: "nc -zv localhost ${port}", returnStatus: true)
-            if (status != 0) {
-              error "Port ${port} is not available"
-            } else {
-              echo "Port ${port} is open."
+        dir('Workspace_Final') {
+          script {
+            def services = [
+              [name: 'frontend', port: 3000],
+              [name: 'admin-ui', port: 3001],
+              [name: 'user-ui', port: 3005],
+              [name: 'staff-ui', port: 3006]
+            ]
+
+            services.each { svc ->
+              echo "Testing ${svc.name} on port ${svc.port}..."
+              def result = sh(
+                script: "docker-compose exec -T ${svc.name} sh -c 'nc -z localhost ${svc.port}'",
+                returnStatus: true
+              )
+              if (result != 0) {
+                error "Service '${svc.name}' not responding on port ${svc.port}"
+              } else {
+                echo "Service '${svc.name}' is UP on port ${svc.port}"
+              }
             }
           }
         }
