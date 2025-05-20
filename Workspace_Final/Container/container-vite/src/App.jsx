@@ -6,11 +6,11 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import ErrorBoundary from './components/ErrorBoundary';
 import RemoteModuleLayout from './components/RemoteModuleLayout';
+import React from 'react';
 
-// Remote components
-import AccountApp from 'account/App';
-import CatalogApp from 'catalog/App';
-import CartOrderApp from 'cart_order/App';
+const AccountApp = React.lazy(() => import('account/App'));
+const CatalogApp = React.lazy(() => import('catalog/App'));
+const CartOrderApp = React.lazy(() => import('cart_order/App'));
 
 function App() {
     return (
