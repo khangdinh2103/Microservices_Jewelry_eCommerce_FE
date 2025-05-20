@@ -28,7 +28,7 @@ pipeline {
           }
         }
         // Đợi service khởi động và cài pnpm
-        sleep 40
+        sleep 120
       }
     }
 
