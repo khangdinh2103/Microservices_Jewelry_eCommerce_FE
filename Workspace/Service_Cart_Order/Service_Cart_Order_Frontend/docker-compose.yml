@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  cart-order-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cart-order-frontend
+    ports:
+      - "8206:8206"      
+    restart: unless-stopped

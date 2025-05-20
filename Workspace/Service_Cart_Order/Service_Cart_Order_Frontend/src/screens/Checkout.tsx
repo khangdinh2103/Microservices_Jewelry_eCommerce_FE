@@ -445,8 +445,16 @@ const Checkout: React.FC = () => {
                     <Popup>Vị trí giao hàng</Popup>
                   </Marker>
                 )}
-                {/* <LocationPicker onLocationSelect={(lat, lng) => setMapLocation({ lat, lng })} /> */}
-               
+                {/* Add Polyline to display the route */}
+                {route.length > 0 && (
+                  <Polyline 
+                    positions={route}
+                    color="blue"
+                    weight={3}
+                    opacity={0.7}
+                  />
+                )}
+                
                 <LocationPicker
                     onLocationSelect={(lat, lng) => setMapLocation({ lat, lng })}
                     setUserInfo={setUserInfo}

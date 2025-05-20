@@ -17,7 +17,7 @@ const Cart: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const [subtotal, setSubtotal] = useState<number>(0);
-  const taxRate: number = 0.1;
+
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("");
 

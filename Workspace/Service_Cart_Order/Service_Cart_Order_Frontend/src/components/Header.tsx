@@ -1,6 +1,5 @@
 import React from "react";
 import { FaShoppingCart, FaHeadphones, FaRobot, FaUser } from "react-icons/fa";
-import Cart from "../screens/Cart";
 import { Link } from "react-router-dom";
 import Logo from "../assets/logo.png";
 

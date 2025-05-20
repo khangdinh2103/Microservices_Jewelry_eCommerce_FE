@@ -115,7 +115,7 @@ export const getCurrentLocation = ({
           console.error("Lỗi khi lấy vị trí hoặc tính khoảng cách:", error);
         }
       },
-      (error) => {
+      () => {
         alert("Không thể truy cập vị trí! Vui lòng kiểm tra cài đặt trình duyệt.");
       }
     );
