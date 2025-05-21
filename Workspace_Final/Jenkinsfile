@@ -94,28 +94,6 @@ pipeline {
         }
       }
     }
-
-    stage('Create Dockerfile') {
-      steps {
-        dir('Workspace_Final/Service_Account/service-account-vite') {
-          script {
-            // Create a simple Dockerfile if it doesn't exist
-            sh '''
-              if [ ! -f Dockerfile ]; then
-                echo 'FROM node:20-alpine
-WORKDIR /app
-COPY . .
-RUN npm install -g pnpm && pnpm install
-EXPOSE 3001
-CMD ["pnpm", "run", "o"]' > Dockerfile
-                cat Dockerfile
-              fi
-            '''
-          }
-        }
-      }
-    }
-
     stage('Build & Push Docker Images') {
       steps {
         script {
@@ -143,6 +121,52 @@ CMD ["pnpm", "run", "o"]' > Dockerfile
             echo "Directory Workspace_Final/Service_Account/service-account-vite does not exist"
             // List directories to help debug
             sh "find Workspace_Final -type d -name 'service-account*' || true"
+          }
+        }
+      }
+    }
+    stage('Push Service Image') {
+      steps {
+        dir('Workspace_Final') {
+          script {
+            def serviceName = 'service-account'
+            def imageName = "${DOCKERHUB_USERNAME}/${serviceName}"
+            
+            // Use the running container to create an image
+            try {
+              // Check if the service is running
+              def isRunning = sh(
+                script: "docker-compose ps ${serviceName} | grep -q 'Up'",
+                returnStatus: true
+              ) == 0
+              
+              if (isRunning) {
+                // Get the container ID
+                def containerId = sh(
+                  script: "docker-compose ps -q ${serviceName}",
+                  returnStdout: true
+                ).trim()
+                
+                echo "Container ID for ${serviceName}: ${containerId}"
+                
+                // Commit the container to create an image
+                sh "docker commit ${containerId} ${imageName}:latest || true"
+                
+                // Push the image to Docker Hub
+                withCredentials([string(credentialsId: 'dockerhub-cred-id', variable: 'DOCKER_PWD')]) {
+                  sh """
+                    echo "Login to Docker Hub"
+                    echo "${DOCKER_PWD}" | docker login -u ${DOCKERHUB_USERNAME} --password-stdin || true
+                    docker push ${imageName}:latest || true
+                    docker logout || true
+                  """
+                }
+              } else {
+                echo "Service ${serviceName} is not running, cannot create image"
+              }
+            } catch (Exception e) {
+              echo "Warning: Could not create or push image for ${serviceName}: ${e.message}, but continuing pipeline"
+            }
           }
         }
       }
