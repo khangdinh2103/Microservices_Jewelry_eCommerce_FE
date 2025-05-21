@@ -272,6 +272,14 @@ const cartOrderService = {
         });
         return response.data;
     },
+
+    updateOrderPaymentStatus: async (orderId: number, paymentStatus: string, transactionId?: string): Promise<Order> => {
+        const response = await axiosInstance.put(`${BASE_URL}/orders/${orderId}/payment-status`, {
+            paymentStatus,
+            transactionId,
+        });
+        return response.data.order;
+    },
 };
 
 export default cartOrderService;

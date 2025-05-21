@@ -20,7 +20,8 @@ const calculateShipping = (distanceKm) => {
 
 const Checkout = () => {
     const navigate = useNavigate();
-    const {cartItems, cartSummary, isLoading, shippingInfo, updateShippingInfo, processOrder} = useCartOrder();
+    const {cartItems, cartSummary, isLoading, shippingInfo, updateShippingInfo, processOrder, updateOrderPaymentStatus} =
+        useCartOrder();
     const {isAuthenticated, user} = useAuth();
 
     const [activeStep, setActiveStep] = useState(1);
@@ -180,18 +181,8 @@ const Checkout = () => {
 
     const handleMomoPaymentSuccess = async (paymentData) => {
         try {
-            // Update the order payment status to "PAID"
-            await fetch(`http://localhost:8000/api/v1/cart-order/orders/${activeOrder.id}/payment-status`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-                },
-                body: JSON.stringify({
-                    paymentStatus: 'PAID',
-                    transactionId: paymentData.transId,
-                }),
-            });
+            // Update the order payment status to "PAID" using context method
+            await updateOrderPaymentStatus(activeOrder.id, 'PAID', paymentData.transId);
 
             // Close the modal and redirect to order confirmation page
             setShowMomoModal(false);

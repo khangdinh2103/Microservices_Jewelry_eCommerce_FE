@@ -40,6 +40,7 @@ interface CartOrderContextType {
     getDelivererOrders: (delivererId: number) => Promise<Order[]>;
     updateDeliveryStatus: (orderId: number, status: string) => Promise<void>;
     uploadDeliveryProof: (orderId: number, proofImage: File, notes?: string) => Promise<void>;
+    updateOrderPaymentStatus: (orderId: number, paymentStatus: string, transactionId?: string) => Promise<Order>;
 }
 
 const CartOrderContext = createContext<CartOrderContextType | undefined>(undefined);
@@ -520,6 +521,33 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({children}) 
             setIsLoading(false);
         }
     };
+    
+    const updateOrderPaymentStatus = async (orderId: number, paymentStatus: string, transactionId?: string) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+        const updatedOrder = await cartOrderService.updateOrderPaymentStatus(orderId, paymentStatus, transactionId);
+        
+        // Update the active order if it matches
+        if (activeOrder && activeOrder.id === orderId) {
+            setActiveOrder(updatedOrder);
+        }
+        
+        // If this order is in the orders list, update it there too
+        setOrders(orders.map(order => 
+            order.id === orderId ? updatedOrder : order
+        ));
+        
+        return updatedOrder;
+    } catch (err: any) {
+        console.error('Error updating payment status:', err);
+        setError(err.response?.data?.message || 'Could not update payment status');
+        throw err;
+    } finally {
+        setIsLoading(false);
+    }
+};
 
     return (
         <CartOrderContext.Provider
@@ -552,6 +580,7 @@ export const CartOrderProvider: React.FC<CartOrderProviderProps> = ({children}) 
                 getDelivererOrders,
                 updateDeliveryStatus,
                 uploadDeliveryProof,
+                updateOrderPaymentStatus,
             }}
         >
             {children}
