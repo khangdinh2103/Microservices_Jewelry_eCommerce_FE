@@ -3,15 +3,35 @@ import {Link, useNavigate} from 'react-router-dom';
 import {motion} from 'framer-motion';
 import {useCartOrder} from 'container/CartOrderContext';
 import {useAuth} from 'container/AuthContext';
+import cartOrderService from 'container/cartOrderService'; // Thêm import này
+import PaymentMethodSelector from '../components/PaymentMethodSelector';
+import LocationPicker from '../components/LocationPicker';
+import MomoQrPaymentModal from '../components/MomoQrPaymentModal';
+
+// Hàm tính phí vận chuyển dựa trên khoảng cách
+const calculateShipping = (distanceKm) => {
+    if (!distanceKm || isNaN(distanceKm)) return 30000;
+
+    if (distanceKm <= 5) return 30000;
+    if (distanceKm <= 10) return 40000;
+    if (distanceKm <= 15) return 50000;
+    return 50000 + Math.ceil((distanceKm - 15) / 5) * 10000;
+};
 
 const Checkout = () => {
     const navigate = useNavigate();
-    const {cartItems, cartSummary, isLoading, shippingInfo, updateShippingInfo, processOrder} = useCartOrder();
+    const {cartItems, cartSummary, isLoading, shippingInfo, updateShippingInfo, processOrder, updateOrderPaymentStatus} =
+        useCartOrder();
     const {isAuthenticated, user} = useAuth();
 
     const [activeStep, setActiveStep] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState('COD');
     const [processingOrder, setProcessingOrder] = useState(false);
+    const [showLocationPicker, setShowLocationPicker] = useState(false);
+
+    // State cho tính phí vận chuyển
+    const [routeInfo, setRouteInfo] = useState(null);
+    const [shippingCost, setShippingCost] = useState(30000);
 
     const [formData, setFormData] = useState({
         fullName: user?.name || '',
@@ -23,13 +43,16 @@ const Checkout = () => {
         notes: '',
     });
 
+    const [momoPaymentUrl, setMomoPaymentUrl] = useState('');
+    const [momoOrderId, setMomoOrderId] = useState('');
+    const [showMomoModal, setShowMomoModal] = useState(false);
+    const [activeOrder, setActiveOrder] = useState(null);
+
     // Kiểm tra xác thực và giỏ hàng có sản phẩm
     useEffect(() => {
         if (!isLoading) {
             if (!isAuthenticated) {
                 navigate('/account/login', {state: {from: '/cart/checkout'}});
-            } else if (cartItems.length === 0) {
-                navigate('/cart');
             }
         }
     }, [isAuthenticated, cartItems, isLoading, navigate]);
@@ -46,6 +69,11 @@ const Checkout = () => {
                 ward: shippingInfo.ward || 'Phường Bến Nghé',
                 notes: shippingInfo.notes || '',
             });
+
+            if (shippingInfo.routeInfo) {
+                setRouteInfo(shippingInfo.routeInfo);
+                setShippingCost(calculateShipping(shippingInfo.routeInfo.distance));
+            }
         }
     }, [shippingInfo, user]);
 
@@ -59,23 +87,133 @@ const Checkout = () => {
 
     const handleSubmitShipping = (e) => {
         e.preventDefault();
-        updateShippingInfo(formData);
+
+        // Lưu shipping info vào context
+        updateShippingInfo({
+            ...formData,
+            routeInfo: routeInfo,
+        });
+
         setActiveStep(2);
     };
 
     const handlePlaceOrder = async () => {
         setProcessingOrder(true);
+
         try {
-            const order = await processOrder(paymentMethod);
-            navigate(`/cart/confirmation/${order.id}`);
+            // Validate common requirements for all payment methods
+            const fullAddress = `${shippingInfo.address}, ${shippingInfo.ward}, ${shippingInfo.district}, ${shippingInfo.city}`;
+
+            if (!user?.id) {
+                throw new Error('Bạn cần đăng nhập để đặt hàng');
+            }
+
+            if (!fullAddress || !shippingInfo.fullName || !shippingInfo.phone) {
+                throw new Error('Vui lòng điền đầy đủ thông tin giao hàng');
+            }
+
+            if (cartItems.length === 0) {
+                throw new Error('Giỏ hàng của bạn đang trống');
+            }
+
+            // Process based on payment method
+            if (paymentMethod === 'COD') {
+                // Xử lý thanh toán COD
+                const order = await processOrder('COD');
+                navigate(`/cart/confirmation/${order.id}`);
+            } else if (paymentMethod === 'MOMO_QR') {
+                // Xử lý thanh toán MOMO QR
+                // Chuẩn bị dữ liệu cho MOMO API
+                const momoItems = cartItems.map((item) => ({
+                    image: item.imageUrl || 'https://via.placeholder.com/80',
+                    name: item.productName,
+                    quantity: item.quantity,
+                    amount: item.price,
+                }));
+
+                const totalAmount = cartSummary.totalAmount;
+
+                // Gọi API thanh toán MOMO
+                const response = await fetch('http://localhost:8006/api/payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        items: momoItems,
+                        userInfo: {
+                            phoneNumber: shippingInfo.phone,
+                            email: user.email,
+                            name: shippingInfo.fullName,
+                        },
+                        amount: totalAmount,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Không thể kết nối đến dịch vụ thanh toán MOMO');
+                }
+
+                const paymentData = await response.json();
+
+                if (paymentData.success) {
+                    // Lưu thông tin thanh toán MOMO
+                    setMomoPaymentUrl(paymentData.data.payUrl);
+                    setMomoOrderId(paymentData.data.orderId);
+
+                    // Tạo đơn hàng với trạng thái thanh toán là "PENDING"
+                    const order = await processOrder('MOMO_QR');
+                    setActiveOrder(order);
+
+                    // Hiển thị modal thanh toán MOMO QR
+                    setShowMomoModal(true);
+                } else {
+                    throw new Error(paymentData.message || 'Không thể tạo giao dịch thanh toán MOMO');
+                }
+            }
         } catch (error) {
-            console.error('Error placing order:', error);
-            alert('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.');
+            console.error('Lỗi khi xử lý đơn hàng:', error);
+            alert(`Đã xảy ra lỗi: ${error.message || 'Không thể xử lý đơn hàng'}`);
         } finally {
             setProcessingOrder(false);
         }
     };
 
+    const handleMomoPaymentSuccess = async (paymentData) => {
+        try {
+            // Update the order payment status to "PAID" using context method
+            await updateOrderPaymentStatus(activeOrder.id, 'PAID', paymentData.transId);
+
+            // Close the modal and redirect to order confirmation page
+            setShowMomoModal(false);
+            navigate(`/cart/confirmation/${activeOrder.id}`);
+        } catch (error) {
+            console.error('Error updating payment status:', error);
+            alert('Thanh toán thành công nhưng cập nhật trạng thái đơn hàng thất bại. Vui lòng liên hệ với chúng tôi.');
+        }
+    };
+
+    const handleMomoPaymentFailed = (errorMessage) => {
+        console.error('MOMO payment failed:', errorMessage);
+        alert(`Thanh toán thất bại: ${errorMessage}. Vui lòng thử lại sau hoặc chọn phương thức thanh toán khác.`);
+    };
+
+    // Xử lý lựa chọn vị trí
+    const handleLocationSelected = (location, address, routeInfo) => {
+        setFormData({
+            ...formData,
+            address: address,
+        });
+
+        setRouteInfo(routeInfo);
+
+        // Cập nhật phí vận chuyển dựa trên khoảng cách
+        if (routeInfo && routeInfo.distance) {
+            setShippingCost(calculateShipping(routeInfo.distance));
+        }
+    };
+
+    // Format tiền VND
     const formatPrice = (price) => {
         return new Intl.NumberFormat('vi-VN', {
             style: 'currency',
@@ -91,6 +229,11 @@ const Checkout = () => {
             </div>
         );
     }
+
+    // Tính toán tổng tiền với phí vận chuyển mới
+    const subtotal = cartSummary.subtotal;
+    const tax = cartSummary.tax;
+    const totalAmount = subtotal + tax + shippingCost;
 
     return (
         <div className="bg-[#faf7f2] min-h-screen py-16">
@@ -175,15 +318,41 @@ const Checkout = () => {
 
                                         <div className="md:col-span-2">
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ</label>
-                                            <input
-                                                type="text"
-                                                name="address"
-                                                required
-                                                value={formData.address}
-                                                onChange={handleInputChange}
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-                                                placeholder="Số nhà, đường..."
-                                            />
+                                            <div className="flex">
+                                                <input
+                                                    type="text"
+                                                    name="address"
+                                                    required
+                                                    value={formData.address}
+                                                    onChange={handleInputChange}
+                                                    className="flex-1 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                                    placeholder="Số nhà, đường..."
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowLocationPicker(true)}
+                                                    className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-r-md flex items-center"
+                                                >
+                                                    <i className="fas fa-map-marker-alt mr-2"></i>
+                                                    Chọn địa chỉ
+                                                </button>
+                                            </div>
+
+                                            {/* Hiển thị thông tin tuyến đường nếu có */}
+                                            {routeInfo && (
+                                                <div className="mt-2 text-sm bg-amber-50 p-2 rounded-md border border-amber-200">
+                                                    <div className="flex items-center">
+                                                        <i className="fas fa-route text-amber-600 mr-2"></i>
+                                                        <span>
+                                                            <span className="font-medium">Khoảng cách giao hàng:</span>{' '}
+                                                            {routeInfo.distance.toFixed(1)} km
+                                                            <span className="mx-2 text-gray-400">|</span>
+                                                            <span className="font-medium">Thời gian dự kiến:</span>{' '}
+                                                            {routeInfo.duration.toFixed(0)} phút
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div>
@@ -201,6 +370,7 @@ const Checkout = () => {
                                                 <option value="Hồ Chí Minh">Hồ Chí Minh</option>
                                                 <option value="Đà Nẵng">Đà Nẵng</option>
                                                 <option value="Hải Phòng">Hải Phòng</option>
+                                                <option value="Cần Thơ">Cần Thơ</option>
                                             </select>
                                         </div>
 
@@ -216,7 +386,8 @@ const Checkout = () => {
                                                 <option value="Quận 1">Quận 1</option>
                                                 <option value="Quận 2">Quận 2</option>
                                                 <option value="Quận 3">Quận 3</option>
-                                                <option value="Quận 4">Quận 4</option>
+                                                <option value="Quận Bình Thạnh">Quận Bình Thạnh</option>
+                                                <option value="Quận Gò Vấp">Quận Gò Vấp</option>
                                             </select>
                                         </div>
 
@@ -231,8 +402,8 @@ const Checkout = () => {
                                             >
                                                 <option value="Phường Bến Nghé">Phường Bến Nghé</option>
                                                 <option value="Phường Bến Thành">Phường Bến Thành</option>
+                                                <option value="Phường Đa Kao">Phường Đa Kao</option>
                                                 <option value="Phường Cầu Kho">Phường Cầu Kho</option>
-                                                <option value="Phường Cầu Ông Lãnh">Phường Cầu Ông Lãnh</option>
                                             </select>
                                         </div>
 
@@ -277,105 +448,8 @@ const Checkout = () => {
                                         </button>
                                     </div>
 
-                                    <div className="space-y-4 mb-6">
-                                        {/* COD Option */}
-                                        <div
-                                            className={`border rounded-md p-4 cursor-pointer ${
-                                                paymentMethod === 'COD'
-                                                    ? 'border-amber-500 bg-amber-50'
-                                                    : 'border-gray-300 hover:border-gray-400'
-                                            }`}
-                                            onClick={() => setPaymentMethod('COD')}
-                                        >
-                                            <div className="flex items-center">
-                                                <div
-                                                    className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                                                        paymentMethod === 'COD' ? 'border-amber-600' : 'border-gray-400'
-                                                    }`}
-                                                >
-                                                    {paymentMethod === 'COD' && (
-                                                        <div className="w-3 h-3 rounded-full bg-amber-600"></div>
-                                                    )}
-                                                </div>
-                                                <div className="ml-3">
-                                                    <span className="font-medium">Thanh toán khi nhận hàng (COD)</span>
-                                                </div>
-                                            </div>
-                                            {paymentMethod === 'COD' && (
-                                                <p className="text-sm text-gray-600 mt-2 ml-8">
-                                                    Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng.
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        {/* MoMo Option */}
-                                        <div
-                                            className={`border rounded-md p-4 cursor-pointer ${
-                                                paymentMethod === 'MOMO'
-                                                    ? 'border-amber-500 bg-amber-50'
-                                                    : 'border-gray-300 hover:border-gray-400'
-                                            }`}
-                                            onClick={() => setPaymentMethod('MOMO')}
-                                        >
-                                            <div className="flex items-center">
-                                                <div
-                                                    className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                                                        paymentMethod === 'MOMO' ? 'border-amber-600' : 'border-gray-400'
-                                                    }`}
-                                                >
-                                                    {paymentMethod === 'MOMO' && (
-                                                        <div className="w-3 h-3 rounded-full bg-amber-600"></div>
-                                                    )}
-                                                </div>
-                                                <div className="ml-3 flex items-center">
-                                                    <span className="font-medium">Thanh toán bằng MoMo</span>
-                                                    <img src="/images/momo-logo.png" alt="MoMo" className="h-6 ml-2" />
-                                                </div>
-                                            </div>
-                                            {paymentMethod === 'MOMO' && (
-                                                <p className="text-sm text-gray-600 mt-2 ml-8">
-                                                    Thanh toán trực tuyến qua ví MoMo. Bạn sẽ được chuyển đến trang thanh toán
-                                                    của MoMo sau khi đặt hàng.
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        {/* Bank Transfer Option */}
-                                        <div
-                                            className={`border rounded-md p-4 cursor-pointer ${
-                                                paymentMethod === 'BANK'
-                                                    ? 'border-amber-500 bg-amber-50'
-                                                    : 'border-gray-300 hover:border-gray-400'
-                                            }`}
-                                            onClick={() => setPaymentMethod('BANK')}
-                                        >
-                                            <div className="flex items-center">
-                                                <div
-                                                    className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                                                        paymentMethod === 'BANK' ? 'border-amber-600' : 'border-gray-400'
-                                                    }`}
-                                                >
-                                                    {paymentMethod === 'BANK' && (
-                                                        <div className="w-3 h-3 rounded-full bg-amber-600"></div>
-                                                    )}
-                                                </div>
-                                                <div className="ml-3">
-                                                    <span className="font-medium">Chuyển khoản ngân hàng</span>
-                                                </div>
-                                            </div>
-                                            {paymentMethod === 'BANK' && (
-                                                <div className="text-sm text-gray-600 mt-2 ml-8">
-                                                    <p>Vui lòng sử dụng thông tin sau để chuyển khoản:</p>
-                                                    <ul className="mt-2 space-y-1">
-                                                        <li>Ngân hàng: Vietcombank</li>
-                                                        <li>Số tài khoản: 1234567890</li>
-                                                        <li>Chủ tài khoản: CÔNG TY TRANG SỨC TINH TÚ</li>
-                                                        <li>Nội dung: [Mã đơn hàng] - [Tên của bạn]</li>
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
+                                    {/* Payment Method Selector */}
+                                    <PaymentMethodSelector selectedMethod={paymentMethod} onSelect={setPaymentMethod} />
 
                                     <div className="flex justify-end mt-6">
                                         <motion.button
@@ -442,34 +516,38 @@ const Checkout = () => {
                                 ))}
                             </div>
 
-                            {/* Cost summary */}
+                            {/* Cost summary with updated shipping cost */}
                             <div className="space-y-3 mb-6">
                                 <div className="flex justify-between">
                                     <span className="text-gray-600">Tạm tính ({cartSummary.totalItems} sản phẩm)</span>
-                                    <span className="font-medium text-gray-800">{formatPrice(cartSummary.subtotal)}</span>
+                                    <span className="font-medium text-gray-800">{formatPrice(subtotal)}</span>
                                 </div>
 
-                                <div className="flex justify-between">
+                                <div className="flex justify-between items-center">
                                     <span className="text-gray-600">Phí vận chuyển</span>
-                                    {cartSummary.shippingFee > 0 ? (
-                                        <span className="font-medium text-gray-800">
-                                            {formatPrice(cartSummary.shippingFee)}
-                                        </span>
+                                    {shippingCost > 0 ? (
+                                        <span className="font-medium text-gray-800">{formatPrice(shippingCost)}</span>
                                     ) : (
                                         <span className="font-medium text-green-600">Miễn phí</span>
                                     )}
                                 </div>
 
+                                {routeInfo && (
+                                    <div className="text-xs text-gray-500 italic text-right">
+                                        Dựa trên khoảng cách: {routeInfo.distance.toFixed(1)} km
+                                    </div>
+                                )}
+
                                 <div className="flex justify-between">
                                     <span className="text-gray-600">Thuế (10%)</span>
-                                    <span className="font-medium text-gray-800">{formatPrice(cartSummary.tax)}</span>
+                                    <span className="font-medium text-gray-800">{formatPrice(tax)}</span>
                                 </div>
 
                                 <div className="border-t border-gray-200 pt-3 mt-4">
                                     <div className="flex justify-between">
                                         <span className="font-serif font-medium text-gray-800">Tổng tiền</span>
                                         <span className="font-serif font-semibold text-xl text-amber-800">
-                                            {formatPrice(cartSummary.totalAmount)}
+                                            {formatPrice(totalAmount)}
                                         </span>
                                     </div>
                                 </div>
@@ -478,6 +556,23 @@ const Checkout = () => {
                     </div>
                 </div>
             </div>
+
+            {/* LocationPicker Modal */}
+            <LocationPicker
+                visible={showLocationPicker}
+                onClose={() => setShowLocationPicker(false)}
+                onSelectLocation={handleLocationSelected}
+                initialLocation={{lat: 10.7769, lng: 106.7009}}
+            />
+
+            <MomoQrPaymentModal
+                isOpen={showMomoModal}
+                onClose={() => setShowMomoModal(false)}
+                paymentUrl={momoPaymentUrl}
+                orderId={momoOrderId}
+                onPaymentSuccess={handleMomoPaymentSuccess}
+                onPaymentFailed={handleMomoPaymentFailed}
+            />
         </div>
     );
 };
