@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image 'docker:20-dind'
-      args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+      args '--privileged -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=""'
     }
   }
 
@@ -37,10 +37,8 @@ pipeline {
               mkdir -p Service_Cart_Order/service-cart-order-vite
             '''
             
-            // Create package.json files for each service
-            sh '''
-              # Create package.json for Container
-              cat > Container/container-vite/package.json << 'EOF'
+            // Create package.json for Container
+            writeFile file: 'Container/container-vite/package.json', text: '''
 {
     "name": "container-vite",
     "private": true,
@@ -76,10 +74,10 @@ pipeline {
         "vite": "^6.3.5"
     }
 }
-EOF
-
-              # Create package.json for Service_Account
-              cat > Service_Account/service-account-vite/package.json << 'EOF'
+'''
+            
+            // Create package.json for Service_Account
+            writeFile file: 'Service_Account/service-account-vite/package.json', text: '''
 {
     "name": "service-account-vite",
     "private": true,
@@ -114,10 +112,10 @@ EOF
         "vite": "^6.3.5"
     }
 }
-EOF
-
-              # Create package.json for Service_Catalog
-              cat > Service_Catalog/service-catalog-vite/package.json << 'EOF'
+'''
+            
+            // Create package.json for Service_Catalog
+            writeFile file: 'Service_Catalog/service-catalog-vite/package.json', text: '''
 {
     "name": "service-catalog-vite",
     "private": true,
@@ -153,10 +151,10 @@ EOF
         "vite": "^6.3.5"
     }
 }
-EOF
-
-              # Create package.json for Service_Cart_Order
-              cat > Service_Cart_Order/service-cart-order-vite/package.json << 'EOF'
+'''
+            
+            // Create package.json for Service_Cart_Order
+            writeFile file: 'Service_Cart_Order/service-cart-order-vite/package.json', text: '''
 {
     "name": "service-cart-order-vite",
     "private": true,
@@ -192,8 +190,7 @@ EOF
         "vite": "^6.3.5"
     }
 }
-EOF
-            '''
+'''
           }
         }
       }
