@@ -94,15 +94,17 @@ const OrderConfirmation = () => {
     }
 
     // Calculate subtotal from orderDetails if available
-    const subtotal = order?.orderDetails?.reduce((sum, item) => {
-        return sum + (Number(item.price) || 0) * (Number(item.quantity) || 0);
-    }, 0) || 0;
-    
+    const subtotal =
+        order?.orderDetails?.reduce((sum, item) => {
+            return sum + (Number(item.price) || 0) * (Number(item.quantity) || 0);
+        }, 0) || 0;
+
     // Shipping fee is fixed for now
     const shippingFee = 30000;
-    
+    const tax = subtotal * 0.1;
+
     // Total amount
-    const totalAmount = subtotal + shippingFee;
+    const totalAmount = subtotal + tax + shippingFee;
 
     // Get payment method from order
     const paymentMethod = order?.payment_method || 'COD';
@@ -181,13 +183,13 @@ const OrderConfirmation = () => {
                                             <h4 className="text-gray-800">{item.product?.name || 'Sản phẩm'}</h4>
                                             <p className="text-gray-600 text-sm">Số lượng: {item.quantity}</p>
                                         </div>
-                                        <span className="font-medium text-gray-800">{formatPrice(item.price * item.quantity)}</span>
+                                        <span className="font-medium text-gray-800">
+                                            {formatPrice(item.price * item.quantity)}
+                                        </span>
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-gray-500 text-center py-4">
-                                    Không có thông tin sản phẩm
-                                </div>
+                                <div className="text-gray-500 text-center py-4">Không có thông tin sản phẩm</div>
                             )}
                         </div>
 
@@ -195,6 +197,10 @@ const OrderConfirmation = () => {
                             <div className="flex justify-between mb-2">
                                 <span className="text-gray-600">Tạm tính:</span>
                                 <span className="text-gray-800">{formatPrice(subtotal)}</span>
+                            </div>
+                            <div className="flex justify-between mb-2">
+                                <span className="text-gray-600">Thuế (10%):</span>
+                                <span className="text-gray-800">{formatPrice(tax)}</span>
                             </div>
                             <div className="flex justify-between mb-2">
                                 <span className="text-gray-600">Phí vận chuyển:</span>
