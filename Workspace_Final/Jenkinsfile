@@ -37,9 +37,10 @@ pipeline {
               mkdir -p Service_Cart_Order/service-cart-order-vite
             '''
             
-            // Create package.json for Container service
+            // Create package.json files for each service
             sh '''
-cat > Container/container-vite/package.json << 'EOF'
+              # Create package.json for Container
+              cat > Container/container-vite/package.json << 'EOF'
 {
     "name": "container-vite",
     "private": true,
@@ -76,11 +77,9 @@ cat > Container/container-vite/package.json << 'EOF'
     }
 }
 EOF
-            '''
-            
-            // Create package.json for Service_Account service
-            sh '''
-cat > Service_Account/service-account-vite/package.json << 'EOF'
+
+              # Create package.json for Service_Account
+              cat > Service_Account/service-account-vite/package.json << 'EOF'
 {
     "name": "service-account-vite",
     "private": true,
@@ -116,11 +115,9 @@ cat > Service_Account/service-account-vite/package.json << 'EOF'
     }
 }
 EOF
-            '''
-            
-            // Create package.json for Service_Catalog service
-            sh '''
-cat > Service_Catalog/service-catalog-vite/package.json << 'EOF'
+
+              # Create package.json for Service_Catalog
+              cat > Service_Catalog/service-catalog-vite/package.json << 'EOF'
 {
     "name": "service-catalog-vite",
     "private": true,
@@ -157,11 +154,9 @@ cat > Service_Catalog/service-catalog-vite/package.json << 'EOF'
     }
 }
 EOF
-            '''
-            
-            // Create package.json for Service_Cart_Order service
-            sh '''
-cat > Service_Cart_Order/service-cart-order-vite/package.json << 'EOF'
+
+              # Create package.json for Service_Cart_Order
+              cat > Service_Cart_Order/service-cart-order-vite/package.json << 'EOF'
 {
     "name": "service-cart-order-vite",
     "private": true,
