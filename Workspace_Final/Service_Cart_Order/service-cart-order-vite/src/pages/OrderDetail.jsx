@@ -29,7 +29,7 @@ const OrderDetail = () => {
         if (orderId) {
             fetchOrder();
         }
-    }, [getOrderById]);
+    }, []);
 
     // Format date
     const formatDate = (dateString) => {
