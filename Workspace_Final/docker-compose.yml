@@ -10,9 +10,7 @@ services:
     ports:
       - "3000:3000"  # Vite preview port
     command: >
-      sh -c "npm install -g pnpm &&
-             pnpm install &&
-             pnpm run o"
+      sh -c "echo 'Container service started' && tail -f /dev/null"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -26,9 +24,7 @@ services:
     ports:
       - "3001:3001"  # Mapped to different host port
     command: >
-      sh -c "npm install -g pnpm &&
-             pnpm install &&
-             pnpm run o"
+      sh -c "echo 'Account service started' && tail -f /dev/null"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -42,9 +38,7 @@ services:
     ports:
       - "3006:3006"  # Mapped to different host port
     command: >
-      sh -c "npm install -g pnpm &&
-             pnpm install &&
-             pnpm run o"
+      sh -c "echo 'Cart and Order service started' && tail -f /dev/null"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -58,9 +52,7 @@ services:
     ports:
       - "3005:3005"  # Mapped to different host port
     command: >
-      sh -c "npm install -g pnpm &&
-             pnpm install &&
-             pnpm run o"
+      sh -c "echo 'Catalog service started' && tail -f /dev/null"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0

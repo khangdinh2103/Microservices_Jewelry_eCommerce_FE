@@ -19,11 +19,11 @@ Fetching upstream changes from https://github.com/khangdinh2103/Microservices_Je
 using GIT_ASKPASS to set credentials 
  > git fetch --tags --force --progress -- https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git +refs/heads/*:refs/remotes/origin/* # timeout=10
  > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
-Checking out Revision 21bc7b1a02978758056d9e38ffd825328ce7f124 (refs/remotes/origin/master)
+Checking out Revision 8eaacfba7b3ee9bdd78c0879b084cde9531434b1 (refs/remotes/origin/master)
  > git config core.sparsecheckout # timeout=10
- > git checkout -f 21bc7b1a02978758056d9e38ffd825328ce7f124 # timeout=10
+ > git checkout -f 8eaacfba7b3ee9bdd78c0879b084cde9531434b1 # timeout=10
 Commit message: "jenkinsfile creat pakage"
- > git rev-list --no-walk 8e48a05b65f9650bde4c8d2adf5e5fcba02c92b7 # timeout=10
+ > git rev-list --no-walk 21bc7b1a02978758056d9e38ffd825328ce7f124 # timeout=10
 [Pipeline] }
 [Pipeline] // stage
 [Pipeline] withEnv
@@ -38,8 +38,8 @@ Commit message: "jenkinsfile creat pakage"
 [Pipeline] // withEnv
 [Pipeline] withDockerContainer
 Jenkins seems to be running inside container 1271a0d27f983874ab4d6da4b9beb635c6b05fc78cd09ed65469274d56a09f0e
-$ docker run -t -d -u 0:0 --privileged -v /var/run/docker.sock:/var/run/docker.sock --entrypoint= -w /var/jenkins_home/workspace/FE --volumes-from 1271a0d27f983874ab4d6da4b9beb635c6b05fc78cd09ed65469274d56a09f0e -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** docker:20-dind cat
-$ docker top cd697696fafe49b5bf72aa2a03b5cbd20f1024cab83cd8998f43dd17ad48a0b8 -eo pid,comm
+$ docker run -t -d -u 0:0 --privileged -v /var/run/docker.sock:/var/run/docker.sock -w /var/jenkins_home/workspace/FE --volumes-from 1271a0d27f983874ab4d6da4b9beb635c6b05fc78cd09ed65469274d56a09f0e -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** docker:20-dind cat
+$ docker top b988de12f08d6a4ce850b7f924acb76e9c1b67e8f74db12f38fe8cff7845e5cc -eo pid,comm
 [Pipeline] {
 [Pipeline] withCredentials
 Masking supported pattern matches of $DOCKERHUB_CREDENTIALS or $DOCKERHUB_CREDENTIALS_PSW
@@ -52,7 +52,7 @@ Masking supported pattern matches of $DOCKERHUB_CREDENTIALS or $DOCKERHUB_CREDEN
 Selected Git installation does not exist. Using Default
 The recommended git tool is: NONE
 No credentials specified
-Warning: JENKINS-30600: special launcher org.jenkinsci.plugins.docker.workflow.WithContainerStep$Decorator$1@f5c2783; decorates hudson.Launcher$LocalLauncher@5e03ce58 will be ignored (a typical symptom is the Git executable not being run inside a designated container)
+Warning: JENKINS-30600: special launcher org.jenkinsci.plugins.docker.workflow.WithContainerStep$Decorator$1@2299df5c; decorates hudson.Launcher$LocalLauncher@49c436a6 will be ignored (a typical symptom is the Git executable not being run inside a designated container)
  > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/FE/.git # timeout=10
 Fetching changes from the remote Git repository
  > git config remote.origin.url https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git # timeout=10
@@ -61,12 +61,12 @@ Fetching upstream changes from https://github.com/khangdinh2103/Microservices_Je
  > git --version # 'git version 2.39.5'
  > git fetch --tags --force --progress -- https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git +refs/heads/*:refs/remotes/origin/* # timeout=10
  > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
-Checking out Revision 21bc7b1a02978758056d9e38ffd825328ce7f124 (refs/remotes/origin/master)
+Checking out Revision 8eaacfba7b3ee9bdd78c0879b084cde9531434b1 (refs/remotes/origin/master)
  > git config core.sparsecheckout # timeout=10
- > git checkout -f 21bc7b1a02978758056d9e38ffd825328ce7f124 # timeout=10
+ > git checkout -f 8eaacfba7b3ee9bdd78c0879b084cde9531434b1 # timeout=10
  > git branch -a -v --no-abbrev # timeout=10
  > git branch -D master # timeout=10
- > git checkout -b master 21bc7b1a02978758056d9e38ffd825328ce7f124 # timeout=10
+ > git checkout -b master 8eaacfba7b3ee9bdd78c0879b084cde9531434b1 # timeout=10
 Commit message: "jenkinsfile creat pakage"
 [Pipeline] }
 [Pipeline] // stage
@@ -122,21 +122,21 @@ Running in /var/jenkins_home/workspace/FE/Workspace_Final
 + docker-compose up -d
  Network workspace_final_default  Creating
  Network workspace_final_default  Created
- Container workspace_final-service-cart-order-1  Creating
  Container workspace_final-container-1  Creating
- Container workspace_final-service-catalog-1  Creating
+ Container workspace_final-service-cart-order-1  Creating
  Container workspace_final-service-account-1  Creating
+ Container workspace_final-service-catalog-1  Creating
  Container workspace_final-container-1  Created
- Container workspace_final-service-catalog-1  Created
- Container workspace_final-service-account-1  Created
  Container workspace_final-service-cart-order-1  Created
- Container workspace_final-service-cart-order-1  Starting
+ Container workspace_final-service-account-1  Created
+ Container workspace_final-service-catalog-1  Created
  Container workspace_final-container-1  Starting
- Container workspace_final-service-account-1  Starting
+ Container workspace_final-service-cart-order-1  Starting
  Container workspace_final-service-catalog-1  Starting
- Container workspace_final-service-account-1  Started
- Container workspace_final-service-catalog-1  Started
+ Container workspace_final-service-account-1  Starting
  Container workspace_final-container-1  Started
+ Container workspace_final-service-catalog-1  Started
+ Container workspace_final-service-account-1  Started
  Container workspace_final-service-cart-order-1  Started
 [Pipeline] sh
 + docker-compose ps
@@ -152,27 +152,7 @@ Sleeping for 1 min 0 sec
 [Pipeline] sh
 + docker-compose logs '--tail=50'
 workspace_final-container-1           | 
-workspace_final-container-1           | added 1 package in 4s
-workspace_final-container-1           | 
-workspace_final-container-1           | 1 package is looking for funding
-workspace_final-container-1           |   run `npm fund` for details
-workspace_final-container-1           | npm notice
-workspace_final-container-1           | npm notice New major version of npm available! 10.8.2 -> 11.4.0
-workspace_final-container-1           | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.0
-workspace_final-container-1           | npm notice To update run: npm install -g npm@11.4.0
-workspace_final-container-1           | npm notice
-workspace_final-container-1           |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
-workspace_final-service-cart-order-1  | 
-workspace_final-service-cart-order-1  | added 1 package in 4s
-workspace_final-service-cart-order-1  | 
-workspace_final-service-cart-order-1  | 1 package is looking for funding
-workspace_final-service-cart-order-1  |   run `npm fund` for details
-workspace_final-service-cart-order-1  | npm notice
-workspace_final-service-cart-order-1  | npm notice New major version of npm available! 10.8.2 -> 11.4.0
-workspace_final-service-cart-order-1  | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.0
-workspace_final-service-cart-order-1  | npm notice To update run: npm install -g npm@11.4.0
-workspace_final-service-cart-order-1  | npm notice
-workspace_final-service-cart-order-1  |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
+workspace_final-container-1           | added 1 package in 3s
 workspace_final-service-account-1     | 
 workspace_final-service-account-1     | added 1 package in 3s
 workspace_final-service-account-1     | 
@@ -184,6 +164,26 @@ workspace_final-service-account-1     | npm notice Changelog: https://github.com
 workspace_final-service-account-1     | npm notice To update run: npm install -g npm@11.4.0
 workspace_final-service-account-1     | npm notice
 workspace_final-service-account-1     |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
+workspace_final-service-cart-order-1  | 
+workspace_final-service-cart-order-1  | added 1 package in 3s
+workspace_final-service-cart-order-1  | 
+workspace_final-service-cart-order-1  | 1 package is looking for funding
+workspace_final-service-cart-order-1  |   run `npm fund` for details
+workspace_final-service-cart-order-1  | npm notice
+workspace_final-service-cart-order-1  | npm notice New major version of npm available! 10.8.2 -> 11.4.0
+workspace_final-service-cart-order-1  | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.0
+workspace_final-service-cart-order-1  | npm notice To update run: npm install -g npm@11.4.0
+workspace_final-service-cart-order-1  | npm notice
+workspace_final-service-cart-order-1  |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
+workspace_final-container-1           | 
+workspace_final-container-1           | 1 package is looking for funding
+workspace_final-container-1           |   run `npm fund` for details
+workspace_final-container-1           | npm notice
+workspace_final-container-1           | npm notice New major version of npm available! 10.8.2 -> 11.4.0
+workspace_final-container-1           | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.0
+workspace_final-container-1           | npm notice To update run: npm install -g npm@11.4.0
+workspace_final-container-1           | npm notice
+workspace_final-container-1           |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
 workspace_final-service-catalog-1     | 
 workspace_final-service-catalog-1     | added 1 package in 3s
 workspace_final-service-catalog-1     | 
@@ -253,22 +253,22 @@ Running in /var/jenkins_home/workspace/FE/Workspace_Final
 [Pipeline] {
 [Pipeline] sh
 + docker-compose down
- Container workspace_final-container-1  Stopping
  Container workspace_final-service-cart-order-1  Stopping
- Container workspace_final-service-catalog-1  Stopping
  Container workspace_final-service-account-1  Stopping
- Container workspace_final-container-1  Stopped
- Container workspace_final-container-1  Removing
+ Container workspace_final-service-catalog-1  Stopping
+ Container workspace_final-container-1  Stopping
  Container workspace_final-service-cart-order-1  Stopped
  Container workspace_final-service-cart-order-1  Removing
- Container workspace_final-service-account-1  Stopped
- Container workspace_final-service-account-1  Removing
  Container workspace_final-service-catalog-1  Stopped
  Container workspace_final-service-catalog-1  Removing
- Container workspace_final-container-1  Removed
+ Container workspace_final-service-account-1  Stopped
+ Container workspace_final-service-account-1  Removing
+ Container workspace_final-container-1  Stopped
+ Container workspace_final-container-1  Removing
  Container workspace_final-service-cart-order-1  Removed
- Container workspace_final-service-account-1  Removed
  Container workspace_final-service-catalog-1  Removed
+ Container workspace_final-service-account-1  Removed
+ Container workspace_final-container-1  Removed
  Network workspace_final_default  Removing
  Network workspace_final_default  Removed
 [Pipeline] }
@@ -282,8 +282,8 @@ Pipeline completed successfully!
 [Pipeline] }
 [Pipeline] // withCredentials
 [Pipeline] }
-$ docker stop --time=1 cd697696fafe49b5bf72aa2a03b5cbd20f1024cab83cd8998f43dd17ad48a0b8
-$ docker rm -f --volumes cd697696fafe49b5bf72aa2a03b5cbd20f1024cab83cd8998f43dd17ad48a0b8
+$ docker stop --time=1 b988de12f08d6a4ce850b7f924acb76e9c1b67e8f74db12f38fe8cff7845e5cc
+$ docker rm -f --volumes b988de12f08d6a4ce850b7f924acb76e9c1b67e8f74db12f38fe8cff7845e5cc
 [Pipeline] // withDockerContainer
 [Pipeline] }
 [Pipeline] // withEnv

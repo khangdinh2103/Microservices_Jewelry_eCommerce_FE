@@ -36,51 +36,7 @@ pipeline {
               mkdir -p Service_Catalog/service-catalog-vite
               mkdir -p Service_Cart_Order/service-cart-order-vite
             '''
-            
-            // Create basic package.json files for each service
-            writeFile file: 'Container/container-vite/package.json', text: '''
-            {
-              "name": "container",
-              "version": "1.0.0",
-              "description": "Container App",
-              "scripts": {
-                "o": "echo 'Container service started' && sleep infinity"
-              }
-            }
-            '''
-            
-            writeFile file: 'Service_Account/service-account-vite/package.json', text: '''
-            {
-              "name": "service-account",
-              "version": "1.0.0",
-              "description": "Account Service",
-              "scripts": {
-                "o": "echo 'Account service started' && sleep infinity"
-              }
-            }
-            '''
-            
-            writeFile file: 'Service_Catalog/service-catalog-vite/package.json', text: '''
-            {
-              "name": "service-catalog",
-              "version": "1.0.0",
-              "description": "Catalog Service",
-              "scripts": {
-                "o": "echo 'Catalog service started' && sleep infinity"
-              }
-            }
-            '''
-            
-            writeFile file: 'Service_Cart_Order/service-cart-order-vite/package.json', text: '''
-            {
-              "name": "service-cart-order",
-              "version": "1.0.0",
-              "description": "Cart and Order Service",
-              "scripts": {
-                "o": "echo 'Cart and Order service started' && sleep infinity"
-              }
-            }
-            '''
+            // No package.json creation as requested
           }
         }
       }
