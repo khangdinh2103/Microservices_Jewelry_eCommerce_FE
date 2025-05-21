@@ -37,10 +37,10 @@ pipeline {
         dir('Workspace_Final') {
           script {
             def services = [
-              [name: 'frontend', port: 3000],
-              [name: 'admin-ui', port: 3001],
-              [name: 'user-ui', port: 3005],
-              [name: 'staff-ui', port: 3006]
+              [name: 'container', port: 3000],
+              [name: 'service-account', port: 3001],
+              [name: 'service-catalog', port: 3005],
+              [name: 'service-cart-order', port: 3006]
             ]
 
             services.each { svc ->
