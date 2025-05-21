@@ -90,7 +90,7 @@ const MomoQrPaymentModal = ({ isOpen, onClose, paymentUrl, orderId, onPaymentSuc
             <div className="text-center">
               <div className="flex justify-center mb-4">
                 <img 
-                  src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-MOMO-Circle.png" 
+                  src="/images/payment-momo-logo.png" 
                   alt="MoMo Logo" 
                   className="h-16 w-16"
                 />
