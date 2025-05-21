@@ -14,17 +14,10 @@ const PaymentMethodSelector = ({ selectedMethod, onSelect }) => {
       description: 'Quét mã QR bằng ứng dụng MOMO để thanh toán.',
       icon: 'fa-qrcode'
     },
-    {
-      id: 'BANK',
-      name: 'Chuyển khoản ngân hàng',
-      description: 'Chuyển khoản trực tiếp vào tài khoản ngân hàng của chúng tôi.',
-      icon: 'fa-university'
-    }
   ];
 
   return (
     <div className="mb-8">
-      <h2 className="text-lg font-medium text-gray-800 mb-4">Phương thức thanh toán</h2>
       <div className="space-y-4">
         {paymentMethods.map(method => (
           <div
