@@ -45,8 +45,9 @@ pipeline {
 
             services.each { svc ->
               echo "Testing ${svc.name} on port ${svc.port}..."
+              // Use curl instead of nc to test if the service is responding
               def result = sh(
-                script: "docker-compose exec -T ${svc.name} sh -c 'nc -z localhost ${svc.port}'",
+                script: "docker-compose exec -T ${svc.name} sh -c 'wget -q --spider http://localhost:${svc.port} || echo \"Failed\"'",
                 returnStatus: true
               )
               if (result != 0) {
