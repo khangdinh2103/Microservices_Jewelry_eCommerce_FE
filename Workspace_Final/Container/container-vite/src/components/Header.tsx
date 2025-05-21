@@ -237,15 +237,23 @@ const Header = () => {
                             </li>
                             <li>
                                 <Link
-                                    to="/catalog/collections/new"
+                                    to="/catalog/collections"
                                     className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600"
                                 >
-                                    Bộ Sưu Tập Mới
+                                    Bộ Sưu Tập
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    to="/catalog/category/nhan"
+                                    to="/catalog/categories"
+                                    className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600"
+                                >
+                                    Danh mục
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    to="/catalog/category/639"
                                     className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600"
                                 >
                                     Nhẫn
@@ -253,7 +261,7 @@ const Header = () => {
                             </li>
                             <li>
                                 <Link
-                                    to="/catalog/category/day-chuyen"
+                                    to="/catalog/category/640"
                                     className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600"
                                 >
                                     Dây Chuyền
@@ -261,7 +269,7 @@ const Header = () => {
                             </li>
                             <li>
                                 <Link
-                                    to="/catalog/category/vong-tay"
+                                    to="/catalog/category/646"
                                     className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600"
                                 >
                                     Vòng Tay
@@ -269,18 +277,10 @@ const Header = () => {
                             </li>
                             <li>
                                 <Link
-                                    to="/catalog/category/bong-tai"
+                                    to="/catalog/category/643"
                                     className="text-gray-800 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600"
                                 >
                                     Bông Tai
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    to="/catalog/promotions"
-                                    className="text-amber-700 hover:text-amber-600 transition py-1 border-b-2 border-transparent hover:border-amber-600"
-                                >
-                                    Khuyến Mãi
                                 </Link>
                             </li>
                         </ul>
