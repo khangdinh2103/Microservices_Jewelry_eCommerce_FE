@@ -180,7 +180,7 @@ const Header = () => {
                                                 <i className="fas fa-user-circle mr-2 text-amber-600"></i>Hồ Sơ
                                             </a>
                                             <a
-                                                href={`${userHref}/orders`}
+                                                href={`/cart/orders`}
                                                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-800 transition-colors"
                                             >
                                                 <i className="fas fa-history mr-2 text-amber-600"></i>Lịch Sử Mua Hàng
