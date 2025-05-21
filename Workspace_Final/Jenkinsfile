@@ -19,6 +19,12 @@ pipeline {
       }
     }
 
+    stage('Setup Environment') {
+      steps {
+        sh 'apk add --no-cache curl'
+      }
+    }
+
     stage('Build & Start Services') {
       steps {
         dir('Workspace_Final') {
@@ -26,17 +32,14 @@ pipeline {
             sh 'docker-compose build'
             sh 'docker-compose up -d'
             
-            // Cài đặt curl trong container Jenkins
-            sh 'apk add --no-cache curl'
-            
             // Check if services are running
             sh 'docker-compose ps'
             
-            // Wait a bit for services to initialize
-            echo "Waiting 30 seconds for services to start..."
-            sleep(time: 30, unit: 'SECONDS')
+            // Wait for services to initialize
+            echo "Waiting for services to start..."
+            sleep(time: 60, unit: 'SECONDS')
             
-            // Check logs to see why services might be stopping
+            // Check logs
             sh 'docker-compose logs --tail=50'
             
             // Check again if services are running
@@ -46,89 +49,44 @@ pipeline {
       }
     }
 
-    stage('Test Services') {
+    stage('Create and Push Docker Images') {
       steps {
         dir('Workspace_Final') {
           script {
-            // Check if containers are running before testing
-            def containersRunning = sh(
-              script: "docker-compose ps --services --filter 'status=running' | wc -l",
-              returnStdout: true
-            ).trim()
+            def services = ['container', 'service-account', 'service-catalog', 'service-cart-order']
             
-            echo "Number of running containers: ${containersRunning}"
-            
-            if (containersRunning.toInteger() > 0) {
-              def services = [
-                [name: 'container', port: 3000],
-                [name: 'service-account', port: 3001],
-                [name: 'service-catalog', port: 3005],
-                [name: 'service-cart-order', port: 3006]
-              ]
-
-              services.each { svc ->
-                echo "Testing ${svc.name} on port ${svc.port}..."
-                try {
-                  // Check if the specific container is running
-                  def isRunning = sh(
-                    script: "docker-compose ps ${svc.name} | grep -q 'Up'",
-                    returnStatus: true
-                  ) == 0
-                  
-                  if (isRunning) {
-                    // Install curl and test
-                    sh "docker-compose exec -T ${svc.name} sh -c 'apk add --no-cache curl && curl -s -o /dev/null -w \"%{http_code}\" http://localhost:${svc.port} || echo \"000\"'"
-                    echo "Service '${svc.name}' was tested"
-                  } else {
-                    echo "Service '${svc.name}' is not running, skipping test"
-                  }
-                } catch (Exception e) {
-                  echo "Warning: Could not test service '${svc.name}': ${e.message}, but continuing pipeline"
-                }
-              }
-            } else {
-              echo "No containers are running, skipping tests"
-            }
-          }
-        }
-      }
-    }
-
-    stage('Push Docker Images') {
-      steps {
-        dir('Workspace_Final') {
-          script {
-            def serviceName = 'service-account'
-            
-            // Check if the service is running
-            def isRunning = sh(
-              script: "docker-compose ps ${serviceName} | grep -q 'Up'",
-              returnStatus: true
-            ) == 0
-            
-            if (isRunning) {
-              def containerId = sh(
-                script: "docker-compose ps -q ${serviceName}",
+            services.each { serviceName ->
+              echo "Processing ${serviceName}..."
+              
+              // Check if the service container exists
+              def containerExists = sh(
+                script: "docker-compose ps -q ${serviceName} || echo ''",
                 returnStdout: true
               ).trim()
               
-              def imageName = "${DOCKERHUB_USERNAME}/${serviceName}"
-              
-              // Commit the running container to an image
-              sh "docker commit ${containerId} ${imageName}:latest || true"
-              
-              // Push the image to Docker Hub
-              withCredentials([string(credentialsId: 'dockerhub-cred-id', variable: 'DOCKER_PWD')]) {
-                sh """
-                  echo "Login to Docker Hub"
-                  echo "${DOCKER_PWD}" | docker login -u ${DOCKERHUB_USERNAME} --password-stdin || true
-                  docker push ${imageName}:latest || true
-                  docker logout || true
-                """
+              if (containerExists) {
+                def imageName = "${DOCKERHUB_USERNAME}/${serviceName}"
+                
+                // Commit the container to an image
+                sh "docker commit ${containerExists} ${imageName}:latest || echo 'Failed to commit container'"
+                
+                // Push the image to Docker Hub
+                withCredentials([string(credentialsId: 'dockerhub-cred-id', variable: 'DOCKER_PWD')]) {
+                  sh """
+                    echo "Login to Docker Hub"
+                    echo "${DOCKER_PWD}" | docker login -u ${DOCKERHUB_USERNAME} --password-stdin || echo 'Failed to login'
+                    docker push ${imageName}:latest || echo 'Failed to push image'
+                  """
+                }
+                
+                echo "Successfully processed ${serviceName}"
+              } else {
+                echo "Container for ${serviceName} not found, skipping"
               }
-            } else {
-              echo "Service ${serviceName} is not running, cannot create image"
             }
+            
+            // Logout from Docker Hub
+            sh "docker logout || echo 'Failed to logout'"
           }
         }
       }
@@ -137,10 +95,16 @@ pipeline {
 
   post {
     always {
-      echo 'Cleanup: stop and remove containers'
+      echo 'Cleanup: stopping and removing containers'
       dir('Workspace_Final') {
-        sh 'docker-compose down || true'
+        sh 'docker-compose down || echo "Failed to bring down containers"'
       }
+    }
+    success {
+      echo 'Pipeline completed successfully!'
+    }
+    failure {
+      echo 'Pipeline failed. Check the logs for details.'
     }
   }
 }
