@@ -6,6 +6,7 @@ import {useAuth} from 'container/AuthContext';
 import cartOrderService from 'container/cartOrderService'; // Thêm import này
 import PaymentMethodSelector from '../components/PaymentMethodSelector';
 import LocationPicker from '../components/LocationPicker';
+import MomoQrPaymentModal from '../components/MomoQrPaymentModal';
 
 // Hàm tính phí vận chuyển dựa trên khoảng cách
 const calculateShipping = (distanceKm) => {
@@ -40,6 +41,11 @@ const Checkout = () => {
         ward: 'Phường Bến Nghé',
         notes: '',
     });
+
+    const [momoPaymentUrl, setMomoPaymentUrl] = useState('');
+    const [momoOrderId, setMomoOrderId] = useState('');
+    const [showMomoModal, setShowMomoModal] = useState(false);
+    const [activeOrder, setActiveOrder] = useState(null);
 
     // Kiểm tra xác thực và giỏ hàng có sản phẩm
     useEffect(() => {
@@ -91,47 +97,115 @@ const Checkout = () => {
     };
 
     const handlePlaceOrder = async () => {
-    setProcessingOrder(true);
-    
-    try {
-        // Xử lý thanh toán COD
-        if (paymentMethod === 'COD') {
-            // Tạo địa chỉ đầy đủ từ thông tin vận chuyển
+        setProcessingOrder(true);
+
+        try {
+            // Validate common requirements for all payment methods
             const fullAddress = `${shippingInfo.address}, ${shippingInfo.ward}, ${shippingInfo.district}, ${shippingInfo.city}`;
-            
-            // Kiểm tra thông tin người dùng và địa chỉ
+
             if (!user?.id) {
                 throw new Error('Bạn cần đăng nhập để đặt hàng');
             }
-            
+
             if (!fullAddress || !shippingInfo.fullName || !shippingInfo.phone) {
                 throw new Error('Vui lòng điền đầy đủ thông tin giao hàng');
             }
-            
+
             if (cartItems.length === 0) {
                 throw new Error('Giỏ hàng của bạn đang trống');
             }
-            
-            // Gọi hàm processOrder từ context để xử lý đơn hàng
-            const order = await processOrder('COD');
-            
-            // Điều hướng đến trang xác nhận đơn hàng
-            navigate(`/cart/confirmation/${order.id}`);
-        } 
-        // Phương thức thanh toán MOMO_QR (sẽ phát triển sau)
-        else if (paymentMethod === 'MOMO_QR') {
-            setProcessingOrder(false);
-            alert('Chức năng thanh toán MOMO QR đang được phát triển');
-            // Code xử lý MOMO QR sẽ được thêm vào sau
-        }
-    } catch (error) {
-        console.error('Lỗi khi xử lý đơn hàng:', error);
-        alert(`Đã xảy ra lỗi: ${error.message || 'Không thể xử lý đơn hàng'}`);
-    } finally {
-        setProcessingOrder(false);
-    }
-};
 
+            // Process based on payment method
+            if (paymentMethod === 'COD') {
+                // Xử lý thanh toán COD
+                const order = await processOrder('COD');
+                navigate(`/cart/confirmation/${order.id}`);
+            } else if (paymentMethod === 'MOMO_QR') {
+                // Xử lý thanh toán MOMO QR
+                // Chuẩn bị dữ liệu cho MOMO API
+                const momoItems = cartItems.map((item) => ({
+                    image: item.imageUrl || 'https://via.placeholder.com/80',
+                    name: item.productName,
+                    quantity: item.quantity,
+                    amount: item.price,
+                }));
+
+                const totalAmount = cartSummary.totalAmount;
+
+                // Gọi API thanh toán MOMO
+                const response = await fetch('http://localhost:8006/api/payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        items: momoItems,
+                        userInfo: {
+                            phoneNumber: shippingInfo.phone,
+                            email: user.email,
+                            name: shippingInfo.fullName,
+                        },
+                        amount: totalAmount,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Không thể kết nối đến dịch vụ thanh toán MOMO');
+                }
+
+                const paymentData = await response.json();
+
+                if (paymentData.success) {
+                    // Lưu thông tin thanh toán MOMO
+                    setMomoPaymentUrl(paymentData.data.payUrl);
+                    setMomoOrderId(paymentData.data.orderId);
+
+                    // Tạo đơn hàng với trạng thái thanh toán là "PENDING"
+                    const order = await processOrder('MOMO_QR');
+                    setActiveOrder(order);
+
+                    // Hiển thị modal thanh toán MOMO QR
+                    setShowMomoModal(true);
+                } else {
+                    throw new Error(paymentData.message || 'Không thể tạo giao dịch thanh toán MOMO');
+                }
+            }
+        } catch (error) {
+            console.error('Lỗi khi xử lý đơn hàng:', error);
+            alert(`Đã xảy ra lỗi: ${error.message || 'Không thể xử lý đơn hàng'}`);
+        } finally {
+            setProcessingOrder(false);
+        }
+    };
+
+    const handleMomoPaymentSuccess = async (paymentData) => {
+        try {
+            // Update the order payment status to "PAID"
+            await fetch(`http://localhost:8000/api/v1/cart-order/orders/${activeOrder.id}/payment-status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                },
+                body: JSON.stringify({
+                    paymentStatus: 'PAID',
+                    transactionId: paymentData.transId,
+                }),
+            });
+
+            // Close the modal and redirect to order confirmation page
+            setShowMomoModal(false);
+            navigate(`/cart/confirmation/${activeOrder.id}`);
+        } catch (error) {
+            console.error('Error updating payment status:', error);
+            alert('Thanh toán thành công nhưng cập nhật trạng thái đơn hàng thất bại. Vui lòng liên hệ với chúng tôi.');
+        }
+    };
+
+    const handleMomoPaymentFailed = (errorMessage) => {
+        console.error('MOMO payment failed:', errorMessage);
+        alert(`Thanh toán thất bại: ${errorMessage}. Vui lòng thử lại sau hoặc chọn phương thức thanh toán khác.`);
+    };
 
     // Xử lý lựa chọn vị trí
     const handleLocationSelected = (location, address, routeInfo) => {
@@ -500,6 +574,14 @@ const Checkout = () => {
                 initialLocation={{lat: 10.7769, lng: 106.7009}}
             />
 
+            <MomoQrPaymentModal
+                isOpen={showMomoModal}
+                onClose={() => setShowMomoModal(false)}
+                paymentUrl={momoPaymentUrl}
+                orderId={momoOrderId}
+                onPaymentSuccess={handleMomoPaymentSuccess}
+                onPaymentFailed={handleMomoPaymentFailed}
+            />
         </div>
     );
 };
