@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image 'docker:20-dind'
-      args '--privileged -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=""'
+      args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
     }
   }
 
@@ -37,160 +37,50 @@ pipeline {
               mkdir -p Service_Cart_Order/service-cart-order-vite
             '''
             
-            // Create package.json for Container
+            // Create basic package.json files for each service
             writeFile file: 'Container/container-vite/package.json', text: '''
-{
-    "name": "container-vite",
-    "private": true,
-    "version": "0.0.0",
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "lint": "eslint .",
-        "preview": "vite preview",
-        "o": "concurrently \\"vite build --watch\\" \\"vite preview\\""
-    },
-    "dependencies": {
-        "@originjs/vite-plugin-federation": "^1.4.1",
-        "@tailwindcss/vite": "^4.1.6",
-        "axios": "^1.9.0",
-        "concurrently": "^9.1.2",
-        "react": "^19.1.0",
-        "react-dom": "^19.1.0",
-        "react-responsive-carousel": "^3.2.23",
-        "react-router-dom": "^7.6.0",
-        "tailwindcss": "^4.1.6"
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.25.0",
-        "@types/react": "^19.1.2",
-        "@types/react-dom": "^19.1.2",
-        "@vitejs/plugin-react": "^4.4.1",
-        "eslint": "^9.25.0",
-        "eslint-plugin-react-hooks": "^5.2.0",
-        "eslint-plugin-react-refresh": "^0.4.19",
-        "globals": "^16.0.0",
-        "vite": "^6.3.5"
-    }
-}
-'''
+            {
+              "name": "container",
+              "version": "1.0.0",
+              "description": "Container App",
+              "scripts": {
+                "o": "echo 'Container service started' && sleep infinity"
+              }
+            }
+            '''
             
-            // Create package.json for Service_Account
             writeFile file: 'Service_Account/service-account-vite/package.json', text: '''
-{
-    "name": "service-account-vite",
-    "private": true,
-    "version": "0.0.0",
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "lint": "eslint .",
-        "preview": "vite preview",
-        "o": "concurrently \\"vite build --watch\\" \\"vite preview\\""
-    },
-    "dependencies": {
-        "@originjs/vite-plugin-federation": "^1.4.1",
-        "@tailwindcss/vite": "^4.1.6",
-        "axios": "^1.9.0",
-        "concurrently": "^9.1.2",
-        "react": "^19.1.0",
-        "react-dom": "^19.1.0",
-        "react-router-dom": "^7.6.0",
-        "tailwindcss": "^4.1.6"
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.25.0",
-        "@types/react": "^19.1.2",
-        "@types/react-dom": "^19.1.2",
-        "@vitejs/plugin-react": "^4.4.1",
-        "eslint": "^9.25.0",
-        "eslint-plugin-react-hooks": "^5.2.0",
-        "eslint-plugin-react-refresh": "^0.4.19",
-        "globals": "^16.0.0",
-        "vite": "^6.3.5"
-    }
-}
-'''
+            {
+              "name": "service-account",
+              "version": "1.0.0",
+              "description": "Account Service",
+              "scripts": {
+                "o": "echo 'Account service started' && sleep infinity"
+              }
+            }
+            '''
             
-            // Create package.json for Service_Catalog
             writeFile file: 'Service_Catalog/service-catalog-vite/package.json', text: '''
-{
-    "name": "service-catalog-vite",
-    "private": true,
-    "version": "0.0.0",
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "lint": "eslint .",
-        "preview": "vite preview",
-        "o": "concurrently \\"vite build --watch\\" \\"vite preview\\""
-    },
-    "dependencies": {
-        "@originjs/vite-plugin-federation": "^1.4.1",
-        "@tailwindcss/vite": "^4.1.6",
-        "axios": "^1.9.0",
-        "concurrently": "^9.1.2",
-        "framer-motion": "^12.12.1",
-        "react": "^19.1.0",
-        "react-dom": "^19.1.0",
-        "react-router-dom": "^7.6.0",
-        "tailwindcss": "^4.1.6"
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.25.0",
-        "@types/react": "^19.1.2",
-        "@types/react-dom": "^19.1.2",
-        "@vitejs/plugin-react": "^4.4.1",
-        "eslint": "^9.25.0",
-        "eslint-plugin-react-hooks": "^5.2.0",
-        "eslint-plugin-react-refresh": "^0.4.19",
-        "globals": "^16.0.0",
-        "vite": "^6.3.5"
-    }
-}
-'''
+            {
+              "name": "service-catalog",
+              "version": "1.0.0",
+              "description": "Catalog Service",
+              "scripts": {
+                "o": "echo 'Catalog service started' && sleep infinity"
+              }
+            }
+            '''
             
-            // Create package.json for Service_Cart_Order
             writeFile file: 'Service_Cart_Order/service-cart-order-vite/package.json', text: '''
-{
-    "name": "service-cart-order-vite",
-    "private": true,
-    "version": "0.0.0",
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "lint": "eslint .",
-        "preview": "vite preview",
-        "o": "concurrently \\"vite build --watch\\" \\"vite preview\\""
-    },
-    "dependencies": {
-        "@originjs/vite-plugin-federation": "^1.4.1",
-        "@tailwindcss/vite": "^4.1.7",
-        "axios": "^1.9.0",
-        "concurrently": "^9.1.2",
-        "framer-motion": "^12.12.1",
-        "react": "^19.1.0",
-        "react-dom": "^19.1.0",
-        "react-router-dom": "^7.6.0",
-        "tailwindcss": "^4.1.7"
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.25.0",
-        "@types/react": "^19.1.2",
-        "@types/react-dom": "^19.1.2",
-        "@vitejs/plugin-react": "^4.4.1",
-        "eslint": "^9.25.0",
-        "eslint-plugin-react-hooks": "^5.2.0",
-        "eslint-plugin-react-refresh": "^0.4.19",
-        "globals": "^16.0.0",
-        "vite": "^6.3.5"
-    }
-}
-'''
+            {
+              "name": "service-cart-order",
+              "version": "1.0.0",
+              "description": "Cart and Order Service",
+              "scripts": {
+                "o": "echo 'Cart and Order service started' && sleep infinity"
+              }
+            }
+            '''
           }
         }
       }
