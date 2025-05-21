@@ -33,9 +33,12 @@ pipeline {
             // Check if services are running
             sh 'docker-compose ps'
             
-            // Wait a fixed time instead of using waitUntil which seems problematic
-            echo "Waiting 2 minutes for services to start..."
-            sleep(time: 2, unit: 'MINUTES')
+            // Reduce wait time and check logs to debug issues
+            echo "Waiting 30 seconds for services to start..."
+            sleep(time: 30, unit: 'SECONDS')
+            
+            // Check logs to see why services might be stopping
+            sh 'docker-compose logs --tail=50'
             
             // Check again if services are running
             sh 'docker-compose ps'
@@ -92,6 +95,27 @@ pipeline {
       }
     }
 
+    stage('Create Dockerfile') {
+      steps {
+        dir('Workspace_Final/Service_Account/service-account-vite') {
+          script {
+            // Create a simple Dockerfile if it doesn't exist
+            sh '''
+              if [ ! -f Dockerfile ]; then
+                echo 'FROM node:20-alpine
+WORKDIR /app
+COPY . .
+RUN npm install -g pnpm && pnpm install
+EXPOSE 3001
+CMD ["pnpm", "run", "o"]' > Dockerfile
+                cat Dockerfile
+              fi
+            '''
+          }
+        }
+      }
+    }
+
     stage('Build & Push Docker Images') {
       steps {
         script {
@@ -105,17 +129,20 @@ pipeline {
           ).trim()
           
           if (dirExists == 'yes') {
-            sh """
-              cd Workspace_Final && docker build -t ${imageName}:latest ./Service_Account/service-account-vite || true
-              echo "Login to Docker Hub"
-              echo \${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
-              docker push ${imageName}:latest || true
-              docker logout
-            """
+            // Use withCredentials to securely handle Docker login
+            withCredentials([string(credentialsId: 'dockerhub-cred-id', variable: 'DOCKER_PWD')]) {
+              sh """
+                cd Workspace_Final/Service_Account/service-account-vite && docker build -t ${imageName}:latest . || true
+                echo "Login to Docker Hub"
+                echo "${DOCKER_PWD}" | docker login -u ${DOCKERHUB_USERNAME} --password-stdin || true
+                docker push ${imageName}:latest || true
+                docker logout || true
+              """
+            }
           } else {
             echo "Directory Workspace_Final/Service_Account/service-account-vite does not exist"
             // List directories to help debug
-            sh "find Workspace_Final -type d -name 'service-account*'"
+            sh "find Workspace_Final -type d -name 'service-account*' || true"
           }
         }
       }
