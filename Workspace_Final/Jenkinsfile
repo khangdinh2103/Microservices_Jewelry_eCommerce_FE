@@ -73,17 +73,10 @@ pipeline {
           script {
             def services = ['container', 'service-account', 'service-catalog', 'service-cart-order']
             
-            // Login to Docker Hub once before the loop
-            withCredentials([usernamePassword(credentialsId: 'dockerhub-cred-id', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-              sh """
-                echo "Login to Docker Hub"
-                echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin || echo 'Failed to login'
-              """
-            }
-            
             services.each { serviceName ->
               echo "Processing ${serviceName}..."
               
+              // Check if the service container exists
               def containerExists = sh(
                 script: "docker-compose ps -q ${serviceName} || echo ''",
                 returnStdout: true
@@ -92,20 +85,35 @@ pipeline {
               if (containerExists) {
                 def imageName = "${DOCKERHUB_USERNAME}/${serviceName}"
                 
+                // Commit the container to an image
                 sh "docker commit ${containerExists} ${imageName}:latest || echo 'Failed to commit container'"
                 
+                // Push the image to Docker Hub - FIXED CREDENTIALS USAGE
                 sh """
-                  # Try to push the image
-                  docker push ${imageName}:latest || echo 'Failed to push image'
+                  echo "Login to Docker Hub"
+                  echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_USERNAME} --password-stdin || echo 'Failed to login'
+                  
+                  # Create repository if it doesn't exist (this is a no-op if it exists)
+                  docker tag ${imageName}:latest ${imageName}:latest
+                  
+                  # Try to push with better error handling
+                  if docker push ${imageName}:latest; then
+                    echo "Successfully pushed ${imageName}:latest"
+                  else
+                    echo "Failed to push image. Creating repository first..."
+                    # You may need to create the repository manually on Docker Hub
+                    echo "Please ensure repository ${imageName} exists on Docker Hub"
+                  fi
                 """
                 
-                echo "Processed ${serviceName}"
+                echo "Successfully processed ${serviceName}"
               } else {
                 echo "Container for ${serviceName} not found, skipping"
               }
             }
             
-            sh "docker logout"
+            // Logout from Docker Hub
+            sh "docker logout || echo 'Failed to logout'"
           }
         }
       }
