@@ -8,11 +8,17 @@ services:
       - ./Container/container-vite:/app
       - node_modules_container:/app/node_modules
     ports:
-      - "3000:3000"  # Vite preview port
+      - "3000:3000"
     command: >
-      sh -c "npm install -g pnpm &&
-             pnpm install &&
-             pnpm run o"
+      sh -c "
+        echo 'Starting container service...' &&
+        npm install -g pnpm &&
+        if [ -f package.json ]; then
+          pnpm install && pnpm run o;
+        else
+          echo 'No package.json found, keeping container alive...' && 
+          tail -f /dev/null;
+        fi"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0

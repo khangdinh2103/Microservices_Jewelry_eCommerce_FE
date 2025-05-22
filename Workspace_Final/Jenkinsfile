@@ -25,6 +25,28 @@ pipeline {
       }
     }
 
+    stage('Prepare Service Files') {
+      steps {
+        dir('Workspace_Final') {
+          script {
+            sh '''
+              # Copy package.json files to the correct locations
+              cp -f Container/container-vite/package.json Container/container-vite/ || echo "Failed to copy container package.json"
+              cp -f Service_Account/service-account-vite/package.json Service_Account/service-account-vite/ || echo "Failed to copy account package.json"
+              cp -f Service_Catalog/service-catalog-vite/package.json Service_Catalog/service-catalog-vite/ || echo "Failed to copy catalog package.json"
+              cp -f Service_Cart_Order/service-cart-order-vite/package.json Service_Cart_Order/service-cart-order-vite/ || echo "Failed to copy cart-order package.json"
+              
+              # Verify the files were copied
+              ls -la Container/container-vite/
+              ls -la Service_Account/service-account-vite/
+              ls -la Service_Catalog/service-catalog-vite/
+              ls -la Service_Cart_Order/service-cart-order-vite/
+            '''
+          }
+        }
+      }
+    }
+
     stage('Verify Package Files') {
       steps {
         dir('Workspace_Final') {
