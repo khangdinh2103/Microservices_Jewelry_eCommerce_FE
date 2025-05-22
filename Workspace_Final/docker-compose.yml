@@ -10,9 +10,14 @@ services:
     ports:
       - "3000:3000"  # Vite preview port
     command: >
-      sh -c "npm install -g pnpm &&
-             pnpm install &&
-             pnpm run o"
+      sh -c "echo 'Starting container service...' && 
+             npm install -g pnpm || true &&
+             if [ -f package.json ]; then
+               pnpm install && pnpm run o;
+             else
+               echo 'No package.json found, keeping container alive...' && 
+               tail -f /dev/null;
+             fi"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -26,9 +31,14 @@ services:
     ports:
       - "3001:3001"  # Mapped to different host port
     command: >
-      sh -c "npm install -g pnpm &&
-             pnpm install &&
-             pnpm run o"
+      sh -c "echo 'Starting account service...' && 
+             npm install -g pnpm || true &&
+             if [ -f package.json ]; then
+               pnpm install && pnpm run o;
+             else
+               echo 'No package.json found, keeping container alive...' && 
+               tail -f /dev/null;
+             fi"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -42,9 +52,14 @@ services:
     ports:
       - "3006:3006"  # Mapped to different host port
     command: >
-      sh -c "npm install -g pnpm &&
-             pnpm install &&
-             pnpm run o"
+      sh -c "echo 'Starting cart-order service...' && 
+             npm install -g pnpm || true &&
+             if [ -f package.json ]; then
+               pnpm install && pnpm run o;
+             else
+               echo 'No package.json found, keeping container alive...' && 
+               tail -f /dev/null;
+             fi"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -58,9 +73,14 @@ services:
     ports:
       - "3005:3005"  # Mapped to different host port
     command: >
-      sh -c "npm install -g pnpm &&
-             pnpm install &&
-             pnpm run o"
+      sh -c "echo 'Starting catalog service...' && 
+             npm install -g pnpm || true &&
+             if [ -f package.json ]; then
+               pnpm install && pnpm run o;
+             else
+               echo 'No package.json found, keeping container alive...' && 
+               tail -f /dev/null;
+             fi"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
