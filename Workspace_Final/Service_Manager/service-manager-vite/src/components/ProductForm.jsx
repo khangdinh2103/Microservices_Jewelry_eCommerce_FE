@@ -13,6 +13,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
     brand: '',
     categoryId: '',
     collectionId: '',
+    viewCount: 0,
   });
 
   const [errors, setErrors] = useState({});
@@ -25,7 +26,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         name: product.name || '',
         description: product.description || '',
         price: product.price || 0,
-        quantity: product.quantity || 0,
+        quantity: product.stock || 0,
         gender: product.gender || 0,
         material: product.material || '',
         goldKarat: product.goldKarat || '',
@@ -33,6 +34,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         brand: product.brand || '',
         categoryId: product.category?.categoryId || '',
         collectionId: product.collection?.collectionId || '',
+        viewCount: product.viewCount || 0,
       });
     }
   }, [product]);
@@ -66,7 +68,7 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
       const dataToSubmit = {
         ...formData,
         price: Number(formData.price),
-        quantity: Number(formData.quantity),
+        stock: Number(formData.quantity),
         gender: Number(formData.gender),
         categoryId: formData.categoryId ? Number(formData.categoryId) : null,
         collectionId: formData.collectionId ? Number(formData.collectionId) : null,

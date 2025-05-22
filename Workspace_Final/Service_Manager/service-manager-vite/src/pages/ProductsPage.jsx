@@ -31,7 +31,6 @@ const ProductsPage = () => {
         page,
         pageSize
       );
-      console.log('Fetched products:', response);
       setProducts(response.products);
       setTotalPages(response.totalPages);
       setError(null);
@@ -84,7 +83,7 @@ const ProductsPage = () => {
   const handleFormSubmit = async (productData) => {
     try {
       if (currentProduct) {
-        await managerService.updateProduct(currentProduct.id, productData);
+        await managerService.updateProduct(currentProduct.productId, productData);
       } else {
         await managerService.createProduct(productData);
       }
