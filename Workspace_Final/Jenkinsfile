@@ -13,16 +13,43 @@ pipeline {
   }
 
   stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'master', url: 'https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git'
+      }
+    }
 
     stage('Setup Environment') {
       steps {
         sh 'apk add --no-cache curl git'
       }
     }
-    
-    stage('Checkout') {
+
+    stage('Verify Repository Content') {
       steps {
-        git branch: 'master', url: 'https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git'
+        script {
+          echo "Checking repository content..."
+          sh 'ls -la'
+          
+          // Check if Workspace_Final directory exists
+          sh 'if [ -d "Workspace_Final" ]; then echo "Workspace_Final directory exists"; else echo "Workspace_Final directory does not exist"; fi'
+          
+          // Check key files and directories
+          sh '''
+            echo "Checking key files and directories..."
+            if [ -f "Workspace_Final/docker-compose.yml" ]; then echo "docker-compose.yml exists"; else echo "docker-compose.yml does not exist"; fi
+            
+            # Check service directories
+            if [ -d "Workspace_Final/Container" ]; then echo "Container directory exists"; else echo "Container directory does not exist"; fi
+            if [ -d "Workspace_Final/Service_Account" ]; then echo "Service_Account directory exists"; else echo "Service_Account directory does not exist"; fi
+            if [ -d "Workspace_Final/Service_Catalog" ]; then echo "Service_Catalog directory exists"; else echo "Service_Catalog directory does not exist"; fi
+            if [ -d "Workspace_Final/Service_Cart_Order" ]; then echo "Service_Cart_Order directory exists"; else echo "Service_Cart_Order directory does not exist"; fi
+            
+            # Count total files in repository
+            echo "Total files in repository:"
+            find . -type f | wc -l
+          '''
+        }
       }
     }
 
