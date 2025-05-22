@@ -19,8 +19,8 @@ export default defineConfig({
             },
             remotes: {
                 account: 'http://localhost:3001/assets/remoteEntry.js',
-                catalog: 'http://localhost:3005/assets/remoteEntry.js',
-                cart_order: 'http://localhost:3006/assets/remoteEntry.js',
+                // catalog: 'http://localhost:3005/assets/remoteEntry.js',
+                // cart_order: 'http://localhost:3006/assets/remoteEntry.js',
             },
             shared: ['react', 'react-dom', 'react-router-dom'],
         }),

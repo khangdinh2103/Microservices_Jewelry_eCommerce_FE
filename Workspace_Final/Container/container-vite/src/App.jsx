@@ -9,8 +9,8 @@ import RemoteModuleLayout from './components/RemoteModuleLayout';
 import React from 'react';
 
 const AccountApp = React.lazy(() => import('account/App'));
-const CatalogApp = React.lazy(() => import('catalog/App'));
-const CartOrderApp = React.lazy(() => import('cart_order/App'));
+// const CatalogApp = React.lazy(() => import('catalog/App'));
+// const CartOrderApp = React.lazy(() => import('cart_order/App'));
 
 function App() {
     return (
@@ -35,7 +35,7 @@ function App() {
                                     }
                                 />
 
-                                {/* Module Catalog */}
+{/*                             
                                 <Route
                                     path="/catalog/*"
                                     element={
@@ -45,7 +45,7 @@ function App() {
                                     }
                                 />
 
-                                {/* Module Cart Order */}
+                             
                                 <Route
                                     path="/cart/*"
                                     element={
@@ -53,7 +53,7 @@ function App() {
                                             <CartOrderApp/>
                                         </RemoteModuleLayout>
                                     }
-                                />
+                                /> */}
 
                                 {/* Handle 404 */}
                                 <Route
