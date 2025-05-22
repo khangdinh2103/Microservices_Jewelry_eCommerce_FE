@@ -110,9 +110,9 @@ const ProductTable = ({
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {products.map((product) => (
-              <tr key={product.id} className="hover:bg-gray-50">
+              <tr key={product.productId} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {product.id}
+                  {product.productId}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex-shrink-0 h-10 w-10">
@@ -130,7 +130,7 @@ const ProductTable = ({
                   {formatPrice(product.price)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {productIdToUpdateStock === product.id ? (
+                  {productIdToUpdateStock === product.productId ? (
                     <div className="flex items-center space-x-2">
                       <input 
                         type="number"
@@ -140,7 +140,7 @@ const ProductTable = ({
                         min="0"
                       />
                       <button 
-                        onClick={() => handleUpdateStock(product.id)}
+                        onClick={() => handleUpdateStock(product.productId)}
                         className="text-green-600 hover:text-green-800"
                       >
                         <i className="fas fa-check"></i>
@@ -154,13 +154,13 @@ const ProductTable = ({
                     </div>
                   ) : (
                     <div className="flex items-center">
-                      <span className={product.quantity <= 5 ? 'text-red-500 font-medium' : ''}>
-                        {product.quantity}
+                      <span className={product.stock <= 5 ? 'text-red-500 font-medium' : ''}>
+                        {product.stock}
                       </span>
                       <button 
                         onClick={() => {
-                          setProductIdToUpdateStock(product.id);
-                          setNewStock(product.quantity);
+                          setProductIdToUpdateStock(product.productId);
+                          setNewStock(product.stock);
                         }}
                         className="ml-2 text-blue-600 hover:text-blue-800"
                         title="Cập nhật tồn kho"
@@ -181,7 +181,7 @@ const ProductTable = ({
                     <i className="fas fa-edit"></i> Sửa
                   </button>
                   <button
-                    onClick={() => onDelete(product.id)}
+                    onClick={() => onDelete(product.productId)}
                     className="text-red-600 hover:text-red-900"
                   >
                     <i className="fas fa-trash"></i> Xóa

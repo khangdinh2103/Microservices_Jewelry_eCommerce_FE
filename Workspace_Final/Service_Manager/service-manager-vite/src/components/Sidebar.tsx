@@ -2,19 +2,15 @@ import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
   const navItems = [
-    { name: 'Sản phẩm', path: '/', icon: 'fas fa-box-open' },
-    { name: 'Dashboard', path: '/dashboard', icon: 'fas fa-chart-line' },
-    { name: 'Danh mục', path: '/categories', icon: 'fas fa-folder-open' },
-    { name: 'Đơn hàng', path: '/orders', icon: 'fas fa-shopping-cart' },
-    { name: 'Khách hàng', path: '/customers', icon: 'fas fa-users' },
+    { name: 'Sản phẩm', path: '/manager', icon: 'fas fa-box-open' },
+    { name: 'Dashboard', path: '/manager/dashboard', icon: 'fas fa-chart-line' },
+    { name: 'Danh mục', path: '/manager/categories', icon: 'fas fa-folder-open' },
+    { name: 'Đơn hàng', path: '/manager/orders', icon: 'fas fa-shopping-cart' },
+    { name: 'Khách hàng', path: '/manager/customers', icon: 'fas fa-users' },
   ];
 
   return (
-    <div className="bg-gray-800 text-white w-64 space-y-6 py-7 px-2 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out">
-      <div className="flex items-center justify-center mb-8">
-        <span className="text-2xl font-bold text-amber-500">Tinh Tú Admin</span>
-      </div>
-      
+    <div className="bg-gray-800 text-white w-64 space-y-6 px-2 fixed top-0 left-0 h-full overflow-y-auto mt-[90px] z-10 transform md:translate-x-0 transition duration-200 ease-in-out">      
       <nav>
         {navItems.map((item, index) => (
           <NavLink
