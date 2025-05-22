@@ -10,11 +10,9 @@ services:
     ports:
       - "3000:3000"  # Vite preview port
     command: >
-      sh -c "
-        until [ -f package.json ]; do echo '⏳ Waiting for package.json...'; sleep 1; done &&
-        npm install -g pnpm &&
-        pnpm install &&
-        pnpm run o"
+      sh -c "npm install -g pnpm &&
+             pnpm install &&
+             pnpm run o"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -28,11 +26,9 @@ services:
     ports:
       - "3001:3001"  # Mapped to different host port
     command: >
-      sh -c "
-        until [ -f package.json ]; do echo '⏳ Waiting for package.json...'; sleep 1; done &&
-        npm install -g pnpm &&
-        pnpm install &&
-        pnpm run o"
+      sh -c "npm install -g pnpm &&
+             pnpm install &&
+             pnpm run o"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -46,11 +42,9 @@ services:
     ports:
       - "3006:3006"  # Mapped to different host port
     command: >
-      sh -c "
-        until [ -f package.json ]; do echo '⏳ Waiting for package.json...'; sleep 1; done &&
-        npm install -g pnpm &&
-        pnpm install &&
-        pnpm run o"
+      sh -c "npm install -g pnpm &&
+             pnpm install &&
+             pnpm run o"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -62,13 +56,11 @@ services:
       - ./Service_Catalog/service-catalog-vite:/app
       - node_modules_catalog:/app/node_modules
     ports:
-      - "3005:3005" 
+      - "3005:3005"  # Mapped to different host port
     command: >
-      sh -c "
-        until [ -f package.json ]; do echo '⏳ Waiting for package.json...'; sleep 1; done &&
-        npm install -g pnpm &&
-        pnpm install &&
-        pnpm run o"
+      sh -c "npm install -g pnpm &&
+             pnpm install &&
+             pnpm run o"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
