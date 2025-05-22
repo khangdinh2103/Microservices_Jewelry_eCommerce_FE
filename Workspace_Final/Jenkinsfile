@@ -12,14 +12,14 @@ pipeline {
     DOCKERHUB_USERNAME = 'khangdinh2103'
   }
 
-  
+  stages {
 
     stage('Setup Environment') {
       steps {
         sh 'apk add --no-cache curl git'
       }
     }
-    stages {
+    
     stage('Checkout') {
       steps {
         git branch: 'master', url: 'https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git'
