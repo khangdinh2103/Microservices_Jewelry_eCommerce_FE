@@ -44,7 +44,6 @@ pipeline {
             sh 'docker-compose build'
             sh 'docker-compose up -d'
             
-            // Check if services are running
             sh 'docker-compose ps'
             
             // Wait for services to initialize
