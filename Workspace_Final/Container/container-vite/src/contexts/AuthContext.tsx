@@ -23,6 +23,8 @@ interface AuthContextType {
     register: (userData: any) => Promise<void>;
     isAuthenticated: boolean;
     updateProfile: (userData: any) => Promise<void>;
+    requestPasswordReset: (email: string) => Promise<any>; // Add this line
+    resetPassword: (token: string, password: string, confirmPassword: string) => Promise<any>; // Add this line
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -83,6 +85,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         }
     };
 
+    // Add requestPasswordReset function
+    const requestPasswordReset = async (email: string) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await authService.requestPasswordReset(email);
+            return response;
+        } catch (err: any) {
+            console.error('Lỗi khi yêu cầu đặt lại mật khẩu:', err);
+            setError(err.response?.data?.message || 'Không thể gửi email đặt lại mật khẩu');
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Add resetPassword function
+    const resetPassword = async (token: string, password: string, confirmPassword: string) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await authService.resetPassword(token, password, confirmPassword);
+            return response;
+        } catch (err: any) {
+            console.error('Lỗi khi đặt lại mật khẩu:', err);
+            setError(err.response?.data?.message || 'Không thể đặt lại mật khẩu');
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const updateProfile = async (userData: any) => {
         try {
             setLoading(true);
@@ -128,7 +162,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
                 logout,
                 register,
                 isAuthenticated,
-                updateProfile
+                updateProfile,
+                requestPasswordReset, // Add this line
+                resetPassword // Add this line
             }}
         >
             {children}
