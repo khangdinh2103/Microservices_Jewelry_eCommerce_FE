@@ -11,6 +11,7 @@ import React from 'react';
 const AccountApp = React.lazy(() => import('account/App'));
 const CatalogApp = React.lazy(() => import('catalog/App'));
 const CartOrderApp = React.lazy(() => import('cart_order/App'));
+const ManagerApp = React.lazy(() => import('manager/App'));
 
 function App() {
     return (
@@ -51,6 +52,16 @@ function App() {
                                     element={
                                         <RemoteModuleLayout>
                                             <CartOrderApp/>
+                                        </RemoteModuleLayout>
+                                    }
+                                />
+
+                                {/* Module Manager */}
+                                <Route
+                                    path="/manager/*"
+                                    element={
+                                        <RemoteModuleLayout>
+                                            <ManagerApp/>
                                         </RemoteModuleLayout>
                                     }
                                 />

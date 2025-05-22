@@ -16,9 +16,11 @@ export default defineConfig({
                 './CartOrderContext': './src/contexts/CartOrderContext.tsx',
                 './catalogService': './src/services/catalogService.ts',
                 './cartOrderService': './src/services/cartOrderService.ts',
+                './managerService': './src/services/managerService.ts',
             },
             remotes: {
                 account: 'http://localhost:3001/assets/remoteEntry.js',
+                manager: 'http://localhost:3003/assets/remoteEntry.js',
                 catalog: 'http://localhost:3005/assets/remoteEntry.js',
                 cart_order: 'http://localhost:3006/assets/remoteEntry.js',
             },
