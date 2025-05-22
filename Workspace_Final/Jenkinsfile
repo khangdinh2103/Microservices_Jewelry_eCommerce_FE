@@ -25,50 +25,57 @@ pipeline {
       }
     }
 
-    stage('Verify Repository Content') {
+    stage('Verify Package Files') {
       steps {
-        script {
-          echo "Checking repository content..."
-          sh 'ls -la'
-          
-          // Check if Workspace_Final directory exists
-          sh 'if [ -d "Workspace_Final" ]; then echo "Workspace_Final directory exists"; else echo "Workspace_Final directory does not exist"; fi'
-          
-          // Check key files and directories
-          sh '''
-            echo "Checking key files and directories..."
-            if [ -f "Workspace_Final/docker-compose.yml" ]; then echo "docker-compose.yml exists"; else echo "docker-compose.yml does not exist"; fi
+        dir('Workspace_Final') {
+          script {
+            echo "Checking for package.json files in service directories..."
             
-            # Check service directories
-            if [ -d "Workspace_Final/Container" ]; then echo "Container directory exists"; else echo "Container directory does not exist"; fi
-            if [ -d "Workspace_Final/Service_Account" ]; then echo "Service_Account directory exists"; else echo "Service_Account directory does not exist"; fi
-            if [ -d "Workspace_Final/Service_Catalog" ]; then echo "Service_Catalog directory exists"; else echo "Service_Catalog directory does not exist"; fi
-            if [ -d "Workspace_Final/Service_Cart_Order" ]; then echo "Service_Cart_Order directory exists"; else echo "Service_Cart_Order directory does not exist"; fi
-            
-            # Count total files in repository
-            echo "Total files in repository:"
-            find . -type f | wc -l
-          '''
+            sh '''
+              # Check Container service
+              echo "Checking Container service:"
+              if [ -f "Container/container-vite/package.json" ]; then
+                echo "✅ Container package.json exists"
+                cat Container/container-vite/package.json | grep name
+              else
+                echo "❌ Container package.json does not exist"
+              fi
+              
+              # Check Account service
+              echo "Checking Account service:"
+              if [ -f "Service_Account/service-account-vite/package.json" ]; then
+                echo "✅ Account package.json exists"
+                cat Service_Account/service-account-vite/package.json | grep name
+              else
+                echo "❌ Account package.json does not exist"
+              fi
+              
+              # Check Catalog service
+              echo "Checking Catalog service:"
+              if [ -f "Service_Catalog/service-catalog-vite/package.json" ]; then
+                echo "✅ Catalog package.json exists"
+                cat Service_Catalog/service-catalog-vite/package.json | grep name
+              else
+                echo "❌ Catalog package.json does not exist"
+              fi
+              
+              # Check Cart-Order service
+              echo "Checking Cart-Order service:"
+              if [ -f "Service_Cart_Order/service-cart-order-vite/package.json" ]; then
+                echo "✅ Cart-Order package.json exists"
+                cat Service_Cart_Order/service-cart-order-vite/package.json | grep name
+              else
+                echo "❌ Cart-Order package.json does not exist"
+              fi
+              
+              # Summary
+              echo "Summary of package.json files:"
+              find . -name "package.json" | sort
+            '''
+          }
         }
       }
     }
-
-    // stage('Prepare Directories') {
-    //   steps {
-    //     dir('Workspace_Final') {
-    //       script {
-    //         // Create necessary directories if they don't exist
-    //         sh '''
-    //           mkdir -p Container/container-vite
-    //           mkdir -p Service_Account/service-account-vite
-    //           mkdir -p Service_Catalog/service-catalog-vite
-    //           mkdir -p Service_Cart_Order/service-cart-order-vite
-    //         '''
-    //         // No package.json creation as requested
-    //       }
-    //     }
-    //   }
-    // }
 
     stage('Build & Start Services') {
       steps {
