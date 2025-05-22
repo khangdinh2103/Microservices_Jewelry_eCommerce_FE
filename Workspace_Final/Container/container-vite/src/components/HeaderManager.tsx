@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import ChatBot from './Chatbot';
 import {useAuth} from '../contexts/AuthContext';
 import {useCartOrder} from '../contexts/CartOrderContext'; // Import CartOrder context
-import Navigation from './Navigation';
+import NavigationManager from './NavigationManager';
 
 const Header = () => {
     const [showChatbot, setShowChatbot] = useState(false);
@@ -221,7 +221,7 @@ const Header = () => {
                         </div>
                     </div>
 
-                    <Navigation scrolled={scrolled} />
+                    <NavigationManager scrolled={scrolled} />
                 </div>
             </header>
 

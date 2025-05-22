@@ -131,7 +131,9 @@ const Checkout = () => {
                     amount: item.price,
                 }));
 
-                const totalAmount = cartSummary.totalAmount;
+                // Sử dụng giá trị totalAmount đã tính lại, bao gồm phí vận chuyển
+                // Đảm bảo rằng phí vận chuyển được tính vào tổng tiền
+                const momoPaymentAmount = subtotal + tax + shippingCost;
 
                 // Gọi API thanh toán MOMO
                 const response = await fetch('http://localhost:8006/api/payment', {
@@ -146,7 +148,7 @@ const Checkout = () => {
                             email: user.email,
                             name: shippingInfo.fullName,
                         },
-                        amount: totalAmount,
+                        amount: momoPaymentAmount, // Sử dụng số tiền đã tính lại
                     }),
                 });
 

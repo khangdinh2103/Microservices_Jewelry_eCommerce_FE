@@ -16,6 +16,8 @@ services:
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
+      - VITE_BACKEND_HOST=api-gateway
+      - VITE_BACKEND_PORT=8000
 
   service-account:
     image: node:20-alpine
@@ -64,6 +66,12 @@ services:
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
+
+networks:
+  frontend-network:
+    driver: bridge
+  jec-network:
+    external: true
 
 volumes:
   node_modules_container:
