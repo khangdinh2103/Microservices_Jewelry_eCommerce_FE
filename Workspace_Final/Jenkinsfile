@@ -110,10 +110,8 @@ pipeline {
 
   post {
     always {
-      echo 'Cleanup: stopping and removing containers'
-      dir('Workspace_Final') {
-        sh 'docker-compose down || echo "Failed to bring down containers"'
-      }
+      echo 'Pipeline completed - keeping containers running'
+      // Removed the docker-compose down command to keep containers running
     }
     success {
       echo 'Pipeline completed successfully!'
