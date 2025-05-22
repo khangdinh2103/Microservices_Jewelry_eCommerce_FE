@@ -288,7 +288,7 @@ const Header = () => {
                 </div>
             </header>
 
-            <div className={`${scrolled ? 'h-28' : 'h-36'} md:${scrolled ? 'h-32' : 'h-40'} transition-all duration-300`}></div>
+            <div className={`${scrolled ? 'h-20' : 'h-24'} md:${scrolled ? 'h-24' : 'h-30'} transition-all duration-300`}></div>
 
             {showChatbot && <ChatBot onClose={() => setShowChatbot(false)} />}
         </>
