@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import catalogService from 'container/catalogService';
 
 const ProductForm = ({ product, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,30 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [collections, setCollections] = useState([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+
+  // Fetch categories and collections on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoadingData(true);
+      try {
+        const [categoriesData, collectionsData] = await Promise.all([
+          catalogService.getAllCategories(),
+          catalogService.getAllCollections()
+        ]);
+        setCategories(categoriesData);
+        setCollections(collectionsData);
+      } catch (error) {
+        console.error('Error fetching categories and collections:', error);
+      } finally {
+        setIsLoadingData(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Nếu đang chỉnh sửa sản phẩm, điền thông tin vào form
   useEffect(() => {
@@ -32,8 +57,8 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
         goldKarat: product.goldKarat || '',
         color: product.color || '',
         brand: product.brand || '',
-        categoryId: product.category?.categoryId || '',
-        collectionId: product.collection?.collectionId || '',
+        categoryId: product.categoryId || product.category?.categoryId || '',
+        collectionId: product.collectionId || product.collection?.collectionId || '',
         viewCount: product.viewCount || 0,
       });
     }
@@ -97,198 +122,217 @@ const ProductForm = ({ product, onSubmit, onCancel }) => {
           </button>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            {/* Tên sản phẩm */}
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tên sản phẩm <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
-              />
-              {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+        {isLoadingData ? (
+          <div className="p-6 flex justify-center items-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-500 border-t-transparent"></div>
+            <span className="ml-2">Đang tải dữ liệu...</span>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              {/* Tên sản phẩm */}
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tên sản phẩm <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border rounded-md ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
+                />
+                {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+              </div>
+              
+              {/* Mô tả */}
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mô tả
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows="3"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              
+              {/* Giá */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Giá <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  min="0"
+                  className={`w-full px-3 py-2 border rounded-md ${errors.price ? 'border-red-500' : 'border-gray-300'}`}
+                />
+                {errors.price && <p className="mt-1 text-sm text-red-500">{errors.price}</p>}
+              </div>
+              
+              {/* Số lượng */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tồn kho
+                </label>
+                <input
+                  type="number"
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleChange}
+                  min="0"
+                  className={`w-full px-3 py-2 border rounded-md ${errors.quantity ? 'border-red-500' : 'border-gray-300'}`}
+                />
+                {errors.quantity && <p className="mt-1 text-sm text-red-500">{errors.quantity}</p>}
+              </div>
+              
+              {/* Giới tính */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Giới tính
+                </label>
+                <select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="0">Unisex</option>
+                  <option value="1">Nam</option>
+                  <option value="2">Nữ</option>
+                </select>
+              </div>
+              
+              {/* Chất liệu */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Chất liệu
+                </label>
+                <input
+                  type="text"
+                  name="material"
+                  value={formData.material}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              
+              {/* Tuổi vàng */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tuổi vàng
+                </label>
+                <input
+                  type="text"
+                  name="goldKarat"
+                  value={formData.goldKarat}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              
+              {/* Màu sắc */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Màu sắc
+                </label>
+                <input
+                  type="text"
+                  name="color"
+                  value={formData.color}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              
+              {/* Brand */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Thương hiệu
+                </label>
+                <input
+                  type="text"
+                  name="brand"
+                  value={formData.brand}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              
+              {/* Danh mục - Dropdown */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Danh mục
+                </label>
+                <select
+                  name="categoryId"
+                  value={formData.categoryId}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="">-- Chọn danh mục --</option>
+                  {categories.map(category => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Bộ sưu tập - Dropdown */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Bộ sưu tập
+                </label>
+                <select
+                  name="collectionId"
+                  value={formData.collectionId}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="">-- Chọn bộ sưu tập --</option>
+                  {collections.map(collection => (
+                    <option key={collection.id} value={collection.id}>
+                      {collection.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             
-            {/* Mô tả */}
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Mô tả
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows="3"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            
-            {/* Giá */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Giá <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                min="0"
-                className={`w-full px-3 py-2 border rounded-md ${errors.price ? 'border-red-500' : 'border-gray-300'}`}
-              />
-              {errors.price && <p className="mt-1 text-sm text-red-500">{errors.price}</p>}
-            </div>
-            
-            {/* Số lượng */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tồn kho
-              </label>
-              <input
-                type="number"
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleChange}
-                min="0"
-                className={`w-full px-3 py-2 border rounded-md ${errors.quantity ? 'border-red-500' : 'border-gray-300'}`}
-              />
-              {errors.quantity && <p className="mt-1 text-sm text-red-500">{errors.quantity}</p>}
-            </div>
-            
-            {/* Giới tính */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Giới tính
-              </label>
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 mr-2 hover:bg-gray-50"
+                disabled={isLoading}
               >
-                <option value="0">Unisex</option>
-                <option value="1">Nam</option>
-                <option value="2">Nữ</option>
-              </select>
+                Hủy
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-md flex items-center"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></span>
+                    Đang xử lý...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-save mr-2"></i> Lưu
+                  </>
+                )}
+              </button>
             </div>
-            
-            {/* Chất liệu */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Chất liệu
-              </label>
-              <input
-                type="text"
-                name="material"
-                value={formData.material}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            
-            {/* Tuổi vàng */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tuổi vàng
-              </label>
-              <input
-                type="text"
-                name="goldKarat"
-                value={formData.goldKarat}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            
-            {/* Màu sắc */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Màu sắc
-              </label>
-              <input
-                type="text"
-                name="color"
-                value={formData.color}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            
-            {/* Brand */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Thương hiệu
-              </label>
-              <input
-                type="text"
-                name="brand"
-                value={formData.brand}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            
-            {/* Danh mục */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                ID Danh mục
-              </label>
-              <input
-                type="number"
-                name="categoryId"
-                value={formData.categoryId}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-            
-            {/* Bộ sưu tập */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                ID Bộ sưu tập
-              </label>
-              <input
-                type="number"
-                name="collectionId"
-                value={formData.collectionId}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              />
-            </div>
-          </div>
-          
-          <div className="mt-6 flex justify-end">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 mr-2 hover:bg-gray-50"
-              disabled={isLoading}
-            >
-              Hủy
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-md flex items-center"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <span className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></span>
-                  Đang xử lý...
-                </>
-              ) : (
-                <>
-                  <i className="fas fa-save mr-2"></i> Lưu
-                </>
-              )}
-            </button>
-          </div>
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );
