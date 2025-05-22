@@ -121,7 +121,7 @@ const Login = () => {
                                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                                     Mật khẩu
                                 </label>
-                                <Link to="/forgot-password" className="text-sm text-amber-600 hover:text-amber-800">
+                                <Link to="/account/forgot-password" className="text-sm text-amber-600 hover:text-amber-800">
                                     Quên mật khẩu?
                                 </Link>
                             </div>
