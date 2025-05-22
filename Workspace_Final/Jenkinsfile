@@ -12,30 +12,36 @@ pipeline {
     DOCKERHUB_USERNAME = 'khangdinh2103'
   }
 
-  stages {
+  
+
+    stage('Setup Environment') {
+      steps {
+        sh 'apk add --no-cache curl git'
+      }
+    }
+    stages {
     stage('Checkout') {
       steps {
         git branch: 'master', url: 'https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git'
       }
     }
 
-    stage('Setup Environment') {
-      steps {
-        sh 'apk add --no-cache curl'
-      }
-    }
-
-    stage('Prepare Services') {
-  steps {
-    dir('Workspace_Final') {
-      script {
-        sh '''
-          git clone https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git .
-        '''
-      }
-    }
-  }
-}
+    // stage('Prepare Directories') {
+    //   steps {
+    //     dir('Workspace_Final') {
+    //       script {
+    //         // Create necessary directories if they don't exist
+    //         sh '''
+    //           mkdir -p Container/container-vite
+    //           mkdir -p Service_Account/service-account-vite
+    //           mkdir -p Service_Catalog/service-catalog-vite
+    //           mkdir -p Service_Cart_Order/service-cart-order-vite
+    //         '''
+    //         // No package.json creation as requested
+    //       }
+    //     }
+    //   }
+    // }
 
     stage('Build & Start Services') {
       steps {
@@ -44,6 +50,7 @@ pipeline {
             sh 'docker-compose build'
             sh 'docker-compose up -d'
             
+            // Check if services are running
             sh 'docker-compose ps'
             
             // Wait for services to initialize
