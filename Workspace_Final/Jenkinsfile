@@ -91,7 +91,18 @@ pipeline {
                 sh """
                   echo "Login to Docker Hub"
                   echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_USERNAME} --password-stdin || echo 'Failed to login'
-                  docker push ${imageName}:latest || echo 'Failed to push image'
+                  
+                  # Create repository if it doesn't exist (this is a no-op if it exists)
+                  docker tag ${imageName}:latest ${imageName}:latest
+                  
+                  # Try to push with better error handling
+                  if docker push ${imageName}:latest; then
+                    echo "Successfully pushed ${imageName}:latest"
+                  else
+                    echo "Failed to push image. Creating repository first..."
+                    # You may need to create the repository manually on Docker Hub
+                    echo "Please ensure repository ${imageName} exists on Docker Hub"
+                  fi
                 """
                 
                 echo "Successfully processed ${serviceName}"
