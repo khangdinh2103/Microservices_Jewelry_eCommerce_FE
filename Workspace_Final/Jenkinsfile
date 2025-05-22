@@ -25,22 +25,17 @@ pipeline {
       }
     }
 
-    stage('Prepare Directories') {
-      steps {
-        dir('Workspace_Final') {
-          script {
-            // Create necessary directories if they don't exist
-            sh '''
-              mkdir -p Container/container-vite
-              mkdir -p Service_Account/service-account-vite
-              mkdir -p Service_Catalog/service-catalog-vite
-              mkdir -p Service_Cart_Order/service-cart-order-vite
-            '''
-            // No package.json creation as requested
-          }
-        }
+    stage('Prepare Services') {
+  steps {
+    dir('Workspace_Final') {
+      script {
+        sh '''
+          git clone https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git .
+        '''
       }
     }
+  }
+}
 
     stage('Build & Start Services') {
       steps {
