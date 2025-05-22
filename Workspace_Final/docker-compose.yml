@@ -62,7 +62,7 @@ services:
       - ./Service_Catalog/service-catalog-vite:/app
       - node_modules_catalog:/app/node_modules
     ports:
-      - "3005:3005"  # Mapped to different host port
+      - "3005:3005" 
     command: >
       sh -c "
         until [ -f package.json ]; do echo '⏳ Waiting for package.json...'; sleep 1; done &&
