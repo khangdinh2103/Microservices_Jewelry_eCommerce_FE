@@ -21,79 +21,22 @@ pipeline {
 
     stage('Setup Environment') {
       steps {
-        sh 'apk add --no-cache curl git'
+        sh 'apk add --no-cache curl'
       }
     }
 
-    stage('Prepare Service Files') {
+    stage('Prepare Directories') {
       steps {
         dir('Workspace_Final') {
           script {
+            // Create necessary directories if they don't exist
             sh '''
-              # Copy package.json files to the correct locations
-              cp -f Container/container-vite/package.json Container/container-vite/ || echo "Failed to copy container package.json"
-              cp -f Service_Account/service-account-vite/package.json Service_Account/service-account-vite/ || echo "Failed to copy account package.json"
-              cp -f Service_Catalog/service-catalog-vite/package.json Service_Catalog/service-catalog-vite/ || echo "Failed to copy catalog package.json"
-              cp -f Service_Cart_Order/service-cart-order-vite/package.json Service_Cart_Order/service-cart-order-vite/ || echo "Failed to copy cart-order package.json"
-              
-              # Verify the files were copied
-              ls -la Container/container-vite/
-              ls -la Service_Account/service-account-vite/
-              ls -la Service_Catalog/service-catalog-vite/
-              ls -la Service_Cart_Order/service-cart-order-vite/
+              mkdir -p Container/container-vite
+              mkdir -p Service_Account/service-account-vite
+              mkdir -p Service_Catalog/service-catalog-vite
+              mkdir -p Service_Cart_Order/service-cart-order-vite
             '''
-          }
-        }
-      }
-    }
-
-    stage('Verify Package Files') {
-      steps {
-        dir('Workspace_Final') {
-          script {
-            echo "Checking for package.json files in service directories..."
-            
-            sh '''
-              # Check Container service
-              echo "Checking Container service:"
-              if [ -f "Container/container-vite/package.json" ]; then
-                echo "✅ Container package.json exists"
-                cat Container/container-vite/package.json | grep name
-              else
-                echo "❌ Container package.json does not exist"
-              fi
-              
-              # Check Account service
-              echo "Checking Account service:"
-              if [ -f "Service_Account/service-account-vite/package.json" ]; then
-                echo "✅ Account package.json exists"
-                cat Service_Account/service-account-vite/package.json | grep name
-              else
-                echo "❌ Account package.json does not exist"
-              fi
-              
-              # Check Catalog service
-              echo "Checking Catalog service:"
-              if [ -f "Service_Catalog/service-catalog-vite/package.json" ]; then
-                echo "✅ Catalog package.json exists"
-                cat Service_Catalog/service-catalog-vite/package.json | grep name
-              else
-                echo "❌ Catalog package.json does not exist"
-              fi
-              
-              # Check Cart-Order service
-              echo "Checking Cart-Order service:"
-              if [ -f "Service_Cart_Order/service-cart-order-vite/package.json" ]; then
-                echo "✅ Cart-Order package.json exists"
-                cat Service_Cart_Order/service-cart-order-vite/package.json | grep name
-              else
-                echo "❌ Cart-Order package.json does not exist"
-              fi
-              
-              # Summary
-              echo "Summary of package.json files:"
-              find . -name "package.json" | sort
-            '''
+            // No package.json creation as requested
           }
         }
       }

@@ -8,17 +8,16 @@ services:
       - ./Container/container-vite:/app
       - node_modules_container:/app/node_modules
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Vite preview port
     command: >
-      sh -c "
-        echo 'Starting container service...' &&
-        npm install -g pnpm &&
-        if [ -f package.json ]; then
-          pnpm install && pnpm run o;
-        else
-          echo 'No package.json found, keeping container alive...' && 
-          tail -f /dev/null;
-        fi"
+      sh -c "echo 'Setting up container service...' &&
+             if [ ! -f /app/package.json ]; then
+               echo '{\"name\":\"container\",\"version\":\"1.0.0\",\"scripts\":{\"o\":\"echo \\\"Container service running...\\\" && tail -f /dev/null\"}}' > /app/package.json &&
+               echo 'Created package.json for container service';
+             fi &&
+             npm install -g pnpm &&
+             pnpm install &&
+             pnpm run o"
     environment:
       - NODE_ENV=development
       - HOST=0.0.0.0
@@ -32,7 +31,12 @@ services:
     ports:
       - "3001:3001"  # Mapped to different host port
     command: >
-      sh -c "npm install -g pnpm &&
+      sh -c "echo 'Setting up account service...' &&
+             if [ ! -f /app/package.json ]; then
+               echo '{\"name\":\"service-account\",\"version\":\"1.0.0\",\"scripts\":{\"o\":\"echo \\\"Account service running...\\\" && tail -f /dev/null\"}}' > /app/package.json &&
+               echo 'Created package.json for account service';
+             fi &&
+             npm install -g pnpm &&
              pnpm install &&
              pnpm run o"
     environment:
@@ -48,7 +52,12 @@ services:
     ports:
       - "3006:3006"  # Mapped to different host port
     command: >
-      sh -c "npm install -g pnpm &&
+      sh -c "echo 'Setting up cart-order service...' &&
+             if [ ! -f /app/package.json ]; then
+               echo '{\"name\":\"service-cart-order\",\"version\":\"1.0.0\",\"scripts\":{\"o\":\"echo \\\"Cart-order service running...\\\" && tail -f /dev/null\"}}' > /app/package.json &&
+               echo 'Created package.json for cart-order service';
+             fi &&
+             npm install -g pnpm &&
              pnpm install &&
              pnpm run o"
     environment:
@@ -64,7 +73,12 @@ services:
     ports:
       - "3005:3005"  # Mapped to different host port
     command: >
-      sh -c "npm install -g pnpm &&
+      sh -c "echo 'Setting up catalog service...' &&
+             if [ ! -f /app/package.json ]; then
+               echo '{\"name\":\"service-catalog\",\"version\":\"1.0.0\",\"scripts\":{\"o\":\"echo \\\"Catalog service running...\\\" && tail -f /dev/null\"}}' > /app/package.json &&
+               echo 'Created package.json for catalog service';
+             fi &&
+             npm install -g pnpm &&
              pnpm install &&
              pnpm run o"
     environment:
