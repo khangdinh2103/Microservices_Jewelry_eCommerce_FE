@@ -19,11 +19,11 @@ Fetching upstream changes from https://github.com/khangdinh2103/Microservices_Je
 using GIT_ASKPASS to set credentials 
  > git fetch --tags --force --progress -- https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git +refs/heads/*:refs/remotes/origin/* # timeout=10
  > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
-Checking out Revision 038fb72a8b083cb634243ef9d26c78a870383fce (refs/remotes/origin/master)
+Checking out Revision 60b07c994cdaa8e870de6f5a27e7587c6fab2ddb (refs/remotes/origin/master)
  > git config core.sparsecheckout # timeout=10
- > git checkout -f 038fb72a8b083cb634243ef9d26c78a870383fce # timeout=10
+ > git checkout -f 60b07c994cdaa8e870de6f5a27e7587c6fab2ddb # timeout=10
 Commit message: "update tao pakage.json"
- > git rev-list --no-walk 3e4f7414538735b4e061802f873dde8a840dcb2c # timeout=10
+ > git rev-list --no-walk 038fb72a8b083cb634243ef9d26c78a870383fce # timeout=10
 [Pipeline] }
 [Pipeline] // stage
 [Pipeline] withEnv
@@ -39,7 +39,7 @@ Commit message: "update tao pakage.json"
 [Pipeline] withDockerContainer
 Jenkins seems to be running inside container 1271a0d27f983874ab4d6da4b9beb635c6b05fc78cd09ed65469274d56a09f0e
 $ docker run -t -d -u 0:0 --privileged -v /var/run/docker.sock:/var/run/docker.sock -w /var/jenkins_home/workspace/FE --volumes-from 1271a0d27f983874ab4d6da4b9beb635c6b05fc78cd09ed65469274d56a09f0e -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** docker:20-dind cat
-$ docker top 8161220d3c456f272b90691b03cdeadb23de5d047abb969ecf3552d925fe1703 -eo pid,comm
+$ docker top 138115bf2c149fc4a87e2e4f5e26e20beacaa8db1f6c69cb71a743eef71a6935 -eo pid,comm
 [Pipeline] {
 [Pipeline] withCredentials
 Masking supported pattern matches of $DOCKERHUB_CREDENTIALS or $DOCKERHUB_CREDENTIALS_PSW
@@ -52,7 +52,7 @@ Masking supported pattern matches of $DOCKERHUB_CREDENTIALS or $DOCKERHUB_CREDEN
 Selected Git installation does not exist. Using Default
 The recommended git tool is: NONE
 No credentials specified
-Warning: JENKINS-30600: special launcher org.jenkinsci.plugins.docker.workflow.WithContainerStep$Decorator$1@76b425b4; decorates hudson.Launcher$LocalLauncher@c598254 will be ignored (a typical symptom is the Git executable not being run inside a designated container)
+Warning: JENKINS-30600: special launcher org.jenkinsci.plugins.docker.workflow.WithContainerStep$Decorator$1@197952b9; decorates hudson.Launcher$LocalLauncher@46de00a3 will be ignored (a typical symptom is the Git executable not being run inside a designated container)
  > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/FE/.git # timeout=10
 Fetching changes from the remote Git repository
  > git config remote.origin.url https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git # timeout=10
@@ -61,164 +61,44 @@ Fetching upstream changes from https://github.com/khangdinh2103/Microservices_Je
  > git --version # 'git version 2.39.5'
  > git fetch --tags --force --progress -- https://github.com/khangdinh2103/Microservices_Jewelry_eCommerce_FE.git +refs/heads/*:refs/remotes/origin/* # timeout=10
  > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
-Checking out Revision 038fb72a8b083cb634243ef9d26c78a870383fce (refs/remotes/origin/master)
+Checking out Revision 60b07c994cdaa8e870de6f5a27e7587c6fab2ddb (refs/remotes/origin/master)
  > git config core.sparsecheckout # timeout=10
- > git checkout -f 038fb72a8b083cb634243ef9d26c78a870383fce # timeout=10
+ > git checkout -f 60b07c994cdaa8e870de6f5a27e7587c6fab2ddb # timeout=10
  > git branch -a -v --no-abbrev # timeout=10
  > git branch -D master # timeout=10
- > git checkout -b master 038fb72a8b083cb634243ef9d26c78a870383fce # timeout=10
+ > git checkout -b master 60b07c994cdaa8e870de6f5a27e7587c6fab2ddb # timeout=10
 Commit message: "update tao pakage.json"
 [Pipeline] }
 [Pipeline] // stage
 [Pipeline] stage
 [Pipeline] { (Setup Environment)
 [Pipeline] sh
-+ apk add --no-cache curl git
++ apk add --no-cache curl
 fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/main/x86_64/APKINDEX.tar.gz
 fetch https://dl-cdn.alpinelinux.org/alpine/v3.18/community/x86_64/APKINDEX.tar.gz
-(1/10) Installing brotli-libs (1.0.9-r14)
-(2/10) Installing libunistring (1.1-r1)
-(3/10) Installing libidn2 (2.3.4-r1)
-(4/10) Installing nghttp2-libs (1.57.0-r0)
-(5/10) Installing libpsl (0.21.5-r0)
-(6/10) Installing libcurl (8.12.1-r0)
-(7/10) Installing curl (8.12.1-r0)
-(8/10) Installing libexpat (2.7.0-r0)
-(9/10) Installing pcre2 (10.42-r1)
-(10/10) Installing git (2.40.4-r0)
+(1/7) Installing brotli-libs (1.0.9-r14)
+(2/7) Installing libunistring (1.1-r1)
+(3/7) Installing libidn2 (2.3.4-r1)
+(4/7) Installing nghttp2-libs (1.57.0-r0)
+(5/7) Installing libpsl (0.21.5-r0)
+(6/7) Installing libcurl (8.12.1-r0)
+(7/7) Installing curl (8.12.1-r0)
 Executing busybox-1.36.0-r9.trigger
-OK: 41 MiB in 66 packages
+OK: 35 MiB in 63 packages
 [Pipeline] }
 [Pipeline] // stage
 [Pipeline] stage
-[Pipeline] { (Prepare Service Files)
+[Pipeline] { (Prepare Directories)
 [Pipeline] dir
 Running in /var/jenkins_home/workspace/FE/Workspace_Final
 [Pipeline] {
 [Pipeline] script
 [Pipeline] {
 [Pipeline] sh
-+ cp -f Container/container-vite/package.json Container/container-vite/
-cp: 'Container/container-vite/package.json' and 'Container/container-vite/package.json' are the same file
-+ echo 'Failed to copy container package.json'
-Failed to copy container package.json
-+ cp -f Service_Account/service-account-vite/package.json Service_Account/service-account-vite/
-cp: 'Service_Account/service-account-vite/package.json' and 'Service_Account/service-account-vite/package.json' are the same file
-+ echo 'Failed to copy account package.json'
-Failed to copy account package.json
-+ cp -f Service_Catalog/service-catalog-vite/package.json Service_Catalog/service-catalog-vite/
-cp: 'Service_Catalog/service-catalog-vite/package.json' and 'Service_Catalog/service-catalog-vite/package.json' are the same file
-+ echo 'Failed to copy catalog package.json'
-Failed to copy catalog package.json
-+ cp -f Service_Cart_Order/service-cart-order-vite/package.json Service_Cart_Order/service-cart-order-vite/
-cp: 'Service_Cart_Order/service-cart-order-vite/package.json' and 'Service_Cart_Order/service-cart-order-vite/package.json' are the same file
-+ echo 'Failed to copy cart-order package.json'
-Failed to copy cart-order package.json
-+ ls -la Container/container-vite/
-total 40
-drwxr-xr-x    4 root     root          4096 May 21 17:55 .
-drwxr-xr-x    3 root     root          4096 May 20 08:17 ..
--rw-r--r--    1 root     root           253 May 20 08:17 .gitignore
--rw-r--r--    1 root     root           860 May 20 08:17 README.md
--rw-r--r--    1 root     root           976 May 20 08:17 eslint.config.js
--rw-r--r--    1 root     root           715 May 20 08:17 index.html
--rw-r--r--    1 root     root          1032 May 21 17:55 package.json
-drwxr-xr-x    3 root     root          4096 May 20 08:17 public
-drwxr-xr-x    7 root     root          4096 May 20 08:17 src
--rw-r--r--    1 root     root          1362 May 20 08:17 vite.config.js
-+ ls -la Service_Account/service-account-vite/
-total 44
-drwxr-xr-x    4 root     root          4096 May 21 17:55 .
-drwxr-xr-x    4 root     root          4096 May 21 11:32 ..
--rw-r--r--    1 root     root           253 May 20 08:17 .gitignore
--rw-r--r--    1 root     root           119 May 21 11:32 Dockerfile
--rw-r--r--    1 root     root           860 May 20 08:17 README.md
--rw-r--r--    1 root     root           976 May 20 08:17 eslint.config.js
--rw-r--r--    1 root     root           342 May 20 08:17 index.html
--rw-r--r--    1 root     root           990 May 21 17:55 package.json
-drwxr-xr-x    3 root     root          4096 May 20 08:17 public
-drwxr-xr-x    4 root     root          4096 May 20 08:17 src
--rw-r--r--    1 root     root           972 May 20 08:17 vite.config.js
-+ ls -la Service_Catalog/service-catalog-vite/
-total 40
-drwxr-xr-x    4 root     root          4096 May 21 17:55 .
-drwxr-xr-x    3 root     root          4096 May 20 08:17 ..
--rw-r--r--    1 root     root           253 May 20 08:17 .gitignore
--rw-r--r--    1 root     root           860 May 20 08:17 README.md
--rw-r--r--    1 root     root           976 May 20 08:17 eslint.config.js
--rw-r--r--    1 root     root           342 May 20 08:17 index.html
--rw-r--r--    1 root     root          1027 May 21 17:55 package.json
-drwxr-xr-x    2 root     root          4096 May 20 08:17 public
-drwxr-xr-x    4 root     root          4096 May 20 08:17 src
--rw-r--r--    1 root     root          1103 May 20 08:17 vite.config.js
-+ ls -la Service_Cart_Order/service-cart-order-vite/
-total 40
-drwxr-xr-x    4 root     root          4096 May 21 17:55 .
-drwxr-xr-x    3 root     root          4096 May 20 08:17 ..
--rw-r--r--    1 root     root           253 May 20 08:17 .gitignore
--rw-r--r--    1 root     root           856 May 20 08:17 README.md
--rw-r--r--    1 root     root           844 May 20 08:17 eslint.config.js
--rw-r--r--    1 root     root           361 May 20 08:17 index.html
--rw-r--r--    1 root     root          1030 May 21 17:55 package.json
-drwxr-xr-x    2 root     root          4096 May 20 08:17 public
-drwxr-xr-x    4 root     root          4096 May 20 08:17 src
--rw-r--r--    1 root     root          1160 May 20 08:17 vite.config.js
-[Pipeline] }
-[Pipeline] // script
-[Pipeline] }
-[Pipeline] // dir
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] stage
-[Pipeline] { (Verify Package Files)
-[Pipeline] dir
-Running in /var/jenkins_home/workspace/FE/Workspace_Final
-[Pipeline] {
-[Pipeline] script
-[Pipeline] {
-[Pipeline] echo
-Checking for package.json files in service directories...
-[Pipeline] sh
-+ echo 'Checking Container service:'
-Checking Container service:
-+ '[' -f Container/container-vite/package.json ]
-+ echo '✅ Container package.json exists'
-✅ Container package.json exists
-+ cat Container/container-vite/package.json
-+ grep name
-    "name": "container-vite",
-+ echo 'Checking Account service:'
-Checking Account service:
-+ '[' -f Service_Account/service-account-vite/package.json ]
-+ echo '✅ Account package.json exists'
-✅ Account package.json exists
-+ cat Service_Account/service-account-vite/package.json
-+ grep name
-    "name": "service-account-vite",
-+ echo 'Checking Catalog service:'
-Checking Catalog service:
-+ '[' -f Service_Catalog/service-catalog-vite/package.json ]
-+ echo '✅ Catalog package.json exists'
-✅ Catalog package.json exists
-+ cat Service_Catalog/service-catalog-vite/package.json
-+ grep name
-    "name": "service-catalog-vite",
-+ echo 'Checking Cart-Order service:'
-Checking Cart-Order service:
-+ '[' -f Service_Cart_Order/service-cart-order-vite/package.json ]
-+ echo '✅ Cart-Order package.json exists'
-✅ Cart-Order package.json exists
-+ cat Service_Cart_Order/service-cart-order-vite/package.json
-+ grep name
-    "name": "service-cart-order-vite",
-+ echo 'Summary of package.json files:'
-Summary of package.json files:
-+ find . -name package.json
-+ sort
-./Container/container-vite/package.json
-./Service_Account/service-account-vite/package.json
-./Service_Cart_Order/service-cart-order-vite/package.json
-./Service_Catalog/service-catalog-vite/package.json
++ mkdir -p Container/container-vite
++ mkdir -p Service_Account/service-account-vite
++ mkdir -p Service_Catalog/service-catalog-vite
++ mkdir -p Service_Cart_Order/service-cart-order-vite
 [Pipeline] }
 [Pipeline] // script
 [Pipeline] }
@@ -236,32 +116,165 @@ Running in /var/jenkins_home/workspace/FE/Workspace_Final
 + docker-compose build
 [Pipeline] sh
 + docker-compose up -d
- Container workspace_final-service-catalog-1  Created
- Container workspace_final-service-account-1  Created
- Container workspace_final-service-cart-order-1  Created
+ Container workspace_final-service-catalog-1  Recreate
+ Container workspace_final-service-cart-order-1  Recreate
  Container workspace_final-container-1  Recreate
+ Container workspace_final-service-account-1  Recreate
+ Container workspace_final-service-cart-order-1  Recreated
+ Container workspace_final-service-catalog-1  Recreated
+ Container workspace_final-service-account-1  Recreated
  Container workspace_final-container-1  Recreated
- Container workspace_final-service-catalog-1  Starting
- Container workspace_final-service-account-1  Starting
- Container workspace_final-service-cart-order-1  Starting
  Container workspace_final-container-1  Starting
- Container workspace_final-service-cart-order-1  Started
+ Container workspace_final-service-account-1  Starting
+ Container workspace_final-service-catalog-1  Starting
+ Container workspace_final-service-cart-order-1  Starting
  Container workspace_final-container-1  Started
+ Container workspace_final-service-cart-order-1  Started
  Container workspace_final-service-catalog-1  Started
  Container workspace_final-service-account-1  Started
 [Pipeline] sh
 + docker-compose ps
-NAME                                   IMAGE               COMMAND                  SERVICE              CREATED             STATUS                  PORTS
-workspace_final-container-1            node:20-alpine      "docker-entrypoint.s…"   container            1 second ago        Up Less than a second   0.0.0.0:3000->3000/tcp
-workspace_final-service-account-1      node:20-alpine      "docker-entrypoint.s…"   service-account      25 minutes ago      Up Less than a second   0.0.0.0:3001->3001/tcp
-workspace_final-service-cart-order-1   node:20-alpine      "docker-entrypoint.s…"   service-cart-order   25 minutes ago      Up Less than a second   0.0.0.0:3006->3006/tcp
-workspace_final-service-catalog-1      node:20-alpine      "docker-entrypoint.s…"   service-catalog      25 minutes ago      Up Less than a second   0.0.0.0:3005->3005/tcp
+NAME                                   IMAGE               COMMAND                  SERVICE              CREATED             STATUS              PORTS
+workspace_final-container-1            node:20-alpine      "docker-entrypoint.s…"   container            13 seconds ago      Up 2 seconds        0.0.0.0:3000->3000/tcp
+workspace_final-service-account-1      node:20-alpine      "docker-entrypoint.s…"   service-account      13 seconds ago      Up 1 second         0.0.0.0:3001->3001/tcp
+workspace_final-service-cart-order-1   node:20-alpine      "docker-entrypoint.s…"   service-cart-order   13 seconds ago      Up 2 seconds        0.0.0.0:3006->3006/tcp
+workspace_final-service-catalog-1      node:20-alpine      "docker-entrypoint.s…"   service-catalog      13 seconds ago      Up 2 seconds        0.0.0.0:3005->3005/tcp
 [Pipeline] echo
 Waiting for services to start...
 [Pipeline] sleep
 Sleeping for 1 min 0 sec
 [Pipeline] sh
 + docker-compose logs '--tail=50'
+workspace_final-container-1  | Setting up container service...
+workspace_final-container-1  | Created package.json for container service
+workspace_final-container-1  | 
+workspace_final-container-1  | added 1 package in 3s
+workspace_final-container-1  | 
+workspace_final-container-1  | 1 package is looking for funding
+workspace_final-container-1  |   run `npm fund` for details
+workspace_final-container-1  | npm notice
+workspace_final-container-1  | npm notice New major version of npm available! 10.8.2 -> 11.4.1
+workspace_final-container-1  | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.1
+workspace_final-container-1  | npm notice To update run: npm install -g npm@11.4.1
+workspace_final-container-1  | npm notice
+workspace_final-container-1  | Packages: -19
+workspace_final-container-1  | -------------------
+workspace_final-container-1  | 
+workspace_final-container-1  | dependencies:
+workspace_final-container-1  | - @originjs/vite-plugin-federation 1.4.1
+workspace_final-container-1  | - @tailwindcss/vite 4.1.7
+workspace_final-container-1  | - axios 1.9.0
+workspace_final-container-1  | - concurrently 9.1.2
+workspace_final-container-1  | - react 19.1.0
+workspace_final-container-1  | - react-dom 19.1.0
+workspace_final-container-1  | - react-responsive-carousel 3.2.23
+workspace_final-container-1  | - react-router-dom 7.6.0
+workspace_final-container-1  | - tailwindcss 4.1.7
+workspace_final-container-1  | 
+workspace_final-container-1  | devDependencies:
+workspace_final-container-1  | - @eslint/js 9.27.0
+workspace_final-container-1  | - @types/react 19.1.4
+workspace_final-container-1  | - @types/react-dom 19.1.5
+workspace_final-container-1  | - @vitejs/plugin-react 4.4.1
+workspace_final-container-1  | - eslint 9.27.0
+workspace_final-container-1  | - eslint-plugin-react-hooks 5.2.0
+workspace_final-container-1  | - eslint-plugin-react-refresh 0.4.20
+workspace_final-container-1  | - globals 16.1.0
+workspace_final-container-1  | - vite 6.3.5
+workspace_final-container-1  | 
+workspace_final-container-1  | Done in 544ms using pnpm v10.11.0
+workspace_final-container-1  | 
+workspace_final-container-1  | > container@1.0.0 o /app
+workspace_final-container-1  | > echo "Container service running..." && tail -f /dev/null
+workspace_final-container-1  | 
+workspace_final-container-1  | Container service running...
+workspace_final-service-account-1  | Setting up account service...
+workspace_final-service-account-1  | Created package.json for account service
+workspace_final-service-account-1  | 
+workspace_final-service-account-1  | added 1 package in 4s
+workspace_final-service-account-1  | 
+workspace_final-service-account-1  | 1 package is looking for funding
+workspace_final-service-account-1  |   run `npm fund` for details
+workspace_final-service-account-1  | npm notice
+workspace_final-service-account-1  | npm notice New major version of npm available! 10.8.2 -> 11.4.1
+workspace_final-service-account-1  | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.1
+workspace_final-service-account-1  | npm notice To update run: npm install -g npm@11.4.1
+workspace_final-service-account-1  | npm notice
+workspace_final-service-account-1  | Packages: -19
+workspace_final-service-account-1  | -------------------
+workspace_final-service-account-1  | 
+workspace_final-service-account-1  | dependencies:
+workspace_final-service-account-1  | - @originjs/vite-plugin-federation 1.4.1
+workspace_final-service-account-1  | - @tailwindcss/vite 4.1.7
+workspace_final-service-account-1  | - axios 1.9.0
+workspace_final-service-account-1  | - concurrently 9.1.2
+workspace_final-service-account-1  | - react 19.1.0
+workspace_final-service-account-1  | - react-dom 19.1.0
+workspace_final-service-account-1  | - react-router-dom 7.6.0
+workspace_final-service-account-1  | - tailwindcss 4.1.7
+workspace_final-service-account-1  | 
+workspace_final-service-account-1  | devDependencies:
+workspace_final-service-account-1  | - @eslint/js 9.27.0
+workspace_final-service-account-1  | - @types/react 19.1.4
+workspace_final-service-account-1  | - @types/react-dom 19.1.5
+workspace_final-service-account-1  | - @vitejs/plugin-react 4.4.1
+workspace_final-service-account-1  | - eslint 9.27.0
+workspace_final-service-account-1  | - eslint-plugin-react-hooks 5.2.0
+workspace_final-service-account-1  | - eslint-plugin-react-refresh 0.4.20
+workspace_final-service-account-1  | - globals 16.1.0
+workspace_final-service-account-1  | - vite 6.3.5
+workspace_final-service-account-1  | 
+workspace_final-service-account-1  | Done in 544ms using pnpm v10.11.0
+workspace_final-service-account-1  | 
+workspace_final-service-account-1  | > service-account@1.0.0 o /app
+workspace_final-service-account-1  | > echo "Account service running..." && tail -f /dev/null
+workspace_final-service-account-1  | 
+workspace_final-service-account-1  | Account service running...
+workspace_final-service-catalog-1  | Setting up catalog service...
+workspace_final-service-catalog-1  | Created package.json for catalog service
+workspace_final-service-catalog-1  | 
+workspace_final-service-catalog-1  | added 1 package in 9s
+workspace_final-service-catalog-1  | 
+workspace_final-service-catalog-1  | 1 package is looking for funding
+workspace_final-service-catalog-1  |   run `npm fund` for details
+workspace_final-service-catalog-1  | npm notice
+workspace_final-service-catalog-1  | npm notice New major version of npm available! 10.8.2 -> 11.4.1
+workspace_final-service-catalog-1  | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.1
+workspace_final-service-catalog-1  | npm notice To update run: npm install -g npm@11.4.1
+workspace_final-service-catalog-1  | npm notice
+workspace_final-service-catalog-1  | Packages: -19
+workspace_final-service-catalog-1  | -------------------
+workspace_final-service-catalog-1  | 
+workspace_final-service-catalog-1  | dependencies:
+workspace_final-service-catalog-1  | - @originjs/vite-plugin-federation 1.4.1
+workspace_final-service-catalog-1  | - @tailwindcss/vite 4.1.7
+workspace_final-service-catalog-1  | - axios 1.9.0
+workspace_final-service-catalog-1  | - concurrently 9.1.2
+workspace_final-service-catalog-1  | - framer-motion 12.12.1
+workspace_final-service-catalog-1  | - react 19.1.0
+workspace_final-service-catalog-1  | - react-dom 19.1.0
+workspace_final-service-catalog-1  | - react-router-dom 7.6.0
+workspace_final-service-catalog-1  | - tailwindcss 4.1.7
+workspace_final-service-catalog-1  | 
+workspace_final-service-catalog-1  | devDependencies:
+workspace_final-service-catalog-1  | - @eslint/js 9.27.0
+workspace_final-service-catalog-1  | - @types/react 19.1.4
+workspace_final-service-catalog-1  | - @types/react-dom 19.1.5
+workspace_final-service-catalog-1  | - @vitejs/plugin-react 4.4.1
+workspace_final-service-catalog-1  | - eslint 9.27.0
+workspace_final-service-catalog-1  | - eslint-plugin-react-hooks 5.2.0
+workspace_final-service-catalog-1  | - eslint-plugin-react-refresh 0.4.20
+workspace_final-service-catalog-1  | - globals 16.1.0
+workspace_final-service-catalog-1  | - vite 6.3.5
+workspace_final-service-catalog-1  | 
+workspace_final-service-catalog-1  | Done in 546ms using pnpm v10.11.0
+workspace_final-service-catalog-1  | 
+workspace_final-service-catalog-1  | > service-catalog@1.0.0 o /app
+workspace_final-service-catalog-1  | > echo "Catalog service running..." && tail -f /dev/null
+workspace_final-service-catalog-1  | 
+workspace_final-service-catalog-1  | Catalog service running...
+workspace_final-service-cart-order-1  | Setting up cart-order service...
+workspace_final-service-cart-order-1  | Created package.json for cart-order service
 workspace_final-service-cart-order-1  | 
 workspace_final-service-cart-order-1  | added 1 package in 6s
 workspace_final-service-cart-order-1  | 
@@ -272,99 +285,44 @@ workspace_final-service-cart-order-1  | npm notice New major version of npm avai
 workspace_final-service-cart-order-1  | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.1
 workspace_final-service-cart-order-1  | npm notice To update run: npm install -g npm@11.4.1
 workspace_final-service-cart-order-1  | npm notice
-workspace_final-service-cart-order-1  |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
+workspace_final-service-cart-order-1  | Packages: -19
+workspace_final-service-cart-order-1  | -------------------
 workspace_final-service-cart-order-1  | 
-workspace_final-service-cart-order-1  | changed 1 package in 2s
+workspace_final-service-cart-order-1  | dependencies:
+workspace_final-service-cart-order-1  | - @originjs/vite-plugin-federation 1.4.1
+workspace_final-service-cart-order-1  | - @tailwindcss/vite 4.1.7
+workspace_final-service-cart-order-1  | - axios 1.9.0
+workspace_final-service-cart-order-1  | - concurrently 9.1.2
+workspace_final-service-cart-order-1  | - framer-motion 12.12.1
+workspace_final-service-cart-order-1  | - react 19.1.0
+workspace_final-service-cart-order-1  | - react-dom 19.1.0
+workspace_final-service-cart-order-1  | - react-router-dom 7.6.0
+workspace_final-service-cart-order-1  | - tailwindcss 4.1.7
 workspace_final-service-cart-order-1  | 
-workspace_final-service-cart-order-1  | 1 package is looking for funding
-workspace_final-service-cart-order-1  |   run `npm fund` for details
-workspace_final-service-cart-order-1  |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
+workspace_final-service-cart-order-1  | devDependencies:
+workspace_final-service-cart-order-1  | - @eslint/js 9.27.0
+workspace_final-service-cart-order-1  | - @types/react 19.1.4
+workspace_final-service-cart-order-1  | - @types/react-dom 19.1.5
+workspace_final-service-cart-order-1  | - @vitejs/plugin-react 4.4.1
+workspace_final-service-cart-order-1  | - eslint 9.27.0
+workspace_final-service-cart-order-1  | - eslint-plugin-react-hooks 5.2.0
+workspace_final-service-cart-order-1  | - eslint-plugin-react-refresh 0.4.20
+workspace_final-service-cart-order-1  | - globals 16.1.0
+workspace_final-service-cart-order-1  | - vite 6.3.5
 workspace_final-service-cart-order-1  | 
-workspace_final-service-cart-order-1  | changed 1 package in 2s
+workspace_final-service-cart-order-1  | Done in 549ms using pnpm v10.11.0
 workspace_final-service-cart-order-1  | 
-workspace_final-service-cart-order-1  | 1 package is looking for funding
-workspace_final-service-cart-order-1  |   run `npm fund` for details
-workspace_final-service-cart-order-1  |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
+workspace_final-service-cart-order-1  | > service-cart-order@1.0.0 o /app
+workspace_final-service-cart-order-1  | > echo "Cart-order service running..." && tail -f /dev/null
 workspace_final-service-cart-order-1  | 
-workspace_final-service-cart-order-1  | changed 1 package in 3s
-workspace_final-service-cart-order-1  | 
-workspace_final-service-cart-order-1  | 1 package is looking for funding
-workspace_final-service-cart-order-1  |   run `npm fund` for details
-workspace_final-service-cart-order-1  |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
-workspace_final-container-1           | Starting container service...
-workspace_final-container-1           | 
-workspace_final-container-1           | added 1 package in 2s
-workspace_final-container-1           | 
-workspace_final-container-1           | 1 package is looking for funding
-workspace_final-container-1           |   run `npm fund` for details
-workspace_final-container-1           | npm notice
-workspace_final-container-1           | npm notice New major version of npm available! 10.8.2 -> 11.4.1
-workspace_final-container-1           | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.1
-workspace_final-container-1           | npm notice To update run: npm install -g npm@11.4.1
-workspace_final-container-1           | npm notice
-workspace_final-container-1           | No package.json found, keeping container alive...
-workspace_final-service-account-1     | 
-workspace_final-service-account-1     | added 1 package in 8s
-workspace_final-service-account-1     | 
-workspace_final-service-account-1     | 1 package is looking for funding
-workspace_final-service-account-1     |   run `npm fund` for details
-workspace_final-service-account-1     | npm notice
-workspace_final-service-account-1     | npm notice New major version of npm available! 10.8.2 -> 11.4.1
-workspace_final-service-account-1     | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.1
-workspace_final-service-account-1     | npm notice To update run: npm install -g npm@11.4.1
-workspace_final-service-account-1     | npm notice
-workspace_final-service-account-1     |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
-workspace_final-service-account-1     | 
-workspace_final-service-account-1     | changed 1 package in 2s
-workspace_final-service-account-1     | 
-workspace_final-service-account-1     | 1 package is looking for funding
-workspace_final-service-account-1     |   run `npm fund` for details
-workspace_final-service-account-1     |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
-workspace_final-service-account-1     | 
-workspace_final-service-account-1     | changed 1 package in 2s
-workspace_final-service-account-1     | 
-workspace_final-service-account-1     | 1 package is looking for funding
-workspace_final-service-account-1     |   run `npm fund` for details
-workspace_final-service-account-1     |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
-workspace_final-service-account-1     | 
-workspace_final-service-account-1     | changed 1 package in 2s
-workspace_final-service-account-1     | 
-workspace_final-service-account-1     | 1 package is looking for funding
-workspace_final-service-account-1     |   run `npm fund` for details
-workspace_final-service-account-1     |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
-workspace_final-service-catalog-1     | 
-workspace_final-service-catalog-1     | added 1 package in 5s
-workspace_final-service-catalog-1     | 
-workspace_final-service-catalog-1     | 1 package is looking for funding
-workspace_final-service-catalog-1     |   run `npm fund` for details
-workspace_final-service-catalog-1     | npm notice
-workspace_final-service-catalog-1     | npm notice New major version of npm available! 10.8.2 -> 11.4.1
-workspace_final-service-catalog-1     | npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.1
-workspace_final-service-catalog-1     | npm notice To update run: npm install -g npm@11.4.1
-workspace_final-service-catalog-1     | npm notice
-workspace_final-service-catalog-1     |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
-workspace_final-service-catalog-1     | 
-workspace_final-service-catalog-1     | changed 1 package in 2s
-workspace_final-service-catalog-1     | 
-workspace_final-service-catalog-1     | 1 package is looking for funding
-workspace_final-service-catalog-1     |   run `npm fund` for details
-workspace_final-service-catalog-1     |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
-workspace_final-service-catalog-1     | 
-workspace_final-service-catalog-1     | changed 1 package in 2s
-workspace_final-service-catalog-1     | 
-workspace_final-service-catalog-1     | 1 package is looking for funding
-workspace_final-service-catalog-1     |   run `npm fund` for details
-workspace_final-service-catalog-1     |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
-workspace_final-service-catalog-1     | 
-workspace_final-service-catalog-1     | changed 1 package in 2s
-workspace_final-service-catalog-1     | 
-workspace_final-service-catalog-1     | 1 package is looking for funding
-workspace_final-service-catalog-1     |   run `npm fund` for details
-workspace_final-service-catalog-1     |  ERR_PNPM_NO_PKG_MANIFEST  No package.json found in /app
+workspace_final-service-cart-order-1  | Cart-order service running...
 [Pipeline] sh
 + docker-compose ps
-NAME                          IMAGE               COMMAND                  SERVICE             CREATED              STATUS              PORTS
-workspace_final-container-1   node:20-alpine      "docker-entrypoint.s…"   container           About a minute ago   Up About a minute   0.0.0.0:3000->3000/tcp
+NAME                                   IMAGE               COMMAND                  SERVICE              CREATED              STATUS              PORTS
+workspace_final-container-1            node:20-alpine      "docker-entrypoint.s…"   container            About a minute ago   Up About a minute   0.0.0.0:3000->3000/tcp
+workspace_final-service-account-1      node:20-alpine      "docker-entrypoint.s…"   service-account      About a minute ago   Up About a minute   0.0.0.0:3001->3001/tcp
+workspace_final-service-cart-order-1   node:20-alpine      "docker-entrypoint.s…"   service-cart-order   About a minute ago   Up About a minute   0.0.0.0:3006->3006/tcp
+workspace_final-service-catalog-1      node:20-alpine      "docker-entrypoint.s…"   service-catalog      About a minute ago   Up About a minute   0.0.0.0:3005->3005/tcp
 [Pipeline] }
 [Pipeline] // script
 [Pipeline] }
@@ -383,8 +341,8 @@ Processing container...
 [Pipeline] sh
 + docker-compose ps -q container
 [Pipeline] sh
-+ docker commit 1a3154a266de6f635e0b899360148b103316077ed02686e212e2d89210831ff1 khangdinh2103/container:latest
-sha256:dda6164eb0e8ea593b588326372bb2aab44e5cc4c88bda89d74cd9bf10b3127e
++ docker commit a1ac773f574d6c1f0443b634b79ff5c6634b14e055395ea065d0ed8ded6ce756 khangdinh2103/container:latest
+sha256:266703e8ce1c876e63d5c5da15198ebfda59728677c88bf7b5fee4fa4057aaf5
 [Pipeline] sh
 Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
 		 Affected argument(s) used the following variable(s): [DOCKERHUB_CREDENTIALS_PSW]
@@ -401,111 +359,120 @@ Login Succeeded
 + docker tag khangdinh2103/container:latest khangdinh2103/container:latest
 + docker push khangdinh2103/container:latest
 The push refers to repository [docker.io/khangdinh2103/container]
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
-d0734149b450: Waiting
-f18232174bc9: Waiting
-699b753813e6: Waiting
-d0734149b450: Waiting
-05c1247b2bae: Waiting
-301aebe3d905: Waiting
-d0734149b450: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
-f18232174bc9: Waiting
-699b753813e6: Waiting
-d0734149b450: Waiting
-05c1247b2bae: Waiting
-301aebe3d905: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
-d0734149b450: Waiting
-d0734149b450: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
-d0734149b450: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
-d0734149b450: Waiting
-f18232174bc9: Waiting
 699b753813e6: Waiting
-d0734149b450: Waiting
-05c1247b2bae: Waiting
-301aebe3d905: Waiting
-d0734149b450: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
-699b753813e6: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
-d0734149b450: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
-301aebe3d905: Waiting
-f18232174bc9: Waiting
-699b753813e6: Waiting
-d0734149b450: Waiting
-05c1247b2bae: Waiting
-699b753813e6: Waiting
-d0734149b450: Waiting
-05c1247b2bae: Waiting
-301aebe3d905: Waiting
-f18232174bc9: Waiting
-d0734149b450: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
-d0734149b450: Waiting
+699b753813e6: Waiting
+afe97492627b: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+afe97492627b: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
-f18232174bc9: Waiting
-699b753813e6: Waiting
-d0734149b450: Waiting
-05c1247b2bae: Waiting
-301aebe3d905: Waiting
-699b753813e6: Waiting
-d0734149b450: Waiting
-05c1247b2bae: Waiting
-301aebe3d905: Waiting
-f18232174bc9: Waiting
-d0734149b450: Waiting
-05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
-d0734149b450: Waiting
+afe97492627b: Waiting
+05c1247b2bae: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+afe97492627b: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+afe97492627b: Waiting
+05c1247b2bae: Waiting
+699b753813e6: Waiting
+afe97492627b: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Waiting
 301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
+afe97492627b: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
 f18232174bc9: Waiting
 699b753813e6: Waiting
-d0734149b450: Waiting
+afe97492627b: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+afe97492627b: Waiting
+05c1247b2bae: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+afe97492627b: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+afe97492627b: Waiting
 05c1247b2bae: Layer already exists
 301aebe3d905: Layer already exists
-d0734149b450: Waiting
 f18232174bc9: Layer already exists
 699b753813e6: Layer already exists
-d0734149b450: Pushed
-latest: digest: sha256:dda6164eb0e8ea593b588326372bb2aab44e5cc4c88bda89d74cd9bf10b3127e size: 1401
+afe97492627b: Waiting
+afe97492627b: Waiting
+afe97492627b: Pushed
+latest: digest: sha256:266703e8ce1c876e63d5c5da15198ebfda59728677c88bf7b5fee4fa4057aaf5 size: 1401
 + echo 'Successfully pushed khangdinh2103/container:latest'
 Successfully pushed khangdinh2103/container:latest
 [Pipeline] echo
@@ -514,20 +481,421 @@ Successfully processed container
 Processing service-account...
 [Pipeline] sh
 + docker-compose ps -q service-account
+[Pipeline] sh
++ docker commit 4da561d1d68a74e11b51217e98eed2b5483f9d52cf5e5aff534d5be3b5dc1922 khangdinh2103/service-account:latest
+sha256:9c4a8ceab84e2592fa99e5ff9afb9aeb6e340354265caeba643f3b50b2046fbb
+[Pipeline] sh
+Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
+		 Affected argument(s) used the following variable(s): [DOCKERHUB_CREDENTIALS_PSW]
+		 See https://jenkins.io/redirect/groovy-string-interpolation for details.
++ echo 'Login to Docker Hub'
+Login to Docker Hub
++ echo ****
++ docker login -u khangdinh2103 --password-stdin
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
++ docker tag khangdinh2103/service-account:latest khangdinh2103/service-account:latest
++ docker push khangdinh2103/service-account:latest
+The push refers to repository [docker.io/khangdinh2103/service-account]
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+966f2c1d99db: Waiting
+05c1247b2bae: Layer already exists
+301aebe3d905: Waiting
+f18232174bc9: Layer already exists
+699b753813e6: Layer already exists
+301aebe3d905: Waiting
+966f2c1d99db: Waiting
+966f2c1d99db: Waiting
+301aebe3d905: Waiting
+301aebe3d905: Layer already exists
+966f2c1d99db: Pushed
+latest: digest: sha256:9c4a8ceab84e2592fa99e5ff9afb9aeb6e340354265caeba643f3b50b2046fbb size: 1401
++ echo 'Successfully pushed khangdinh2103/service-account:latest'
+Successfully pushed khangdinh2103/service-account:latest
 [Pipeline] echo
-Container for service-account not found, skipping
+Successfully processed service-account
 [Pipeline] echo
 Processing service-catalog...
 [Pipeline] sh
 + docker-compose ps -q service-catalog
+[Pipeline] sh
++ docker commit fa95f37d78cb21a7e58700e8e9fa873b09766c492c9d41c47f5e7f88796e0d90 khangdinh2103/service-catalog:latest
+sha256:2aba9449c073204790d438b39ea9e12031f1cd21ba13c44554259532b5dc28ac
+[Pipeline] sh
+Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
+		 Affected argument(s) used the following variable(s): [DOCKERHUB_CREDENTIALS_PSW]
+		 See https://jenkins.io/redirect/groovy-string-interpolation for details.
++ echo 'Login to Docker Hub'
+Login to Docker Hub
++ echo ****
++ docker login -u khangdinh2103 --password-stdin
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
++ docker tag khangdinh2103/service-catalog:latest khangdinh2103/service-catalog:latest
++ docker push khangdinh2103/service-catalog:latest
+The push refers to repository [docker.io/khangdinh2103/service-catalog]
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+699b753813e6: Waiting
+f18232174bc9: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+feb6ec49f767: Waiting
+05c1247b2bae: Layer already exists
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Layer already exists
+feb6ec49f767: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+feb6ec49f767: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+301aebe3d905: Layer already exists
+699b753813e6: Layer already exists
+feb6ec49f767: Pushed
+latest: digest: sha256:2aba9449c073204790d438b39ea9e12031f1cd21ba13c44554259532b5dc28ac size: 1401
++ echo 'Successfully pushed khangdinh2103/service-catalog:latest'
+Successfully pushed khangdinh2103/service-catalog:latest
 [Pipeline] echo
-Container for service-catalog not found, skipping
+Successfully processed service-catalog
 [Pipeline] echo
 Processing service-cart-order...
 [Pipeline] sh
 + docker-compose ps -q service-cart-order
+[Pipeline] sh
++ docker commit 2c4a4749ff4f45e13dae706fee88f1827217331c741c559eaa697725cf35894b khangdinh2103/service-cart-order:latest
+sha256:77ef0c2862819d292a8b5741692f7cf683bf56aab158170fac513fa08a7cedd0
+[Pipeline] sh
+Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
+		 Affected argument(s) used the following variable(s): [DOCKERHUB_CREDENTIALS_PSW]
+		 See https://jenkins.io/redirect/groovy-string-interpolation for details.
++ echo 'Login to Docker Hub'
+Login to Docker Hub
++ echo ****
++ docker login -u khangdinh2103 --password-stdin
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
++ docker tag khangdinh2103/service-cart-order:latest khangdinh2103/service-cart-order:latest
++ docker push khangdinh2103/service-cart-order:latest
+The push refers to repository [docker.io/khangdinh2103/service-cart-order]
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+2bd4081d24d0: Waiting
+f18232174bc9: Waiting
+05c1247b2bae: Waiting
+301aebe3d905: Waiting
+699b753813e6: Waiting
+f18232174bc9: Layer already exists
+05c1247b2bae: Waiting
+301aebe3d905: Layer already exists
+699b753813e6: Layer already exists
+2bd4081d24d0: Waiting
+2bd4081d24d0: Waiting
+05c1247b2bae: Layer already exists
+2bd4081d24d0: Waiting
+2bd4081d24d0: Waiting
+2bd4081d24d0: Pushed
+latest: digest: sha256:77ef0c2862819d292a8b5741692f7cf683bf56aab158170fac513fa08a7cedd0 size: 1401
++ echo 'Successfully pushed khangdinh2103/service-cart-order:latest'
+Successfully pushed khangdinh2103/service-cart-order:latest
 [Pipeline] echo
-Container for service-cart-order not found, skipping
+Successfully processed service-cart-order
 [Pipeline] sh
 + docker logout
 Removing login credentials for https://index.docker.io/v1/
@@ -550,8 +918,8 @@ Pipeline completed successfully!
 [Pipeline] }
 [Pipeline] // withCredentials
 [Pipeline] }
-$ docker stop --time=1 8161220d3c456f272b90691b03cdeadb23de5d047abb969ecf3552d925fe1703
-$ docker rm -f --volumes 8161220d3c456f272b90691b03cdeadb23de5d047abb969ecf3552d925fe1703
+$ docker stop --time=1 138115bf2c149fc4a87e2e4f5e26e20beacaa8db1f6c69cb71a743eef71a6935
+$ docker rm -f --volumes 138115bf2c149fc4a87e2e4f5e26e20beacaa8db1f6c69cb71a743eef71a6935
 [Pipeline] // withDockerContainer
 [Pipeline] }
 [Pipeline] // withEnv
