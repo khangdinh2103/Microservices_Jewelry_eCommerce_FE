@@ -87,14 +87,12 @@ pipeline {
                 // Commit the container to an image
                 sh "docker commit ${containerExists} ${imageName}:latest || echo 'Failed to commit container'"
                 
-                // Push the image to Docker Hub
-                withCredentials([string(credentialsId: 'dockerhub-cred-id', variable: 'DOCKER_PWD')]) {
-                  sh """
-                    echo "Login to Docker Hub"
-                    echo "${DOCKER_PWD}" | docker login -u ${DOCKERHUB_USERNAME} --password-stdin || echo 'Failed to login'
-                    docker push ${imageName}:latest || echo 'Failed to push image'
-                  """
-                }
+                // Push the image to Docker Hub - FIXED CREDENTIALS USAGE
+                sh """
+                  echo "Login to Docker Hub"
+                  echo "${DOCKERHUB_CREDENTIALS_PSW}" | docker login -u ${DOCKERHUB_USERNAME} --password-stdin || echo 'Failed to login'
+                  docker push ${imageName}:latest || echo 'Failed to push image'
+                """
                 
                 echo "Successfully processed ${serviceName}"
               } else {
