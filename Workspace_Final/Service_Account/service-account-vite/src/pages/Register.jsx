@@ -145,7 +145,7 @@ const Register = () => {
                 <div
                     className="w-full max-w-6xl bg-white rounded-xl shadow-xl overflow-hidden flex flex-col md:flex-row">
                     {/* Left Image Section */}
-                    <div className="md:w-5/12 bg-amber-50 md:block relative">
+                    <div className="md:w-5/12 bg-amber-50 hidden md:block relative">
                         <div className="absolute inset-0 bg-gradient-to-t from-amber-900/30 to-transparent"></div>
                         <img
                             src="/images/account-register.png"

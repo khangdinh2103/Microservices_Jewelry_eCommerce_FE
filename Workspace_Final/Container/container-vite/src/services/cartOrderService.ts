@@ -1,5 +1,5 @@
 import axiosInstance from './axiosConfig';
-import { Product } from './catalogService';
+import {Product} from './catalogService';
 
 // Cấu hình API Gateway endpoint cho service cart-order
 const BASE_URL = 'http://localhost:8000/api/v1/cart-order';
@@ -26,6 +26,16 @@ export interface OrderItem {
     productName?: string;
 }
 
+export interface DeliveryProof {
+    id: number;
+    orderId: number;
+    delivererId: number;
+    imageUrl: string;
+    notes?: string;
+    createdAt: string;
+}
+
+// Update Order interface
 export interface Order {
     id: number;
     userId: number;
@@ -36,6 +46,13 @@ export interface Order {
     updatedAt: string;
     orderDetails: OrderDetail[];
     totalAmount?: number;
+    delivererId?: number;
+    deliverer?: {
+        id: number;
+        name: string;
+        email: string;
+    };
+    deliveryProof?: DeliveryProof;
 }
 
 export interface OrderDetail {
@@ -87,8 +104,8 @@ const cartOrderService = {
     /**
      * Tạo giỏ hàng mới
      */
-    createCart: async (userId: number): Promise<{ cartId: number }> => {
-        const response = await axiosInstance.post(`${BASE_URL}/cart`, { userId });
+    createCart: async (userId: number): Promise<{cartId: number}> => {
+        const response = await axiosInstance.post(`${BASE_URL}/cart`, {userId});
         return response.data;
     },
 
@@ -108,7 +125,7 @@ const cartOrderService = {
      * Cập nhật số lượng sản phẩm trong giỏ hàng
      */
     updateCartItemQuantity: async (cartItemId: number, quantity: number): Promise<CartItem> => {
-        const response = await axiosInstance.put(`${BASE_URL}/cart-items/${cartItemId}`, { quantity });
+        const response = await axiosInstance.put(`${BASE_URL}/cart-items/${cartItemId}`, {quantity});
         return response.data.cartItem;
     },
 
@@ -147,7 +164,7 @@ const cartOrderService = {
      * Hủy đơn hàng
      */
     cancelOrder: async (orderId: number): Promise<void> => {
-        await axiosInstance.put(`${BASE_URL}/orders/${orderId}`, { status: 'CANCELED' });
+        await axiosInstance.put(`${BASE_URL}/orders/${orderId}`, {status: 'CANCELED'});
     },
 
     /**
@@ -159,19 +176,31 @@ const cartOrderService = {
     },
 
     /**
-     * Tạo URL thanh toán với MoMo
+     * Lấy địa chỉ từ tọa độ
      */
-    createMomoPayment: async (
-        orderId: number, 
-        amount: number, 
-        orderInfo: string
-    ): Promise<{ payUrl: string; orderId: string }> => {
-        const response = await axiosInstance.post(`${BASE_URL}/payment/momo`, { 
-            orderId, 
-            amount, 
-            orderInfo 
-        });
-        return response.data;
+    getAddressFromCoordinates: async (lat: number, lng: number): Promise<any> => {
+        try {
+            const response = await axiosInstance.get(`${BASE_URL}/location?lat=${lat}&lng=${lng}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error getting address from coordinates:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Tính tuyến đường và khoảng cách
+     */
+    calculateRoute: async (startLat: number, startLng: number, endLat: number, endLng: number): Promise<any> => {
+        try {
+            const response = await axiosInstance.get(
+                `${BASE_URL}/location/distance?startLat=${startLat}&startLng=${startLng}&endLat=${endLat}&endLng=${endLng}`
+            );
+            return response.data;
+        } catch (error) {
+            console.error('Error calculating route:', error);
+            throw error;
+        }
     },
 
     /**
@@ -195,18 +224,62 @@ const cartOrderService = {
     /**
      * Tính phí vận chuyển
      */
-    calculateShippingFee: async (
-        fromAddress: string, 
-        toAddress: string, 
-        weight: number
-    ): Promise<number> => {
+    calculateShippingFee: async (fromAddress: string, toAddress: string, weight: number): Promise<number> => {
         const response = await axiosInstance.post(`${BASE_URL}/location/shipping-fee`, {
             fromAddress,
             toAddress,
-            weight
+            weight,
         });
         return response.data.fee;
-    }
+    },
+
+    getDeliverers: async (): Promise<any[]> => {
+        const response = await axiosInstance.get(`${BASE_URL}/deliverers`);
+        return response.data;
+    },
+
+    assignDeliverer: async (orderId: number, delivererId: number): Promise<Order> => {
+        const response = await axiosInstance.post(`${BASE_URL}/orders/assign`, {
+            orderId,
+            delivererId,
+        });
+        return response.data.order;
+    },
+
+    getDelivererOrders: async (delivererId: number): Promise<Order[]> => {
+        const response = await axiosInstance.get(`${BASE_URL}/deliverers/${delivererId}/orders`);
+        return response.data;
+    },
+
+    updateDeliveryStatus: async (orderId: number, status: string): Promise<Order> => {
+        const response = await axiosInstance.put(`${BASE_URL}/orders/${orderId}/status`, {status});
+        return response.data.order;
+    },
+
+    uploadDeliveryProof: async (
+        orderId: number,
+        proofImage: File,
+        notes?: string
+    ): Promise<{deliveryProof: DeliveryProof; order: Order}> => {
+        const formData = new FormData();
+        formData.append('proof_image', proofImage);
+        if (notes) formData.append('notes', notes);
+
+        const response = await axiosInstance.post(`${BASE_URL}/orders/${orderId}/proof`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    },
+
+    updateOrderPaymentStatus: async (orderId: number, paymentStatus: string, transactionId?: string): Promise<Order> => {
+        const response = await axiosInstance.put(`${BASE_URL}/orders/${orderId}/payment-status`, {
+            paymentStatus,
+            transactionId,
+        });
+        return response.data.order;
+    },
 };
 
 export default cartOrderService;

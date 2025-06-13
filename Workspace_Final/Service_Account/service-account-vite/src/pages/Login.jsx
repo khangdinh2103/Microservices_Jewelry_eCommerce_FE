@@ -39,7 +39,7 @@ const Login = () => {
             className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-gray-100 min-h-[calc(100vh-200px)]">
             <div className="w-full max-w-5xl bg-white rounded-xl shadow-xl overflow-hidden flex flex-col md:flex-row">
                 {/* Left Image Section */}
-                <div className="md:w-1/2 bg-amber-50 md:block relative">
+                <div className="md:w-1/2 bg-amber-50 hidden md:block relative">
                     <div className="absolute inset-0 bg-gradient-to-t from-amber-900/30 to-transparent"></div>
                     <img
                         src="/images/account-login.png"
@@ -121,7 +121,7 @@ const Login = () => {
                                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                                     Mật khẩu
                                 </label>
-                                <Link to="/forgot-password" className="text-sm text-amber-600 hover:text-amber-800">
+                                <Link to="/account/forgot-password" className="text-sm text-amber-600 hover:text-amber-800">
                                     Quên mật khẩu?
                                 </Link>
                             </div>

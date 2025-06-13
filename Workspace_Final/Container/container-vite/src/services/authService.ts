@@ -91,8 +91,15 @@ const authService = {
      * @param email Email của người dùng
      */
     requestPasswordReset: async (email: string): Promise<any> => {
-        const response = await axiosInstance.post(`${BASE_URL}/auth/forgot-password`, {email});
-        return response.data;
+        try {
+            console.log('Sending password reset request to API for email:', email);
+            const response = await axiosInstance.post(`${BASE_URL}/auth/forgot-password`, { email });
+            console.log('Password reset API response:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error in requestPasswordReset:', error);
+            throw error;
+        }
     },
 
     /**
@@ -102,12 +109,25 @@ const authService = {
      * @param confirmPassword Xác nhận mật khẩu mới
      */
     resetPassword: async (token: string, password: string, confirmPassword: string): Promise<any> => {
-        const response = await axiosInstance.post(`${BASE_URL}/auth/reset-password`, {
-            token,
-            password,
-            confirmPassword
-        });
-        return response.data;
+        try {
+            console.log('Sending reset password request with token:', token);
+            
+            // Change the payload to match what the backend expects
+            const payload = {
+                token,
+                newPassword: password  // Changed from new_password to newPassword
+                // Removed password_confirmation as backend doesn't expect it
+            };
+            
+            console.log('Reset password payload:', payload);
+            
+            const response = await axiosInstance.post(`${BASE_URL}/auth/reset-password`, payload);
+            console.log('Reset password API response:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error in resetPassword:', error);
+            throw error;
+        }
     },
 
     /**
